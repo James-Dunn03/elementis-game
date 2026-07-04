@@ -664,14 +664,22 @@
   .inv-item-btn:hover { background: rgba(201,168,76,0.12); border-color: var(--gold); }
 
   /* ── MONSTER TOOLTIP ── */
-  #monster-tooltip {
+  #monster-tooltip, #item-tooltip {
     position: fixed; z-index: 200; pointer-events: none;
     background: linear-gradient(160deg, #1e1a0e, #17130a);
     border: 1px solid var(--border);
-    border-radius: 3px; padding: 0.9rem 1rem; width: 220px;
+    border-radius: 3px; padding: 0.9rem 1rem;
     box-shadow: 0 8px 32px rgba(0,0,0,0.7); font-size: 0.82rem;
     display: none;
+    /* Never wider than viewport */
+    max-width: min(260px, calc(100vw - 16px));
+    width: 220px;
+    box-sizing: border-box;
   }
+  #item-tooltip { width: auto; min-width: 160px; }
+  .it-name { font-family: 'Cinzel', serif; font-weight: 700; font-size: 0.88rem; margin-bottom: 0.35rem; color: var(--gold-light); }
+  .it-effect { color: var(--text); font-size: 0.78rem; font-style: italic; line-height: 1.5; margin-bottom: 0.4rem; }
+  .it-meta { font-size: 0.68rem; color: var(--brass); }
   .tt-name { font-family: 'Cinzel', serif; font-weight: 700; font-size: 0.88rem; margin-bottom: 0.2rem; color: var(--gold-light); }
   .tt-el { font-family: 'Cinzel', serif; font-size: 0.7rem; margin-bottom: 0.5rem; letter-spacing: 1px; }
   .tt-hp-bar { background: rgba(0,0,0,0.5); border-radius: 2px; height: 5px; overflow: hidden; margin-bottom: 0.3rem; }
@@ -1641,6 +1649,13 @@
   <hr class="tt-divider">
   <div id="tt-attacks"></div>
   <div id="tt-equips" class="tt-equip"></div>
+</div>
+
+<!-- ══════════════ ITEM TOOLTIP ══════════════ -->
+<div id="item-tooltip">
+  <div class="it-name" id="it-name"></div>
+  <div class="it-effect" id="it-effect"></div>
+  <div class="it-meta" id="it-meta"></div>
 </div>
 
 <!-- How to Play Modal -->
@@ -3462,16 +3477,46 @@ function showMonsterTooltip(event, monsterIdx, monster) {
   if (bonusRolls.length) modLines.push(`<span class="tt-equip-tag" style="color:#FFD700"><img src="/tiles/Monster%20tokens/dice.png" style="width:13px;height:13px;object-fit:contain;vertical-align:middle;margin-right:3px"> Also hits on: ${bonusRolls.join(', ')}</span>`);
   if (removedWeakness.length) modLines.push(`<span class="tt-equip-tag" style="color:#4ECDC4">🛡️ Weakness removed: ${removedWeakness.join(', ')}</span>`);
   document.getElementById('tt-equips').innerHTML = modLines.join('') || (equipped.length ? equipped.map(e => `<span class="tt-equip-tag" style="display:inline-flex;align-items:center;gap:3px">${itemIcon(e.icon,14)} ${escapeHtml(e.name)}</span>`).join('') : '');
-  // Position tooltip near the cursor but keep it on screen
-  const x = event.clientX + 16;
-  const y = event.clientY - 10;
-  tt.style.left = Math.min(x, window.innerWidth - 240) + 'px';
-  tt.style.top = Math.min(y, window.innerHeight - tt.offsetHeight - 10) + 'px';
-  tt.style.display = 'block';
+  _positionTooltip(tt, event);
 }
 
 function hideMonsterTooltip() {
   document.getElementById('monster-tooltip').style.display = 'none';
+}
+
+function showItemTooltip(event, item) {
+  if (!item) return;
+  const tt = document.getElementById('item-tooltip');
+  document.getElementById('it-name').textContent = item.name || '';
+  document.getElementById('it-effect').textContent = item.effect || '';
+  const stars = '★'.repeat(item.rarity || 1);
+  const val = item.gpValue != null ? ` · ${item.gpValue} gp` : '';
+  document.getElementById('it-meta').textContent = stars + val;
+  _positionTooltip(tt, event);
+}
+
+function hideItemTooltip() {
+  document.getElementById('item-tooltip').style.display = 'none';
+}
+
+function _positionTooltip(tt, event) {
+  const margin = 8;
+  // Show off-screen first so we can measure real dimensions
+  tt.style.top = '-9999px';
+  tt.style.left = '-9999px';
+  tt.style.display = 'block';
+  const ttW = tt.offsetWidth;
+  const ttH = tt.offsetHeight;
+  let x = event.clientX + 16;
+  let y = event.clientY - 10;
+  // Flip left if overflows right edge
+  if (x + ttW > window.innerWidth - margin) x = event.clientX - ttW - 10;
+  // Clamp all edges
+  if (x < margin) x = margin;
+  if (y + ttH > window.innerHeight - margin) y = window.innerHeight - ttH - margin;
+  if (y < margin) y = margin;
+  tt.style.left = x + 'px';
+  tt.style.top = y + 'px';
 }
 
 // ── VILLAGE ──
@@ -3542,12 +3587,15 @@ function renderShopModal(me) {
     invEl.innerHTML = '<div style="color:var(--muted);font-size:1.7rem;font-style:italic">Thy satchel is empty.</div>';
   } else {
     invEl.innerHTML = inv.map(item => `
-      <div style="display:flex;align-items:center;gap:0.6rem;background:rgba(0,0,0,0.2);border:1px solid rgba(90,64,32,0.2);border-radius:2px;padding:0.4rem 0.7rem">
-        <span style="display:flex;align-items:center">${itemIcon(item.icon, 22) || '📦'}</span>
+      <div style="display:flex;align-items:center;gap:0.6rem;background:rgba(0,0,0,0.2);border:1px solid rgba(90,64,32,0.2);border-radius:2px;padding:0.4rem 0.7rem;cursor:default"
+        onmouseenter="showItemTooltip(event,${JSON.stringify(item).replace(/"/g,'&quot;')})"
+        onmouseleave="hideItemTooltip()">
+        <span style="display:flex;align-items:center;flex-shrink:0">${itemIcon(item.icon, 22) || '📦'}</span>
         <div style="flex:1;min-width:0">
           <div style="font-family:'Cinzel',serif;font-size:0.8rem;color:var(--text)">${escapeHtml(item.name)}</div>
+          <div style="font-size:0.7rem;color:var(--muted);font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(item.effect || '')}</div>
         </div>
-        <button class="btn btn-outline" style="font-size:0.72rem;padding:0.3rem 0.7rem;white-space:nowrap;color:var(--gold)" onclick="socket.emit('village_sell_item',{itemId:'${item.id}'})">Sell ${item.gpValue || 0}gp</button>
+        <button class="btn btn-outline" style="font-size:0.72rem;padding:0.3rem 0.7rem;white-space:nowrap;color:var(--gold);flex-shrink:0" onclick="socket.emit('village_sell_item',{itemId:'${item.id}'})">Sell ${item.gpValue || 0}gp</button>
       </div>
     `).join('');
   }
