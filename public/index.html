@@ -2592,6 +2592,8 @@ function renderInventory() {
 }
 
 function openInventoryItem(itemId) {
+  // Close satchel popup if open (mobile flow)
+  document.getElementById('modal-satchel').classList.add('hidden');
   const me = gameState.players.find(p => p.id === myId);
   const item = me?.inventory?.find(i => i.id === itemId);
   if (!item) return;
