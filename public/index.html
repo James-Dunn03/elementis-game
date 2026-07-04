@@ -1,0 +1,3506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elementis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@400;700;900&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #12100a;
+    --panel: #1c1710;
+    --border: #5a4020;
+    --text: #e8d5a3;
+    --muted: #8b7355;
+    --volcan: #7A1E1E;
+    --volcan-light: #B84040;
+    --misty: #163A5E;
+    --misty-light: #2468A8;
+    --meadow: #163D25;
+    --meadow-light: #268040;
+    --forest: #213618;
+    --forest-light: #3E6028;
+    --gold: #c9a84c;
+    --gold-light: #e8cc7a;
+    --fire: #D4622A;
+    --water: #3A9E96;
+    --earth: #8B6E42;
+    --air: #8AAEC8;
+    --stone: #2a2218;
+    --brass: #8B6914;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'IM Fell English', Georgia, serif;
+    min-height: 100vh; overflow-x: hidden;
+  }
+
+  /* ── MEDIEVAL ORNAMENT DIVIDER ── */
+  .med-divider {
+    display: flex; align-items: center; gap: 0.6rem; margin: 1rem 0; color: var(--brass); font-size: 0.75rem;
+  }
+  .med-divider::before, .med-divider::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+  }
+
+  /* ── LOBBY ── */
+  #screen-lobby {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: radial-gradient(ellipse at 50% 0%, #1f1508 0%, #12100a 65%);
+  }
+  .game-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 2.8rem; font-weight: 900; letter-spacing: 3px; margin-bottom: 0.4rem;
+    background: linear-gradient(160deg, #a07830 0%, #e8cc7a 40%, #c9a84c 60%, #7a5a1a 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    text-shadow: none; filter: drop-shadow(0 2px 8px rgba(180,140,40,0.3));
+  }
+  .game-subtitle {
+    font-family: 'Cinzel', serif;
+    color: var(--muted); margin-bottom: 2.5rem; font-size: 0.85rem;
+    letter-spacing: 5px; text-transform: uppercase;
+  }
+  .lobby-card {
+    background: linear-gradient(160deg, #1e1a0e, #17130a);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2rem; width: 420px; max-width: 95vw;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(200,168,75,0.06);
+    position: relative;
+  }
+  .lobby-card::before {
+    content: '✦'; position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+    color: var(--brass); font-size: 1rem; background: #1e1a0e; padding: 0 0.5rem; line-height: 0;
+  }
+  .lobby-card h2 {
+    font-family: 'Cinzel', serif;
+    margin-bottom: 1rem; font-size: 0.8rem; color: var(--brass);
+    text-transform: uppercase; letter-spacing: 3px; font-weight: 600;
+  }
+  .input-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+  input[type=text] {
+    flex: 1;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--text); padding: 0.65rem 1rem; font-size: 0.95rem; outline: none;
+    font-family: 'IM Fell English', serif;
+    transition: border-color 0.2s;
+  }
+  input[type=text]:focus { border-color: var(--gold); box-shadow: 0 0 8px rgba(201,168,76,0.2); }
+  input[type=text]::placeholder { color: var(--muted); font-style: italic; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    font-family: 'Cinzel', serif;
+    padding: 0.6rem 1.4rem; border: none; border-radius: 2px; font-size: 0.82rem;
+    font-weight: 600; cursor: pointer; transition: all 0.15s; white-space: nowrap;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .btn-gold {
+    background: linear-gradient(180deg, #c9a84c 0%, #a07830 50%, #8b6020 100%);
+    color: #1a1005;
+    border: 1px solid #7a5010;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,230,100,0.3);
+  }
+  .btn-gold:hover { background: linear-gradient(180deg, #e8cc7a 0%, #c9a84c 50%, #a07830 100%); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+  .btn-outline {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border); color: var(--text);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold-light); background: rgba(201,168,76,0.08); }
+  .btn-primary {
+    background: linear-gradient(180deg, #2a4a8a 0%, #1e3568 100%);
+    color: #c8d8f0; border: 1px solid #1a2a58;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(100,150,255,0.2);
+  }
+  .btn-primary:hover { background: linear-gradient(180deg, #3a5aaa 0%, #2a4a88 100%); transform: translateY(-1px); }
+  .btn-danger {
+    background: linear-gradient(180deg, #7a1a1a 0%, #5a1010 100%);
+    color: #f0c0c0; border: 1px solid #4a0808;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,100,100,0.2);
+  }
+  .btn-danger:hover { background: linear-gradient(180deg, #9a2a2a 0%, #7a1a1a 100%); }
+  .btn-green {
+    background: linear-gradient(180deg, #1e5a2a 0%, #143a1a 100%);
+    color: #a0d8a0; border: 1px solid #0e2a12;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(100,200,100,0.2);
+  }
+  .btn-green:hover { background: linear-gradient(180deg, #2a7a3a 0%, #1e5a2a 100%); transform: translateY(-1px); }
+  .btn-purple {
+    background: linear-gradient(180deg, #3a1a6a 0%, #28104a 100%);
+    color: #c8a8f8; border: 1px solid #20083a;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(180,120,255,0.2);
+  }
+  .btn-purple:hover { background: linear-gradient(180deg, #4a2a8a 0%, #3a1a6a 100%); transform: translateY(-1px); }
+  .divider {
+    border: none; margin: 1.2rem 0;
+    border-top: 1px solid var(--border);
+    position: relative;
+  }
+  .error-msg { color: #e06060; font-size: 1.7rem; margin-top: 0.4rem; min-height: 1rem; font-style: italic; }
+
+  /* ── WAITING ROOM ── */
+  #screen-waiting {
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 1.5rem;
+    background: radial-gradient(ellipse at 50% 0%, #1f1508 0%, #12100a 65%);
+  }
+  .waiting-card {
+    background: linear-gradient(160deg, #1e1a0e, #17130a);
+    border: 1px solid var(--border); border-radius: 4px;
+    padding: 2rem; width: 480px; max-width: 95vw;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+  }
+  .room-code {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 2.2rem; font-weight: 900; letter-spacing: 8px;
+    color: var(--gold); text-align: center; margin: 0.5rem 0 1.5rem;
+    text-shadow: 0 0 20px rgba(201,168,76,0.4);
+  }
+  .player-list { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.5rem; }
+  .player-pill {
+    display: flex; align-items: center; gap: 0.8rem;
+    background: rgba(0,0,0,0.3); border-radius: 2px; padding: 0.6rem 1rem;
+    border: 1px solid var(--border);
+  }
+  .player-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+  .player-name { font-weight: 600; font-family: 'Cinzel', serif; font-size: 0.9rem; }
+  .host-tag {
+    margin-left: auto; font-size: 0.7rem; color: var(--gold);
+    background: rgba(201,168,76,0.12); padding: 2px 8px; border-radius: 2px;
+    font-family: 'Cinzel', serif; letter-spacing: 1px; border: 1px solid rgba(201,168,76,0.25);
+  }
+
+  /* ── MONSTER SELECT ── */
+  #screen-monster-select {
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 1rem;
+    background: radial-gradient(ellipse at 50% 0%, #1f1508 0%, #12100a 65%);
+    padding: 2rem;
+  }
+  .monster-select-title { font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 700; }
+  .monster-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; max-width: 600px; width: 100%; }
+  .monster-option {
+    background: linear-gradient(160deg, #1e1a0e, #17130a);
+    border: 1px solid var(--border); border-radius: 4px;
+    padding: 1.5rem; cursor: pointer; transition: all 0.2s; text-align: center;
+  }
+  .monster-option:hover {
+    border-color: var(--gold); transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,168,76,0.2);
+  }
+  .monster-option.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+  .monster-option.selected { border-color: #2a6a30; background: rgba(30,80,36,0.2); box-shadow: 0 0 12px rgba(40,120,50,0.2); }
+  .monster-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+  .monster-option-name { font-family: 'Cinzel', serif; font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem; color: var(--gold-light); }
+  .monster-option-el { font-family: 'Cinzel', serif; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.8rem; }
+  .monster-option-stats { font-size: 0.85rem; color: var(--muted); }
+  .monster-option-attacks { margin-top: 0.5rem; font-size: 0.8rem; color: var(--muted); text-align: left; font-style: italic; }
+  .waiting-msg { color: var(--muted); margin-top: 1rem; }
+
+  /* ── GAME SCREEN ── */
+  #screen-game {
+    display: grid;
+    grid-template-columns: 220px 1fr 200px;
+    grid-template-rows: auto 1fr;
+    height: 100vh;
+    overflow: hidden;
+    gap: 0;
+  }
+  #game-header {
+    grid-column: 1 / -1;
+    background: linear-gradient(180deg, #211a0c 0%, #1a1408 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  }
+  .header-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-weight: 700; font-size: 1rem;
+    background: linear-gradient(135deg, #a07830, #e8cc7a, #c9a84c);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .turn-banner { display: flex; align-items: center; gap: 0.6rem; }
+  .turn-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .turn-text { font-family: 'Cinzel', serif; font-size: 0.82rem; font-weight: 600; }
+  .phase-badge {
+    margin-left: auto; font-family: 'Cinzel', serif; font-size: 0.68rem;
+    background: rgba(201,168,76,0.1); color: var(--gold);
+    padding: 3px 10px; border-radius: 2px; text-transform: uppercase;
+    letter-spacing: 2px; border: 1px solid rgba(201,168,76,0.25);
+  }
+
+  #left-panel {
+    background: linear-gradient(180deg, #1c1710 0%, #17130a 100%);
+    border-right: 1px solid var(--border);
+    padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.8rem;
+  }
+  #right-panel {
+    background: linear-gradient(180deg, #1c1710 0%, #17130a 100%);
+    border-left: 1px solid var(--border);
+    padding: 0.7rem 0.6rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.6rem;
+  }
+
+  /* ── CARD STACKS ── */
+  .deck-group-title {
+    font-family: 'Cinzel', serif; font-size: 0.58rem; text-transform: uppercase;
+    letter-spacing: 2px; color: var(--brass); margin-bottom: 0.3rem; text-align: center;
+  }
+  .deck-row { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+  .deck-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 4px; }
+  .card-stack {
+    position: relative; width: 100%; height: 120px; cursor: default;
+    display: flex; align-items: flex-end; justify-content: center;
+    flex-shrink: 0;
+  }
+  .card-stack-layer {
+    position: absolute; width: 88%; height: 106px; border-radius: 6px;
+    border: 1px solid rgba(201,168,76,0.35);
+    background: linear-gradient(160deg, #2a1f0e 0%, #1a1208 100%);
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.6);
+  }
+  .card-stack-layer:nth-child(1) { bottom: 8px; left: 4px; transform: rotate(-4deg); opacity: 0.55; }
+  .card-stack-layer:nth-child(2) { bottom: 4px; left: 2px; transform: rotate(-2deg); opacity: 0.75; }
+  .card-stack-layer:nth-child(3) { bottom: 0; left: 0; transform: rotate(0deg); opacity: 1; }
+  .card-stack-face {
+    position: absolute; bottom: 0; left: 0; width: 88px; height: 124px;
+    border-radius: 6px; border: 1px solid rgba(201,168,76,0.5);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 5px; overflow: hidden;
+    box-shadow: 0 3px 14px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(201,168,76,0.08);
+  }
+  .card-stack-face::before {
+    content: ''; position: absolute; inset: 5px; border-radius: 3px;
+    border: 1px solid rgba(201,168,76,0.2); pointer-events: none;
+  }
+  .card-stack-icon { width: 44px; height: 44px; object-fit: contain; opacity: 0.9; }
+  .card-stack-label {
+    font-family: 'Cinzel', serif; font-size: 0.6rem; text-transform: uppercase;
+    letter-spacing: 0.5px; text-align: center; color: rgba(201,168,76,0.8);
+    padding: 0 5px; line-height: 1.3;
+  }
+  .card-stack-count {
+    font-family: 'Cinzel', serif; font-size: 0.55rem; color: var(--muted);
+    text-align: center; margin-top: 1px;
+  }
+
+  /* Volcan = red-orange, Misty = blue-teal, Meadow = green, Forest = dark-green */
+  .deck-volcan .card-stack-face  { background: linear-gradient(160deg, #3a1208 0%, #1e0a04 100%); border-color: rgba(200,80,40,0.5); }
+  .deck-volcan .card-stack-face::before { border-color: rgba(200,80,40,0.25); }
+  .deck-misty  .card-stack-face  { background: linear-gradient(160deg, #0a1a2e 0%, #060f1a 100%); border-color: rgba(60,140,200,0.5); }
+  .deck-misty  .card-stack-face::before { border-color: rgba(60,140,200,0.25); }
+  .deck-meadow .card-stack-face  { background: linear-gradient(160deg, #0e2010 0%, #071408 100%); border-color: rgba(60,180,80,0.5); }
+  .deck-meadow .card-stack-face::before { border-color: rgba(60,180,80,0.25); }
+  .deck-forest .card-stack-face  { background: linear-gradient(160deg, #0a1c0c 0%, #050e06 100%); border-color: rgba(40,120,60,0.5); }
+  .deck-forest .card-stack-face::before { border-color: rgba(40,120,60,0.25); }
+  .deck-treasure .card-stack-face { background: linear-gradient(160deg, #2a1f06 0%, #16100203 100%); border-color: rgba(201,168,76,0.6); }
+
+  /* Fly animation */
+  @keyframes cardFly {
+    0%   { transform: translate(0,0) scale(1) rotate(0deg); opacity: 1; }
+    40%  { transform: translate(var(--fly-x), var(--fly-y)) scale(1.15) rotate(var(--fly-rot)); opacity: 1; }
+    80%  { transform: translate(var(--fly-x), var(--fly-y)) scale(1.05) rotate(0deg); opacity: 0.85; }
+    100% { transform: translate(var(--fly-x), var(--fly-y)) scale(0.9) rotate(0deg); opacity: 0; }
+  }
+  #card-fly-ghost {
+    position: fixed; z-index: 9999; pointer-events: none;
+    width: 88px; height: 124px; border-radius: 6px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+    box-shadow: 0 6px 28px rgba(0,0,0,0.7);
+    border: 1px solid rgba(201,168,76,0.5);
+  }
+  .panel-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem; text-transform: uppercase; letter-spacing: 3px;
+    color: var(--brass); margin-bottom: 0.3rem;
+  }
+
+  .player-card {
+    background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 3px;
+    padding: 0.9rem; transition: border-color 0.2s;
+  }
+  .player-card.active { border-color: var(--gold); box-shadow: 0 0 12px rgba(201,168,76,0.15), inset 0 0 30px rgba(201,168,76,0.03); }
+  .player-card-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem; }
+  .player-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; color: #000; flex-shrink: 0; }
+  .player-card-name { font-family: 'Cinzel', serif; font-weight: 700; font-size: 0.88rem; }
+  .hp-bar { background: rgba(0,0,0,0.5); border-radius: 2px; height: 6px; overflow: hidden; margin-bottom: 0.4rem; border: 1px solid rgba(255,255,255,0.05); }
+  .hp-fill { height: 100%; border-radius: 2px; transition: width 0.3s; background: linear-gradient(90deg, #1e6030, #2a9048); }
+  .hp-text { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.5rem; }
+  .monster-mini { font-size: 0.78rem; }
+  .monster-mini-name { font-family: 'Cinzel', serif; font-weight: 600; margin-bottom: 0.2rem; font-size: 0.75rem; }
+  .monster-mini-hp { margin-bottom: 0.4rem; }
+  .equipped-list { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 0.3rem; }
+  .equip-tag {
+    background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.25);
+    color: var(--gold); font-size: 0.65rem; padding: 1px 6px; border-radius: 2px;
+    font-family: 'Cinzel', serif; letter-spacing: 0.5px;
+  }
+  .inv-count { font-size: 0.72rem; color: var(--muted); margin-top: 0.3rem; }
+
+  /* ── BOARD CENTER ── */
+  #board-area {
+    position: relative; overflow: hidden;
+    background: #0d0b06; min-height: 0;
+  }
+  #hex-svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+  /* Hex styles */
+  .hex { stroke: rgba(200,160,80,0.15); stroke-width: 1; cursor: pointer; transition: filter 0.15s; }
+  .hex.valid-move { stroke: var(--gold); stroke-width: 2; filter: brightness(1.4); cursor: pointer; }
+  .hex.valid-move:hover { filter: brightness(1.7); }
+  .hex:not(.valid-move):hover { filter: brightness(1.15); }
+  .hex-overlay { pointer-events: none; }
+  .hex-overlay.volcan { fill: var(--volcan); fill-opacity: 0.45; }
+  .hex-overlay.misty  { fill: var(--misty);  fill-opacity: 0.45; }
+  .hex-overlay.meadow { fill: var(--meadow); fill-opacity: 0.45; }
+  .hex-overlay.forest { fill: var(--forest); fill-opacity: 0.45; }
+  .region-label { font-size: 27px; fill: rgba(220,190,120,0.18); text-anchor: middle; pointer-events: none; font-weight: 600; }
+
+  /* ── LOG ── */
+  #game-log { flex: 1; overflow-y: auto; }
+  .log-entry { font-size: 1.5rem; color: var(--muted); padding: 3px 0; border-bottom: 1px solid rgba(90,64,32,0.3); font-style: italic; }
+  .log-entry:last-child { color: var(--text); font-style: normal; }
+
+  /* ── REGION LEGEND ── */
+  .legend { display: flex; flex-direction: column; gap: 0.4rem; }
+  .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 1.5rem; font-style: italic; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+
+  /* ── MODAL OVERLAY ── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(5,4,2,0.82);
+    backdrop-filter: blur(3px);
+    display: flex; align-items: center; justify-content: center; z-index: 100;
+    animation: fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  /* ── SHARED MODAL PANEL BASE ── */
+  .med-panel {
+    background: linear-gradient(160deg, #1e1a0e 0%, #17130a 100%);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7), inset 0 1px 0 rgba(200,168,75,0.08);
+    position: relative;
+  }
+  .med-panel::before {
+    content: ''; position: absolute; inset: 4px;
+    border: 1px solid rgba(90,64,32,0.3); border-radius: 3px;
+    pointer-events: none;
+  }
+
+  /* ── SCENARIO CARD ── */
+  /* ══════════════ PLAYING CARD BASE ══════════════ */
+  .playing-card {
+    position: relative; width: 430px; max-width: 93vw;
+    border-radius: 14px; padding: 0;
+    animation: slideUp 0.35s ease; overflow: hidden;
+  }
+  /* Multi-layer card edge */
+  .playing-card::after {
+    content: ''; position: absolute; inset: 0; border-radius: 14px;
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.04);
+    pointer-events: none; z-index: 2;
+  }
+  .card-inner {
+    position: relative; padding: 1.5rem 1.6rem 1.4rem;
+    max-height: 88vh; overflow-y: auto;
+  }
+  /* Double inner border frame */
+  .card-frame {
+    position: absolute; inset: 10px; border-radius: 8px;
+    pointer-events: none; z-index: 1;
+  }
+  /* Corner pip — top-left and bottom-right */
+  .card-pip {
+    position: absolute; display: flex; flex-direction: column;
+    align-items: center; gap: 2px; z-index: 3;
+  }
+  .card-pip-tl { top: 15px; left: 18px; }
+  .card-pip-br { bottom: 15px; right: 18px; transform: rotate(180deg); }
+  .card-pip img { width: 20px; height: 20px; object-fit: contain; opacity: 0.75; }
+  .card-pip-label {
+    font-family: 'Cinzel', serif; font-size: 0.42rem;
+    text-transform: uppercase; letter-spacing: 1px; line-height: 1;
+  }
+  /* Ornate centre divider */
+  .card-divider {
+    display: flex; align-items: center; gap: 8px;
+    margin: 0.9rem 0; opacity: 0.4;
+  }
+  .card-divider::before, .card-divider::after {
+    content: ''; flex: 1; height: 1px;
+    background: currentColor;
+  }
+  .card-divider-gem { font-size: 0.5rem; }
+  /* Card type banner */
+  .card-type-banner {
+    font-family: 'Cinzel', serif; font-size: 0.58rem;
+    text-transform: uppercase; letter-spacing: 3px;
+    text-align: center; margin-bottom: 0.6rem;
+  }
+  /* Card title */
+  .card-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.25rem; font-weight: 700; line-height: 1.2;
+    text-align: center; margin-bottom: 0.4rem;
+  }
+  /* Flavour italic text */
+  .card-flavor {
+    font-size: 0.88rem; font-style: italic; line-height: 1.65;
+    margin-bottom: 0; text-align: center;
+  }
+  /* ── SCENARIO CARD ── */
+  .scenario-modal {
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.06) 0%, transparent 65%),
+      linear-gradient(175deg, #201a09 0%, #181208 55%, #1c1509 100%);
+    border: 2px solid rgba(201,168,76,0.45);
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.9),
+      0 0 0 4px rgba(201,168,76,0.12),
+      0 0 0 5px rgba(0,0,0,0.7),
+      0 28px 70px rgba(0,0,0,0.85);
+  }
+  .scenario-modal .card-frame { border: 1px solid rgba(201,168,76,0.18); }
+  .scenario-modal .card-pip-label { color: rgba(201,168,76,0.7); }
+  .scenario-modal .card-type-banner { color: var(--brass); }
+  .scenario-modal .card-title { color: var(--gold-light); }
+  .scenario-modal .card-flavor { color: var(--muted); }
+  .scenario-modal .card-divider { color: rgba(201,168,76,0.6); }
+  .card-region-tag {
+    font-family: 'Cinzel', serif; font-size: 0.62rem;
+    text-transform: uppercase; letter-spacing: 3px;
+    color: var(--brass); text-align: center; margin-bottom: 0.5rem;
+  }
+  .card-name { display: none; } /* replaced by .card-title */
+  .card-choice {
+    font-family: 'Cinzel', serif; font-size: 0.72rem;
+    text-transform: uppercase; letter-spacing: 2px;
+    color: var(--brass); text-align: center; margin-bottom: 0.7rem;
+  }
+  .choice-btns { display: flex; flex-direction: column; gap: 0.55rem; }
+  .choice-btn {
+    background: rgba(90,64,32,0.12); border: 1px solid rgba(90,64,32,0.35);
+    color: var(--text); padding: 0.7rem 1rem; border-radius: 4px;
+    cursor: pointer; font-size: 0.88rem; text-align: left; transition: all 0.2s;
+    font-family: 'IM Fell English', serif; width: 100%;
+  }
+  .choice-btn:hover { background: rgba(201,168,76,0.1); border-color: var(--gold); transform: translateX(3px); }
+  .choice-result { font-size: 0.74rem; color: var(--muted); margin-top: 0.2rem; font-style: italic; }
+  .sc-outcome-title {
+    font-family: 'Cinzel', serif; font-size: 0.92rem;
+    font-weight: 700; color: var(--gold); margin-bottom: 0.7rem; text-align: center;
+  }
+  .sc-outcome-summary {
+    font-size: 0.9rem; color: var(--text); line-height: 1.7;
+    margin-bottom: 1rem; font-style: italic; text-align: center;
+  }
+  .sc-outcome-result {
+    font-size: 0.95rem; font-weight: 700; color: var(--gold-light); margin-bottom: 1rem;
+    padding: 0.55rem 1rem; background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(201,168,76,0.22); border-radius: 4px;
+    text-align: center; font-family: 'Cinzel', serif;
+  }
+  /* ── TREASURE CARD ── */
+  .treasure-modal {
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(220,185,60,0.1) 0%, transparent 60%),
+      linear-gradient(175deg, #1e1900 0%, #141000 55%, #1a1500 100%);
+    border: 2px solid rgba(201,168,76,0.65);
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.9),
+      0 0 0 4px rgba(201,168,76,0.2),
+      0 0 0 5px rgba(0,0,0,0.7),
+      0 0 35px rgba(201,168,76,0.12),
+      0 28px 70px rgba(0,0,0,0.85);
+    text-align: center;
+  }
+  .treasure-modal .card-frame { border: 1px solid rgba(201,168,76,0.28); }
+  .treasure-modal .card-pip-label { color: rgba(201,168,76,0.85); }
+  .treasure-modal .card-divider { color: rgba(201,168,76,0.7); }
+  .treasure-icon {
+    margin: 0.4rem auto 0.8rem; display: flex;
+    align-items: center; justify-content: center; min-height: 72px;
+  }
+  .treasure-title-label {
+    font-family: 'Cinzel', serif; font-size: 0.6rem;
+    letter-spacing: 3px; text-transform: uppercase;
+    color: var(--brass); margin-bottom: 0.4rem;
+  }
+  .treasure-name {
+    font-family: 'Cinzel Decorative', serif; font-size: 1.25rem;
+    font-weight: 700; color: var(--gold-light); margin-bottom: 0.7rem;
+  }
+  .treasure-effect {
+    font-size: 0.92rem; color: var(--text); margin-bottom: 0.5rem;
+    line-height: 1.65; font-style: italic;
+  }
+  .treasure-usage {
+    font-family: 'Cinzel', serif; font-size: 0.68rem; color: var(--gold);
+    background: rgba(201,168,76,0.08); padding: 3px 14px; border-radius: 20px;
+    display: inline-block; margin-bottom: 1.2rem;
+    border: 1px solid rgba(201,168,76,0.22); letter-spacing: 1px;
+  }
+  .treasure-actions { display: flex; flex-direction: column; gap: 0.55rem; align-items: stretch; }
+  /* ── ENCOUNTER / TERRITORY CARD ── */
+  .encounter-modal {
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(200,60,60,0.1) 0%, transparent 60%),
+      linear-gradient(175deg, #200808 0%, #130404 55%, #180606 100%);
+    border: 2px solid rgba(180,50,50,0.55);
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.9),
+      0 0 0 4px rgba(160,30,30,0.2),
+      0 0 0 5px rgba(0,0,0,0.7),
+      0 0 30px rgba(160,30,30,0.12),
+      0 28px 70px rgba(0,0,0,0.85);
+  }
+  .encounter-modal .card-frame { border: 1px solid rgba(180,50,50,0.22); }
+  .encounter-modal .card-pip-label { color: rgba(200,100,100,0.8); }
+  .encounter-modal .card-divider { color: rgba(180,60,60,0.6); }
+  .encounter-tag {
+    font-family: 'Cinzel', serif; font-size: 0.58rem;
+    letter-spacing: 3px; text-transform: uppercase;
+    color: #c06060; text-align: center; margin-bottom: 0.4rem;
+  }
+  .encounter-name {
+    font-family: 'Cinzel Decorative', serif; font-size: 1.3rem;
+    font-weight: 700; color: #ebc0c0; text-align: center; margin-bottom: 0.25rem;
+  }
+  .encounter-element {
+    font-family: 'Cinzel', serif; font-size: 0.8rem;
+    margin-bottom: 0.6rem; letter-spacing: 1px; text-align: center;
+  }
+  .encounter-hp { font-size: 0.9rem; color: #c06060; margin-bottom: 0.8rem; font-style: italic; text-align: center; }
+  .encounter-attacks { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1.2rem; }
+  .attack-card-mini {
+    background: rgba(160,40,40,0.08); border: 1px solid rgba(160,40,40,0.22);
+    border-radius: 4px; padding: 0.7rem;
+  }
+  .attack-name { font-family: 'Cinzel', serif; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.15rem; }
+  .attack-stats { font-size: 0.76rem; color: var(--muted); font-style: italic; }
+  .battle-notice {
+    background: rgba(160,40,40,0.1); border: 1px solid rgba(160,40,40,0.3);
+    border-radius: 4px; padding: 0.9rem; text-align: center; color: #c06060;
+    font-size: 1.7rem; margin-bottom: 1rem; font-style: italic;
+  }
+
+  /* ── ELEMENT COLORS ── */
+  .el-Pyro, .el-Fire { color: var(--fire); }
+  .el-Aqua, .el-Water { color: var(--water); }
+  .el-Terra, .el-Earth { color: var(--earth); }
+  .el-Aero, .el-Air { color: var(--air); }
+  .el-bg-Pyro, .el-bg-Fire { background: rgba(212,98,42,0.12); }
+  .el-bg-Aqua, .el-bg-Water { background: rgba(58,158,150,0.12); }
+  .el-bg-Terra, .el-bg-Earth { background: rgba(139,110,66,0.12); }
+  .el-bg-Aero, .el-bg-Air { background: rgba(138,174,200,0.12); }
+
+  .hidden { display: none !important; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* My turn pulse animation */
+  @keyframes pulse-border { 0%, 100% { box-shadow: 0 0 12px rgba(201,168,76,0.12); } 50% { box-shadow: 0 0 28px rgba(201,168,76,0.35); } }
+  .player-card.active.my-turn { animation: pulse-border 2s infinite; }
+
+  .region-volcan { color: #c06060; }
+  .region-misty { color: #4a9adf; }
+  .region-meadow { color: #4aaa60; }
+  .region-forest { color: #6aaa4a; }
+
+  /* ── INVENTORY MODAL ── */
+  .inv-modal {
+    background: linear-gradient(160deg, #1a1400, #13100a);
+    border: 1px solid var(--gold); border-radius: 4px; padding: 2rem;
+    max-width: 420px; width: 90vw;
+    box-shadow: 0 0 40px rgba(201,168,76,0.15), 0 20px 60px rgba(0,0,0,0.7);
+    animation: slideUp 0.25s ease; position: relative;
+  }
+  .inv-modal::before {
+    content: ''; position: absolute; inset: 5px;
+    border: 1px solid rgba(201,168,76,0.18); border-radius: 3px; pointer-events: none;
+  }
+  .inv-modal-icon { font-size: 3rem; text-align: center; margin-bottom: 0.5rem; display:flex; align-items:center; justify-content:center; min-height:3rem; }
+  .inv-modal-name { font-family: 'Cinzel', serif; font-size: 1.3rem; font-weight: 700; color: var(--gold-light); text-align: center; margin-bottom: 0.4rem; }
+  .inv-modal-effect { font-size: 1.8rem; color: var(--text); text-align: center; margin-bottom: 0.4rem; line-height: 1.6; font-style: italic; }
+  .inv-modal-usage {
+    font-family: 'Cinzel', serif; font-size: 0.7rem; color: var(--gold);
+    background: rgba(201,168,76,0.08); padding: 3px 12px; border-radius: 2px;
+    display: inline-block; margin-bottom: 1.2rem;
+    border: 1px solid rgba(201,168,76,0.2); letter-spacing: 1px;
+  }
+  .inv-monster-btn {
+    width: 100%; background: rgba(42,36,20,0.5); border: 1px solid rgba(90,64,32,0.4);
+    color: var(--text); border-radius: 2px; padding: 0.7rem 1rem; margin-bottom: 0.5rem;
+    cursor: pointer; font-size: 0.88rem; text-align: left; transition: all 0.15s;
+    display: flex; align-items: center; gap: 0.6rem;
+    font-family: 'IM Fell English', serif;
+  }
+  .inv-monster-btn:hover { background: rgba(90,64,32,0.3); border-color: var(--gold); }
+
+  /* ── INVENTORY ITEM BUTTONS ── */
+  .inv-item-btn {
+    background: rgba(201,168,76,0.05); border: 1px solid rgba(90,64,32,0.3);
+    border-radius: 2px; padding: 0.5rem 0.7rem; margin-bottom: 0.4rem;
+    cursor: pointer; transition: all 0.15s; text-align: left; width: 100%;
+    color: var(--text); font-family: 'IM Fell English', serif;
+  }
+  .inv-item-btn:hover { background: rgba(201,168,76,0.12); border-color: var(--gold); }
+
+  /* ── MONSTER TOOLTIP ── */
+  #monster-tooltip {
+    position: fixed; z-index: 200; pointer-events: none;
+    background: linear-gradient(160deg, #1e1a0e, #17130a);
+    border: 1px solid var(--border);
+    border-radius: 3px; padding: 0.9rem 1rem; width: 220px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.7); font-size: 0.82rem;
+    display: none;
+  }
+  .tt-name { font-family: 'Cinzel', serif; font-weight: 700; font-size: 0.88rem; margin-bottom: 0.2rem; color: var(--gold-light); }
+  .tt-el { font-family: 'Cinzel', serif; font-size: 0.7rem; margin-bottom: 0.5rem; letter-spacing: 1px; }
+  .tt-hp-bar { background: rgba(0,0,0,0.5); border-radius: 2px; height: 5px; overflow: hidden; margin-bottom: 0.3rem; }
+  .tt-hp-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg,#1e6030,#2a9048); }
+  .tt-hp-text { font-size: 1.44rem; color: var(--muted); margin-bottom: 0.6rem; font-style: italic; }
+  .tt-divider { border: none; border-top: 1px solid rgba(90,64,32,0.4); margin: 0.5rem 0; }
+  .tt-attack { margin-bottom: 0.4rem; }
+  .tt-attack-name { font-family: 'Cinzel', serif; font-weight: 600; color: var(--text); font-size: 0.8rem; }
+  .tt-attack-detail { color: var(--muted); font-size: 1.44rem; font-style: italic; }
+  .tt-equip { margin-top: 0.5rem; }
+  .tt-equip-tag {
+    display: inline-block; font-size: 0.65rem;
+    background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.25);
+    color: var(--gold); padding: 1px 6px; border-radius: 2px;
+    margin: 2px 2px 0 0; font-family: 'Cinzel', serif; letter-spacing: 0.5px;
+  }
+
+  /* ── MONSTER LIST (all team members) ── */
+  .monster-team-item {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.35rem 0.5rem; border-radius: 2px; cursor: default;
+    transition: background 0.15s; font-size: 0.78rem;
+  }
+  .monster-team-item:hover { background: rgba(90,64,32,0.2); }
+
+  /* ── BATTLE MODAL ── */
+  .battle-modal {
+    background: linear-gradient(160deg, #13100a, #1a1509);
+    border: 1px solid rgba(90,64,32,0.6); border-radius: 4px; padding: 1.1rem 1.4rem;
+    width: 640px; max-width: 95vw;
+    max-height: min(96vh, 720px);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    box-shadow: 0 0 60px rgba(201,168,76,0.08), 0 20px 60px rgba(0,0,0,0.8);
+    animation: slideUp 0.3s ease; position: relative;
+  }
+  .battle-modal::before {
+    content: ''; position: absolute; inset: 5px;
+    border: 1px solid rgba(90,64,32,0.3); border-radius: 3px; pointer-events: none;
+  }
+  .battle-modal > *:not(.battle-modal::before) { flex-shrink: 0; }
+  .battle-header { text-align: center; margin-bottom: 0.7rem; }
+  .battle-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 4px; color: var(--gold);
+  }
+  .battle-arena {
+    display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.6rem;
+    align-items: start; margin-bottom: 0.55rem;
+  }
+  .battle-monster-card {
+    background: rgba(0,0,0,0.3); border: 1px solid rgba(90,64,32,0.4);
+    border-radius: 3px; padding: 0.6rem; text-align: center;
+  }
+  .battle-monster-card.player-side { border-color: rgba(60,100,40,0.55); background: rgba(15,25,10,0.25); }
+  .battle-monster-card.enemy-side { border-color: rgba(120,30,30,0.55); background: rgba(40,8,8,0.25); }
+  .bm-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--muted); margin-bottom: 0.25rem;
+  }
+  .bm-icon { font-size: 1.7rem; margin-bottom: 0.15rem; }
+  .bm-name { font-family: 'Cinzel', serif; font-size: 0.88rem; font-weight: 700; margin-bottom: 0.15rem; color: var(--gold-light); }
+  .bm-element { font-family: 'Cinzel', serif; font-size: 0.7rem; margin-bottom: 0.35rem; letter-spacing: 1px; }
+  .bm-hp-bar { background: rgba(0,0,0,0.5); border-radius: 2px; height: 7px; overflow: hidden; margin-bottom: 0.25rem; border: 1px solid rgba(255,255,255,0.05); }
+  .bm-hp-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
+  .bm-hp-text { font-size: 1.44rem; color: var(--muted); font-style: italic; }
+  .vs-divider {
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel', serif; font-size: 1.1rem; font-weight: 900;
+    color: var(--gold); padding-top: 1.6rem; letter-spacing: 2px;
+  }
+  .initiative-row {
+    text-align: center; margin-bottom: 0.55rem; padding: 0.4rem 0.8rem;
+    background: rgba(90,64,32,0.08); border-radius: 2px;
+    border: 1px solid rgba(90,64,32,0.35);
+  }
+  .init-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--gold-light); margin-bottom: 0.25rem;
+  }
+  .init-dice { display: flex; justify-content: center; gap: 1.5rem; }
+  .die-result { text-align: center; }
+  .die-value { font-family: 'Cinzel Decorative', serif; font-size: 1.55rem; font-weight: 900; color: var(--gold); }
+  .die-label { font-family: 'Cinzel', serif; font-size: 0.65rem; color: var(--muted); letter-spacing: 1px; }
+  .first-turn-msg { font-size: 1.64rem; color: var(--gold); margin-top: 0.2rem; font-style: italic; }
+  .battle-attacks { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; margin-bottom: 0.55rem; }
+  .battle-attack-btn {
+    background: rgba(90,64,32,0.1); border: 1px solid rgba(90,64,32,0.45);
+    border-radius: 2px; padding: 0.55rem 0.75rem; cursor: pointer; transition: all 0.2s;
+    text-align: left; color: var(--text);
+    box-shadow: inset 0 1px 0 rgba(201,168,76,0.06);
+  }
+  .battle-attack-btn:hover {
+    background: rgba(90,64,32,0.28); border-color: var(--gold);
+    transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  .battle-attack-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+  .ba-name { font-family: 'Cinzel', serif; font-weight: 600; font-size: 0.82rem; margin-bottom: 0.3rem; color: var(--gold-light); }
+  .ba-rolls { font-size: 1.5rem; color: var(--gold); opacity: 0.75; margin-bottom: 0.2rem; font-style: italic; }
+  .ba-dmg { font-size: 0.75rem; color: var(--muted); }
+  .dice-roll-zone {
+    text-align: center; padding: 0.45rem 0.5rem; margin-bottom: 0;
+    border: 1px solid rgba(90,64,32,0.35); border-radius: 2px;
+    background: rgba(0,0,0,0.25);
+  }
+  .die-face {
+    width: 72px; height: 72px; margin: 0 auto 0.6rem;
+    background: linear-gradient(145deg, #2a1f0e, #1a1308);
+    border: 2px solid var(--gold); border-radius: 10px;
+    font-family: 'Cinzel Decorative', serif; font-size: 2rem; font-weight: 900; color: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 18px rgba(201,168,76,0.18), inset 0 2px 4px rgba(0,0,0,0.6);
+  }
+  @keyframes diceRoll { 0%,100% { transform: rotate(-8deg) scale(1.06); } 50% { transform: rotate(8deg) scale(0.94); } }
+  .die-rolling { animation: diceRoll 0.11s linear infinite; }
+  .two-dice-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:1rem; }
+  .dice-zone-label { font-family:'Cinzel',serif; font-size:0.6rem; text-transform:uppercase; letter-spacing:2px; color:var(--gold); margin-bottom:0.3rem; }
+  .dice-attack-name { font-family:'Cinzel',serif; font-size:0.65rem; letter-spacing:1px; color:var(--gold-light); min-height:1.1rem; margin-bottom:0.5rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .dice-result-text { font-family:'Cinzel',serif; font-size:1.56rem; min-height:1.3rem; margin-top:0.4rem; font-style:italic; }
+  .die-face-enemy { border-color:#c06060; color:#c06060; box-shadow:0 0 18px rgba(192,96,96,0.18), inset 0 2px 4px rgba(0,0,0,0.6); }
+  .blog-entry { font-size: 1.6rem; padding: 3px 0; border-bottom: 1px solid rgba(90,64,32,0.15); font-style: italic; }
+  .blog-entry:last-child { color: var(--text); font-style: normal; }
+  .blog-hit { color: var(--gold); } .blog-miss { color: var(--muted); }
+  .blog-super { color: #D4622A; font-weight: 700; font-style: normal; }
+  .blog-resist { color: #3A9E96; }
+  .blog-enemy { color: #c06060; } .blog-player { color: #6aaa40; }
+  .battle-select-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.6rem; margin-bottom: 1rem; }
+  .battle-select-btn {
+    background: rgba(0,0,0,0.3); border: 1px solid rgba(90,64,32,0.35);
+    border-radius: 2px; padding: 0.8rem; cursor: pointer; transition: all 0.2s;
+    text-align: center; color: var(--text);
+  }
+  .battle-select-btn:hover { border-color: var(--gold); background: rgba(201,168,76,0.08); }
+  .battle-victory { text-align: center; padding: 1rem; }
+  .victory-title { font-family: 'Cinzel', serif; font-size: 1.3rem; font-weight: 700; color: var(--gold); margin-bottom: 0.5rem; }
+  .defeat-title { font-family: 'Cinzel', serif; font-size: 1.3rem; font-weight: 700; color: #c06060; margin-bottom: 0.5rem; }
+  .multiplier-badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 2px; margin-left: 4px; font-family: 'Cinzel', serif; }
+  .mult-super { background: rgba(212,98,42,0.25); color: #D4622A; }
+  .mult-resist { background: rgba(58,158,150,0.25); color: #3A9E96; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ LOBBY ══════════════ -->
+<div id="screen-lobby">
+  <div class="game-title">Elementis</div>
+  <div class="game-subtitle">Wrath of the Elemental Titans</div>
+  <div class="lobby-card">
+    <h2>Declare Thy Name</h2>
+    <input type="text" id="player-name" placeholder="Enter your name..." maxlength="20">
+    <div class="divider"></div>
+    <h2>Found a New Realm</h2>
+    <button class="btn btn-gold" onclick="createRoom()" style="width:100%">Raise the Banner</button>
+    <div class="divider"></div>
+    <h2>Join a Realm</h2>
+    <div class="input-row">
+      <input type="text" id="room-code-input" placeholder="Realm code..." maxlength="6" style="text-transform:uppercase">
+      <button class="btn btn-primary" onclick="joinRoom()">Enter</button>
+    </div>
+    <div class="error-msg" id="lobby-error"></div>
+  </div>
+</div>
+
+<!-- ══════════════ GAME OVER ══════════════ -->
+<!-- Gathering overlay: shown after all players select monsters, before turn 1 -->
+<div id="gathering-overlay" class="hidden" style="position:fixed;inset:0;z-index:7000;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(8,6,3,0.82);backdrop-filter:blur(3px);gap:1.2rem;padding:2rem">
+  <div style="font-family:'Cinzel Decorative',serif;font-size:1.7rem;font-weight:700;color:var(--gold);letter-spacing:3px;text-align:center;filter:drop-shadow(0 0 16px rgba(201,168,76,0.35))">Champions Assemble</div>
+  <div style="font-family:'IM Fell English',serif;font-size:0.95rem;color:var(--muted);text-align:center;max-width:380px;line-height:1.7;font-style:italic">All champions have chosen their companions. The realm of Elementis awaits. Step forth and begin the quest.</div>
+  <div id="gathering-ready-list" style="display:flex;flex-direction:column;gap:0.4rem;min-width:220px"></div>
+  <button id="gathering-btn" class="btn" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.45);color:var(--gold);font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;padding:0.8rem 2.4rem;margin-top:0.4rem" onclick="enterRealm()">Enter the Realm</button>
+</div>
+
+<!-- Fallen overlay: shown in-game when local player is eliminated in multiplayer -->
+<div id="fallen-overlay" class="hidden" style="position:fixed;inset:0;z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(10,5,5,0.88);backdrop-filter:blur(4px);gap:1.4rem;padding:2rem">
+  <div style="font-size:4rem;filter:grayscale(1) brightness(0.6)">💀</div>
+  <div style="font-family:'Cinzel',serif;font-size:2rem;font-weight:700;color:#c06060;letter-spacing:3px;text-align:center">You Have Fallen</div>
+  <div style="font-size:1.9rem;color:var(--muted);text-align:center;max-width:380px;font-style:italic;line-height:1.7">Your HP reached zero and your journey has ended. You may watch the remaining champions fight on, or return to the tavern.</div>
+  <div style="display:flex;gap:1rem;margin-top:0.5rem;flex-wrap:wrap;justify-content:center">
+    <button class="btn" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.35);color:var(--gold);padding:0.8rem 2rem;font-family:'Cinzel',serif;letter-spacing:1px" onclick="spectatorWatch()">Watch the Battle</button>
+    <button class="btn btn-outline" style="padding:0.8rem 2rem" onclick="spectatorLeave()">Return to the Tavern</button>
+  </div>
+</div>
+
+<div id="screen-gameover" class="hidden" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 0%,#1a0505 0%,#12100a 70%);gap:1.5rem">
+  <div style="font-size:5rem">💀</div>
+  <div style="font-family:'Cinzel',serif;font-size:2.2rem;font-weight:700;color:#c06060;letter-spacing:3px" id="gameover-title">Fallen in Battle</div>
+  <div style="font-size:2rem;color:var(--muted);text-align:center;max-width:400px;font-style:italic" id="gameover-msg"></div>
+  <button class="btn btn-outline" onclick="location.reload()" style="margin-top:1rem;padding:0.8rem 2.5rem">Return to the Tavern</button>
+</div>
+
+<div id="screen-win" class="hidden" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 0%,#1a1200 0%,#12100a 70%);gap:1.5rem;text-align:center;padding:2rem">
+  <div style="font-size:5rem">👑</div>
+  <div style="font-family:'Cinzel Decorative',serif;font-size:2.2rem;font-weight:700;color:var(--gold);letter-spacing:2px;filter:drop-shadow(0 0 20px rgba(201,168,76,0.4))" id="win-title">Realm Conquered!</div>
+  <div style="font-size:2rem;color:var(--muted);max-width:480px;font-style:italic" id="win-msg"></div>
+  <div style="display:flex;gap:0.8rem;flex-wrap:wrap;justify-content:center;margin-top:0.5rem" id="win-bosses">
+    <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:2px;padding:0.6rem 1.2rem;color:var(--gold);font-family:'Cinzel',serif;font-size:0.78rem;letter-spacing:1px">👑 Volcan Mountains — Conquered</div>
+    <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:2px;padding:0.6rem 1.2rem;color:var(--gold);font-family:'Cinzel',serif;font-size:0.78rem;letter-spacing:1px">👑 Misty Islands — Conquered</div>
+    <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:2px;padding:0.6rem 1.2rem;color:var(--gold);font-family:'Cinzel',serif;font-size:0.78rem;letter-spacing:1px">👑 Valley Meadows — Conquered</div>
+    <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:2px;padding:0.6rem 1.2rem;color:var(--gold);font-family:'Cinzel',serif;font-size:0.78rem;letter-spacing:1px">👑 Mountain Forests — Conquered</div>
+  </div>
+  <button class="btn btn-outline" onclick="location.reload()" style="margin-top:1rem;padding:0.8rem 2.5rem">Return to the Tavern</button>
+</div>
+
+<!-- ══════════════ WAITING ROOM ══════════════ -->
+<div id="screen-waiting" class="hidden">
+  <div class="game-title" style="font-size:2rem">Elementis</div>
+  <div class="waiting-card">
+    <div class="panel-title">Realm Seal</div>
+    <div class="room-code" id="display-room-code">------</div>
+    <div class="panel-title" style="margin-bottom:0.6rem">Assembled Champions</div>
+    <div class="player-list" id="waiting-player-list"></div>
+    <button class="btn btn-green" id="start-btn" onclick="startGame()" style="width:100%;display:none">
+      Begin the Quest
+    </button>
+    <div id="waiting-msg" style="text-align:center;color:var(--muted);font-size:0.88rem">
+      Awaiting the lord's command to march...
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ MONSTER SELECT ══════════════ -->
+<!-- ══════════════ INTRO STORY MODAL ══════════════ -->
+<div id="modal-intro-story" class="modal-overlay hidden" style="z-index:8000;align-items:center;justify-content:center">
+  <div style="
+    position:relative;
+    width:560px; max-width:93vw;
+    background: radial-gradient(ellipse at 50% 0%, #1c1608 0%, #12100a 80%);
+    border: 2px solid rgba(201,168,76,0.4);
+    border-radius: 6px;
+    box-shadow: 0 0 80px rgba(201,168,76,0.1), 0 0 0 8px rgba(10,8,4,0.6), 0 0 0 9px rgba(201,168,76,0.12);
+    padding: 2.4rem 2.2rem 2rem;
+    animation: slideUp 0.4s ease;
+  ">
+    <!-- inner frame -->
+    <div style="position:absolute;inset:10px;border:1px solid rgba(201,168,76,0.18);border-radius:4px;pointer-events:none"></div>
+    <!-- corner pips -->
+    <div style="position:absolute;top:18px;left:22px;display:flex;flex-direction:column;align-items:center;gap:3px">
+      <img src="/tiles/Monster tokens/book.png" style="width:22px;height:22px;object-fit:contain;opacity:0.65">
+      <span style="font-family:'Cinzel',serif;font-size:0.38rem;text-transform:uppercase;letter-spacing:1px;color:var(--gold);opacity:0.7">Lore</span>
+    </div>
+    <div style="position:absolute;bottom:18px;right:22px;display:flex;flex-direction:column;align-items:center;gap:3px;transform:rotate(180deg)">
+      <img src="/tiles/Monster tokens/book.png" style="width:22px;height:22px;object-fit:contain;opacity:0.65">
+      <span style="font-family:'Cinzel',serif;font-size:0.38rem;text-transform:uppercase;letter-spacing:1px;color:var(--gold);opacity:0.7">Lore</span>
+    </div>
+    <!-- title -->
+    <div style="text-align:center;margin-bottom:1.2rem">
+      <div style="font-family:'Cinzel Decorative',serif;font-size:0.65rem;text-transform:uppercase;letter-spacing:4px;color:var(--gold);opacity:0.7;margin-bottom:0.5rem">The World of</div>
+      <div style="font-family:'Cinzel Decorative',serif;font-size:1.9rem;font-weight:700;color:var(--gold);letter-spacing:3px;line-height:1;filter:drop-shadow(0 0 14px rgba(201,168,76,0.35))">Elementis</div>
+    </div>
+    <!-- divider -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.1rem;opacity:0.4">
+      <div style="flex:1;height:1px;background:var(--gold)"></div>
+      <span style="font-size:0.55rem;color:var(--gold)">&#9670;</span>
+      <div style="flex:1;height:1px;background:var(--gold)"></div>
+    </div>
+    <!-- story text -->
+    <p style="font-family:'IM Fell English',serif;font-size:0.92rem;line-height:1.8;color:var(--text);margin:0 0 1rem;text-indent:1.4em">
+      Since the first dawn, the world of Elementis has been held in balance by four great forces — Pyro, the flame that forges, Aqua, the tide that shapes, Terra, the stone that endures, and Aero, the wind that guides. Each force flows through the land, through its creatures, and through all living things. The monsters of this realm are born of these elements: some are fierce and untamed, born to test the strong; others are loyal and steadfast, waiting to be found by a worthy companion. Champions have long walked these lands, forming bonds with elemental creatures and earning their place in its history.
+    </p>
+    <p style="font-family:'IM Fell English',serif;font-size:0.92rem;line-height:1.8;color:var(--text);margin:0 0 1.5rem;text-indent:1.4em">
+      But now a shadow stirs at the edges of the realm. Four Elemental Titans — ancient, colossal, and consumed by fury — have broken free from their long slumber, each one threatening to tear the world apart with the unchecked power of their element. The mountains crack. The seas rise. The winds howl without mercy. The fires burn without end. Unless these titans are brought down, the balance of Elementis will collapse entirely, leaving nothing but ruin. Now it falls to you — alone or alongside fellow champions — to venture forth, forge bonds with the creatures of this realm, and face the titans before the world is lost. The fate of Elementis rests in your hands.
+    </p>
+    <!-- divider -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.3rem;opacity:0.4">
+      <div style="flex:1;height:1px;background:var(--gold)"></div>
+      <span style="font-size:0.55rem;color:var(--gold)">&#9670;</span>
+      <div style="flex:1;height:1px;background:var(--gold)"></div>
+    </div>
+    <div style="text-align:center">
+      <button class="btn" onclick="closeIntroStory()" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.45);color:var(--gold);font-family:'Cinzel',serif;font-size:0.82rem;letter-spacing:2px;text-transform:uppercase;padding:0.75rem 2.5rem">
+        Begin the Journey
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="screen-monster-select" class="hidden">
+  <div style="text-align:center">
+    <div class="game-title" style="font-size:1.8rem;margin-bottom:0.2rem">Choose Thy Companion</div>
+    <div style="color:var(--muted);margin-bottom:1.5rem;font-style:italic">Bind yourself to a creature of the realm</div>
+  </div>
+  <div class="monster-grid" id="starter-grid"></div>
+  <div class="waiting-msg hidden" id="monster-waiting-msg">
+    Awaiting the other champions to make their choice...
+  </div>
+</div>
+
+<!-- ══════════════ GAME SCREEN ══════════════ -->
+<div id="screen-game" class="hidden">
+  <div id="game-header">
+    <button class="btn btn-outline" style="font-size:0.75rem;padding:4px 10px;white-space:nowrap;flex-shrink:0" onclick="document.getElementById('modal-how-to-play').classList.remove('hidden')">
+      <img src="/tiles/Monster%20tokens/book.png" style="width:14px;height:14px;object-fit:contain;vertical-align:middle;margin-right:5px">How to Play
+    </button>
+    <span class="header-title" style="margin: 0 auto">Elementis</span>
+    <div class="turn-banner">
+      <div class="turn-dot" id="turn-dot"></div>
+      <span class="turn-text" id="turn-text">Loading...</span>
+    </div>
+    <div class="phase-badge" id="phase-badge">—</div>
+    <button class="btn btn-outline" style="font-size:0.75rem;padding:4px 10px;white-space:nowrap;flex-shrink:0" onclick="openChroniclesModal()">
+      <img src="/tiles/Monster%20tokens/creature.png/icons/ffffff/transparent/1x1/lorc/evil-book.png" style="width:14px;height:14px;object-fit:contain;vertical-align:middle;margin-right:5px">Chronicles
+    </button>
+  </div>
+
+  <!-- Left Panel: Players -->
+  <div id="left-panel">
+    <div class="panel-title">⚔ Champions</div>
+    <div id="player-cards"></div>
+    <div class="divider"></div>
+    <div class="panel-title">⚗ Satchel</div>
+    <div id="my-inventory" style="font-size:1.64rem;color:var(--muted);font-style:italic">Empty</div>
+    <div class="divider"></div>
+    <div class="panel-title">Equipped</div>
+    <div id="my-player-equipped" style="font-size:1.64rem;color:var(--muted);font-style:italic">None</div>
+  </div>
+
+  <!-- Center: Board -->
+  <div id="board-area">
+    <svg id="hex-svg" viewBox="0 0 870 650" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <filter id="glow"><feGaussianBlur stdDeviation="3" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <g id="hex-layer"></g>
+      <g id="label-layer"></g>
+      <g id="boss-layer"></g>
+      <g id="camp-layer"></g>
+      <g id="wanderer-layer"></g>
+      <g id="village-layer"></g>
+      <g id="token-layer"></g>
+    </svg>
+    <!-- Zoom controls -->
+    <div id="zoom-controls" style="position:absolute;bottom:14px;right:14px;z-index:20;display:flex;flex-direction:column;gap:5px">
+      <button onclick="boardZoomIn()"  title="Zoom in"  style="width:32px;height:32px;background:rgba(20,15,6,0.88);border:1px solid rgba(201,168,76,0.4);border-radius:3px;color:var(--gold);font-size:1.1rem;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center">+</button>
+      <button onclick="boardZoomReset()" title="Reset view" style="width:32px;height:32px;background:rgba(20,15,6,0.88);border:1px solid rgba(201,168,76,0.4);border-radius:3px;color:var(--gold);font-size:0.75rem;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif">&#8962;</button>
+      <button onclick="boardZoomOut()" title="Zoom out" style="width:32px;height:32px;background:rgba(20,15,6,0.88);border:1px solid rgba(201,168,76,0.4);border-radius:3px;color:var(--gold);font-size:1.1rem;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center">&#8722;</button>
+    </div>
+  </div>
+
+  <div id="game-log" style="display:none"></div>
+
+  <!-- Right Panel: Card Decks -->
+  <div id="right-panel">
+    <div class="deck-group-title">Scenario Cards</div>
+    <div class="deck-grid">
+      <div id="deck-scenario-volcan" class="card-stack deck-volcan" title="Volcan Mountains Scenarios">
+        <div class="card-stack-layer"></div><div class="card-stack-layer"></div><div class="card-stack-layer"></div>
+        <div class="card-stack-face">
+          <img class="card-stack-icon" src="/tiles/Monster%20tokens/BOSS%20Volcan%20Mountains.png">
+          <div class="card-stack-label">Volcan Mts</div>
+        </div>
+      </div>
+      <div id="deck-scenario-misty" class="card-stack deck-misty" title="Misty Islands Scenarios">
+        <div class="card-stack-layer"></div><div class="card-stack-layer"></div><div class="card-stack-layer"></div>
+        <div class="card-stack-face">
+          <img class="card-stack-icon" src="/tiles/Monster%20tokens/BOSS%20Misty%20Islands.png">
+          <div class="card-stack-label">Misty Isles</div>
+        </div>
+      </div>
+      <div id="deck-scenario-meadow" class="card-stack deck-meadow" title="Valley Meadows Scenarios">
+        <div class="card-stack-layer"></div><div class="card-stack-layer"></div><div class="card-stack-layer"></div>
+        <div class="card-stack-face">
+          <img class="card-stack-icon" src="/tiles/Monster%20tokens/BOSS%20Valley%20Meadow.png">
+          <div class="card-stack-label">Valley Mead</div>
+        </div>
+      </div>
+      <div id="deck-scenario-forest" class="card-stack deck-forest" title="Mountain Forests Scenarios">
+        <div class="card-stack-layer"></div><div class="card-stack-layer"></div><div class="card-stack-layer"></div>
+        <div class="card-stack-face">
+          <img class="card-stack-icon" src="/tiles/Monster%20tokens/BOSS%20Mountain%20Forest.png">
+          <div class="card-stack-label">Mtn Forest</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="deck-group-title">Territory Cards</div>
+    <div class="deck-grid">
+      <div id="deck-territory-volcan" class="card-stack deck-volcan" title="Volcan Territory Encounters">
+        <div class="card-stack-layer"></div><div class="card-stack-layer"></div><div class="card-stack-layer"></div>
+        <div class="card-stack-face">
+          <img class="card-stack-icon" src="/tiles/Monster%20tokens/pyro.png">
+          <div class="card-stack-label">Volcan</div>
+        </div>
+      </div>
+      <div id="deck-territory-misty" class="card-stack deck-misty" title="Misty Territory Encounters">
+        <div class="card-stack-layer"></div><div class="card-stack-layer"></div><div class="card-stack-layer"></div>
+        <div class="card-stack-face">
+          <img class="card-stack-icon" src="/tiles/Monster%20tokens/aqua.png">
+          <div class="card-stack-label">Misty</div>
+        </div>
+      </div>
+      <div id="deck-territory-meadow" class="card-stack deck-meadow" title="Meadow Territory Encounters">
+        <div class="card-stack-layer"></div><div class="card-stack-layer"></div><div class="card-stack-layer"></div>
+        <div class="card-stack-face">
+          <img class="card-stack-icon" src="/tiles/Monster%20tokens/terra.png">
+          <div class="card-stack-label">Meadow</div>
+        </div>
+      </div>
+      <div id="deck-territory-forest" class="card-stack deck-forest" title="Forest Territory Encounters">
+        <div class="card-stack-layer"></div><div class="card-stack-layer"></div><div class="card-stack-layer"></div>
+        <div class="card-stack-face">
+          <img class="card-stack-icon" src="/tiles/Monster%20tokens/Aero.png">
+          <div class="card-stack-label">Forest</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="deck-group-title">Treasure</div>
+    <div class="deck-row">
+      <div id="deck-treasure" class="card-stack deck-treasure" title="Treasure Cards">
+        <div class="card-stack-layer"></div><div class="card-stack-layer"></div><div class="card-stack-layer"></div>
+        <div class="card-stack-face">
+          <img class="card-stack-icon" src="/tiles/Monster%20tokens/chest.png">
+          <div class="card-stack-label">Treasure</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Card fly ghost element -->
+<div id="card-fly-ghost" style="display:none"></div>
+
+<!-- ══════════════ MODALS ══════════════ -->
+<div id="modal-scenario" class="modal-overlay hidden">
+  <div class="scenario-modal playing-card">
+    <div class="card-frame"></div>
+    <!-- Top-left corner pip -->
+    <div class="card-pip card-pip-tl">
+      <img src="/tiles/Monster%20tokens/book.png" id="sc-pip-icon-tl">
+      <span class="card-pip-label" id="sc-pip-label-tl">Fate</span>
+    </div>
+    <!-- Bottom-right corner pip (mirrored) -->
+    <div class="card-pip card-pip-br">
+      <img src="/tiles/Monster%20tokens/book.png" id="sc-pip-icon-br">
+      <span class="card-pip-label" id="sc-pip-label-br">Fate</span>
+    </div>
+    <div class="card-inner">
+      <div class="card-type-banner" id="sc-region">Fate Card</div>
+      <div class="card-title" id="sc-name"></div>
+      <div class="card-divider"><span class="card-divider-gem">⬥</span></div>
+      <div class="card-flavor" id="sc-flavor"></div>
+      <div id="sc-choice-section">
+        <div class="card-divider"><span class="card-divider-gem">⬥</span></div>
+        <div class="card-choice">What dost thou do?</div>
+        <div class="choice-btns">
+          <button class="choice-btn" onclick="chooseOption('1')"><div id="sc-opt1-text"></div></button>
+          <button class="choice-btn" onclick="chooseOption('2')"><div id="sc-opt2-text"></div></button>
+          <button class="choice-btn" onclick="chooseOption('3')"><div id="sc-opt3-text"></div></button>
+          <button class="choice-btn" onclick="chooseOption('4')"><div id="sc-opt4-text"></div></button>
+        </div>
+      </div>
+      <div id="sc-outcome-section" class="hidden">
+        <div class="card-divider"><span class="card-divider-gem">⬥</span></div>
+        <div class="sc-outcome-title" id="sc-outcome-title"></div>
+        <div class="sc-outcome-summary" id="sc-outcome-summary"></div>
+        <div class="sc-outcome-result" id="sc-outcome-result"></div>
+        <button class="choice-btn" style="text-align:center" onclick="scenarioContinue()">Continue thy journey →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-treasure" class="modal-overlay hidden">
+  <div class="treasure-modal playing-card">
+    <div class="card-frame"></div>
+    <div class="card-pip card-pip-tl">
+      <img src="/tiles/Monster%20tokens/chest.png">
+      <span class="card-pip-label" style="color:rgba(201,168,76,0.85)">Treasure</span>
+    </div>
+    <div class="card-pip card-pip-br">
+      <img src="/tiles/Monster%20tokens/chest.png">
+      <span class="card-pip-label" style="color:rgba(201,168,76,0.85)">Treasure</span>
+    </div>
+    <div class="card-inner">
+      <div class="treasure-title-label">✦ Treasure of the Realm ✦</div>
+      <div class="card-divider"><span class="card-divider-gem">⬥</span></div>
+      <div class="treasure-icon" id="tr-icon"></div>
+      <div class="treasure-name" id="tr-name"></div>
+      <div class="card-divider"><span class="card-divider-gem">⬥</span></div>
+      <div class="treasure-effect" id="tr-effect"></div>
+      <div class="treasure-usage" id="tr-usage"></div>
+      <div class="treasure-actions" id="tr-actions"></div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-encounter" class="modal-overlay hidden">
+  <div class="encounter-modal playing-card">
+    <div class="card-frame"></div>
+    <div class="card-pip card-pip-tl">
+      <img src="/tiles/Monster%20tokens/creature.png" id="enc-pip-icon-tl">
+      <span class="card-pip-label" style="color:rgba(200,100,100,0.8)">Danger</span>
+    </div>
+    <div class="card-pip card-pip-br">
+      <img src="/tiles/Monster%20tokens/creature.png" id="enc-pip-icon-br">
+      <span class="card-pip-label" style="color:rgba(200,100,100,0.8)">Danger</span>
+    </div>
+    <div class="card-inner">
+      <div class="encounter-tag" id="enc-tag">⚔ Territory Card — A Beast Stirs</div>
+      <div class="encounter-name" id="enc-name"></div>
+      <div id="enc-icon" style="text-align:center;margin:0.5rem 0"></div>
+      <div class="encounter-element" id="enc-element"></div>
+      <div class="card-divider"><span class="card-divider-gem">⬥</span></div>
+      <div class="encounter-hp" id="enc-hp"></div>
+      <div class="encounter-attacks" id="enc-attacks"></div>
+      <div style="display:flex;gap:0.7rem;margin-top:0.5rem">
+        <button class="btn btn-danger" style="flex:1" onclick="startBattle()">⚔ Draw Steel</button>
+        <button class="btn btn-outline" id="btn-retreat-enc" style="flex:1" onclick="attemptFlee()"><img src="/tiles/Monster%20tokens/flee.png" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:6px"> Flee</button>
+      </div>
+    </div>
+    <!-- Flee dice overlay -->
+    <div id="flee-dice-overlay" class="hidden" style="position:absolute;inset:0;background:rgba(15,5,5,0.93);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;z-index:10">
+      <div style="font-family:'Cinzel',serif;font-size:0.75rem;text-transform:uppercase;letter-spacing:3px;color:var(--brass)">Flee Attempt</div>
+      <div style="font-size:0.8rem;color:var(--muted);font-style:italic">Roll 4 or higher to escape</div>
+      <div id="flee-die-face" style="width:72px;height:72px;background:linear-gradient(145deg,#2a1f0e,#1a1308);border:2px solid var(--gold);border-radius:10px;font-family:'Cinzel Decorative',serif;font-size:2.2rem;font-weight:900;color:var(--gold);display:flex;align-items:center;justify-content:center;box-shadow:0 0 18px rgba(201,168,76,0.18)">—</div>
+      <div id="flee-roll-result" style="font-family:'Cinzel',serif;font-size:1rem;min-height:1.5rem;text-align:center"></div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-camp-choice" class="modal-overlay hidden">
+  <div class="encounter-modal" style="max-width:480px">
+    <div style="text-align:center;margin-bottom:1.2rem">
+      <img src="/tiles/Monster%20tokens/Camp.png" style="width:56px;height:56px;object-fit:contain;margin-bottom:0.4rem;filter:drop-shadow(0 0 6px rgba(201,168,76,0.4))">
+      <div style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--gold);letter-spacing:2px">Establish a Camp?</div>
+      <div style="font-size:0.85rem;color:var(--muted);margin-top:0.4rem;font-style:italic">Sacrifice 3 relics from thy satchel to raise a camp. Return hither to fully restore thy vitality and all thy companions.</div>
+    </div>
+    <div id="camp-item-picker" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:0.8rem"></div>
+    <div id="camp-selected-display" style="font-size:0.82rem;color:var(--muted);text-align:center;margin-bottom:0.8rem;font-style:italic">Choose 3 relics to offer</div>
+    <button class="btn btn-gold" id="btn-build-camp" onclick="confirmBuildCamp()" disabled style="width:100%;margin-bottom:0.6rem"><img src="/tiles/Monster%20tokens/Camp.png" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:6px"> Raise the Camp (0 / 3 offered)</button>
+    <button class="btn btn-outline" style="width:100%" onclick="socket.emit('skip_camp')">Draw a Fate Card →</button>
+  </div>
+</div>
+
+<div id="modal-camp-rest" class="modal-overlay hidden">
+  <div class="encounter-modal" style="max-width:420px;text-align:center">
+    <img src="/tiles/Monster%20tokens/Camp.png" style="width:64px;height:64px;object-fit:contain;margin-bottom:0.5rem;filter:drop-shadow(0 0 6px rgba(201,168,76,0.4))">
+    <div style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--gold);letter-spacing:2px;margin-bottom:0.4rem">Thy Camp</div>
+    <div style="font-size:0.88rem;color:var(--muted);margin-bottom:1.4rem;font-style:italic">Thou hast returned to thine encampment. Rest to restore thy vigour and heal all thy companions.</div>
+    <button class="btn btn-green" style="width:100%;margin-bottom:0.6rem" onclick="socket.emit('rest_camp')">💤 Take Rest (Full Heal)</button>
+    <button class="btn btn-outline" style="width:100%" onclick="socket.emit('skip_camp_rest')">Press On Without Rest →</button>
+  </div>
+</div>
+
+<div id="modal-wanderer" class="modal-overlay hidden">
+  <div class="encounter-modal" style="max-width:440px;text-align:center">
+    <img src="/tiles/Monster%20tokens/djinn.png" style="width:64px;height:64px;object-fit:contain;margin-bottom:0.4rem;filter:drop-shadow(0 0 6px rgba(201,168,76,0.3))">
+    <div style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--gold);letter-spacing:2px;margin-bottom:0.3rem">A Roaming Sage</div>
+    <div style="font-size:0.88rem;color:var(--muted);margin-bottom:1rem;font-style:italic" id="wanderer-request-text"></div>
+    <div id="wanderer-item-display" style="background:rgba(90,64,32,0.15);border:1px solid rgba(90,64,32,0.3);border-radius:2px;padding:0.8rem;margin-bottom:1.2rem">
+      <div id="wanderer-item-icon" style="font-size:2rem;display:flex;align-items:center;justify-content:center;min-height:3rem"></div>
+      <div id="wanderer-item-name" style="font-family:'Cinzel',serif;font-weight:700;color:var(--gold);font-size:0.95rem;margin-top:0.3rem"></div>
+    </div>
+    <div id="wanderer-no-item-msg" class="hidden" style="color:#c06060;font-size:1.7rem;margin-bottom:0.8rem;font-style:italic"></div>
+    <button class="btn btn-gold" id="btn-wanderer-give" style="width:100%;margin-bottom:0.6rem" onclick="socket.emit('wanderer_give_item')"><img src="/tiles/Monster%20tokens/chest.png" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:6px"> Offer the Relic</button>
+    <button class="btn btn-outline" style="width:100%" onclick="socket.emit('wanderer_skip')">Decline &amp; End Turn</button>
+  </div>
+</div>
+
+<div id="modal-wanderer-reward" class="modal-overlay hidden">
+  <div class="encounter-modal" style="max-width:440px;text-align:center">
+    <div style="font-size:2.5rem;margin-bottom:0.4rem">✨</div>
+    <div style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--gold);letter-spacing:2px;margin-bottom:0.3rem">Choose Thy Boon</div>
+    <div style="font-size:1.7rem;color:var(--muted);margin-bottom:1.2rem;font-style:italic">The sage is grateful for thy generosity. Select thy reward:</div>
+    <button class="btn btn-green" style="width:100%;margin-bottom:0.6rem" onclick="socket.emit('wanderer_choose_reward',{choice:'hp_boost'})">
+      💪 Fortify All Companions (+20 Max HP)
+    </button>
+    <button class="btn btn-outline" style="width:100%;margin-bottom:0.6rem" onclick="socket.emit('wanderer_choose_reward',{choice:'full_heal'})">
+      💚 Benediction — Full Heal for All
+    </button>
+    <button class="btn btn-purple" style="width:100%" onclick="socket.emit('wanderer_choose_reward',{choice:'new_monster'})">
+      <img src="/tiles/Monster%20tokens/dice.png" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:6px"> Receive a Bound Creature
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════ VILLAGE MODALS ══════════════ -->
+
+<!-- Village main menu -->
+<div id="modal-village" class="modal-overlay hidden">
+  <div class="encounter-modal" style="max-width:460px;text-align:center">
+    <img src="/tiles/Monster%20tokens/village.png" style="width:64px;height:64px;object-fit:contain;margin-bottom:0.4rem;filter:drop-shadow(0 0 6px rgba(201,168,76,0.3))">
+    <div style="font-family:'Cinzel',serif;font-size:1.2rem;font-weight:700;color:var(--gold);letter-spacing:2px;margin-bottom:0.3rem">Village</div>
+    <div style="font-size:0.85rem;color:var(--muted);margin-bottom:1.4rem;font-style:italic">"Weary traveller, thou art welcome here. What dost thou seek?"</div>
+    <div style="display:flex;flex-direction:column;gap:0.6rem">
+      <button class="btn btn-outline" style="width:100%" onclick="socket.emit('village_shop_open')"><img src="/tiles/Monster%20tokens/monk-face.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:6px"> Local Goods Supplier</button>
+      <button class="btn btn-outline" style="width:100%" id="btn-village-inn" onclick="villageInn()"><img src="/tiles/Monster%20tokens/Inn%20Keeper.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:6px"> Visit the Inn (50gp)</button>
+      <button class="btn btn-outline" style="width:100%" onclick="socket.emit('village_tamer_open')"><img src="/tiles/Monster%20tokens/Monster%20Tamer.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:6px"> Visit Local Monster Tamer</button>
+      <button class="btn btn-purple" style="width:100%;display:none" id="btn-hire-ship" onclick="showHireShipModal()"><img src="/tiles/Monster%20tokens/Captain.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:6px"> Hire Ship &amp; Crew (300gp)</button>
+      <hr style="border-color:var(--border);margin:0.2rem 0">
+      <button class="btn btn-outline" style="width:100%;color:var(--muted)" onclick="socket.emit('village_leave')">Depart the Village</button>
+    </div>
+  </div>
+</div>
+
+<!-- Village shop -->
+<div id="modal-village-shop" class="modal-overlay hidden">
+  <div class="encounter-modal" style="max-width:520px">
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+      <img src="/tiles/Monster%20tokens/monk-face.png" style="width:56px;height:56px;object-fit:contain;filter:drop-shadow(0 0 6px rgba(201,168,76,0.3))">
+      <div>
+        <div style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--gold)">Local Goods Supplier</div>
+        <div style="font-size:0.82rem;color:var(--muted);font-style:italic">"Fine wares for the discerning adventurer. Thy coin is most welcome."</div>
+      </div>
+    </div>
+    <div id="shop-gold-display" style="text-align:right;font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold);margin-bottom:0.8rem"></div>
+    <div style="font-family:'Cinzel',serif;font-size:0.65rem;text-transform:uppercase;letter-spacing:3px;color:var(--brass);margin-bottom:0.5rem">── Wares for Sale ──</div>
+    <div id="shop-items-list" style="display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1rem"></div>
+    <div style="font-family:'Cinzel',serif;font-size:0.65rem;text-transform:uppercase;letter-spacing:3px;color:var(--brass);margin-bottom:0.5rem">── Thy Inventory (sell) ──</div>
+    <div id="shop-inv-list" style="display:flex;flex-direction:column;gap:0.4rem;max-height:160px;overflow-y:auto;margin-bottom:1rem"></div>
+    <button class="btn btn-outline" style="width:100%" onclick="socket.emit('village_shop_close')">← Return to Village</button>
+  </div>
+</div>
+
+<!-- Village inn -->
+<div id="modal-village-inn" class="modal-overlay hidden">
+  <div class="encounter-modal" style="max-width:420px;text-align:center">
+    <div style="display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:1rem">
+      <img src="/tiles/Monster%20tokens/Inn%20Keeper.png" style="width:56px;height:56px;object-fit:contain;filter:drop-shadow(0 0 6px rgba(201,168,76,0.3))">
+      <div>
+        <div style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--gold)">The Inn Keeper</div>
+        <div style="font-size:0.82rem;color:var(--muted);font-style:italic">"A warm bed and a hearty meal await thee, for 50 gold pieces."</div>
+      </div>
+    </div>
+    <div id="inn-gold-display" style="font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold);margin-bottom:1rem"></div>
+    <div style="font-size:0.88rem;color:var(--text);margin-bottom:1.4rem;font-style:italic">One night at the inn restores thee and all thy companions to full health. Thy turn ends upon retiring.</div>
+    <button class="btn btn-green" style="width:100%;margin-bottom:0.6rem" id="btn-inn-pay" onclick="socket.emit('village_inn')">🛏️ Pay 50gp &amp; Rest (Full Heal)</button>
+    <button class="btn btn-outline" style="width:100%" onclick="closeInnModal()">← Return to Village</button>
+  </div>
+</div>
+
+<!-- Village monster tamer -->
+<div id="modal-village-tamer" class="modal-overlay hidden">
+  <div class="encounter-modal" style="max-width:520px">
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+      <img src="/tiles/Monster%20tokens/Monster%20Tamer.png" style="width:56px;height:56px;object-fit:contain;filter:drop-shadow(0 0 6px rgba(201,168,76,0.3))">
+      <div>
+        <div style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--gold)">Monster Tamer's Ranch</div>
+        <div style="font-size:0.82rem;color:var(--muted);font-style:italic">"I have a fine beast available today. Or perhaps thou wishest to part with one of thine own?"</div>
+      </div>
+    </div>
+    <div id="tamer-gold-display" style="text-align:right;font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold);margin-bottom:0.8rem"></div>
+    <div style="font-family:'Cinzel',serif;font-size:0.65rem;text-transform:uppercase;letter-spacing:3px;color:var(--brass);margin-bottom:0.5rem">── Available Creature ──</div>
+    <div id="tamer-monster-offer" style="margin-bottom:1rem"></div>
+    <div style="font-family:'Cinzel',serif;font-size:0.65rem;text-transform:uppercase;letter-spacing:3px;color:var(--brass);margin-bottom:0.5rem">── Sell a Creature ──</div>
+    <div id="tamer-sell-list" style="display:flex;flex-direction:column;gap:0.4rem;max-height:160px;overflow-y:auto;margin-bottom:1rem"></div>
+    <button class="btn btn-outline" style="width:100%" onclick="socket.emit('village_tamer_close')">← Return to Village</button>
+  </div>
+</div>
+
+<!-- Hire ship modal -->
+<div id="modal-hire-ship" class="modal-overlay hidden">
+  <div class="encounter-modal" style="max-width:420px;text-align:center">
+    <div style="display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:1rem">
+      <img src="/tiles/Monster%20tokens/Captain.png" style="width:56px;height:56px;object-fit:contain;filter:drop-shadow(0 0 6px rgba(58,158,220,0.4))">
+      <div>
+        <div style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--gold)">The Captain</div>
+        <div style="font-size:0.82rem;color:var(--muted);font-style:italic">"I know those waters well. For 300 gold pieces, my crew and I shall sail thee to the Misty Islands."</div>
+      </div>
+    </div>
+    <div id="ship-gold-display" style="font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold);margin-bottom:1rem"></div>
+    <div style="font-size:0.88rem;color:var(--text);margin-bottom:1.4rem;font-style:italic">With a ship and crew, thou canst move freely across the Misty Islands.</div>
+    <button class="btn btn-primary" style="width:100%;margin-bottom:0.6rem" id="btn-hire-ship-pay" onclick="socket.emit('village_hire_ship')"><img src="/tiles/Monster%20tokens/Captain.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:6px"> Hire Ship &amp; Crew (300gp)</button>
+    <button class="btn btn-outline" style="width:100%" onclick="closeShipModal()">← Return to Village</button>
+  </div>
+</div>
+
+<div id="modal-battle" class="modal-overlay hidden">
+  <div class="battle-modal">
+    <div class="battle-header">
+      <div class="battle-title">⚔ &nbsp; Combat &nbsp; ⚔</div>
+    </div>
+
+    <!-- Monster select phase -->
+    <div id="battle-select-phase" class="hidden">
+      <div style="text-align:center;margin-bottom:0.8rem;font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase">Choose thy champion</div>
+      <div class="battle-select-grid" id="battle-monster-select"></div>
+    </div>
+
+    <!-- Combat phase -->
+    <div id="battle-combat-phase" class="hidden">
+      <div class="battle-arena">
+        <div class="battle-monster-card player-side" id="bm-player">
+          <div class="bm-label">Thy Creature</div>
+          <div class="bm-icon" id="bm-p-icon"></div>
+          <div class="bm-name" id="bm-p-name"></div>
+          <div class="bm-element" id="bm-p-el"></div>
+          <div class="bm-hp-bar"><div class="bm-hp-fill" id="bm-p-hpbar" style="background:linear-gradient(90deg,#1e6030,#2a9048)"></div></div>
+          <div class="bm-hp-text" id="bm-p-hptext"></div>
+        </div>
+        <div class="vs-divider">VS</div>
+        <div class="battle-monster-card enemy-side" id="bm-enemy">
+          <div class="bm-label">The Beast</div>
+          <div class="bm-icon" id="bm-e-icon"></div>
+          <div class="bm-name" id="bm-e-name"></div>
+          <div class="bm-element" id="bm-e-el"></div>
+          <div class="bm-hp-bar"><div class="bm-hp-fill" id="bm-e-hpbar" style="background:linear-gradient(90deg,#c0392b,#e74c3c)"></div></div>
+          <div class="bm-hp-text" id="bm-e-hptext"></div>
+        </div>
+      </div>
+      <div class="initiative-row hidden" id="initiative-row">
+        <div class="init-title">⚔ Who Strikes First ⚔</div>
+        <div class="init-dice">
+          <div class="die-result"><div class="die-value" id="init-p-val">—</div><div class="die-label">Champion</div></div>
+          <div class="die-result"><div class="die-value" id="init-e-val">—</div><div class="die-label">Beast</div></div>
+        </div>
+        <div class="first-turn-msg" id="first-turn-msg"></div>
+      </div>
+      <div id="dice-roll-zone" style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.55rem">
+        <div class="dice-roll-zone">
+          <div class="dice-zone-label">Thy Strike</div>
+          <div class="dice-attack-name" id="roll-attack-name-p">&nbsp;</div>
+          <div class="die-face" id="die-face-p" style="width:48px;height:48px;font-size:1.4rem;margin:0 auto 0.3rem">—</div>
+          <div class="dice-result-text" id="roll-result-p" style="color:var(--muted)">—</div>
+        </div>
+        <div class="dice-roll-zone">
+          <div class="dice-zone-label" style="color:#c06060">The Beast</div>
+          <div class="dice-attack-name" id="roll-attack-name-e" style="color:#c06060">&nbsp;</div>
+          <div class="die-face die-face-enemy" id="die-face-e" style="width:48px;height:48px;font-size:1.4rem;margin:0 auto 0.3rem">—</div>
+          <div class="dice-result-text" id="roll-result-e" style="color:var(--muted)">—</div>
+        </div>
+      </div>
+      <!-- Attack buttons -->
+      <div id="attack-section" class="hidden">
+        <div style="font-family:'Cinzel',serif;font-size:0.72rem;text-transform:uppercase;letter-spacing:3px;color:var(--gold);margin-bottom:0.6rem;text-align:center">Choose Thy Strike</div>
+        <div class="battle-attacks" id="battle-attack-btns"></div>
+      </div>
+      <div id="waiting-section" class="hidden" style="text-align:center;color:var(--muted);font-size:1.76rem;padding:0.8rem;font-style:italic">The beast moves to strike...</div>
+    </div>
+
+    <!-- Victory phase -->
+    <div id="battle-victory-phase" class="hidden">
+      <div class="battle-victory">
+        <div class="victory-title" id="victory-title">🏆 Victory!</div>
+        <div style="color:var(--muted);margin-bottom:1.2rem" id="victory-msg"></div>
+        <div id="victory-normal-btns" style="display:flex;gap:0.7rem;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-green" id="btn-capture" onclick="battleCapture()">Bind the Creature</button>
+          <button class="btn btn-gold" onclick="battleTakeTreasure()">Claim a Treasure</button>
+        </div>
+        <div id="victory-boss-btns" style="display:none;justify-content:center">
+          <button class="btn btn-gold" style="font-size:1rem;padding:0.8rem 2rem" onclick="battleBossClaim()">👑 Seize the Territory!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Defeat select phase -->
+    <div id="battle-defeat-phase" class="hidden">
+      <div style="text-align:center;margin-bottom:0.8rem">
+        <div class="defeat-title">💀 Companion Fallen!</div>
+        <div style="color:var(--muted);margin-bottom:0.8rem;font-style:italic" id="defeat-msg"></div>
+      </div>
+      <div id="defeat-monster-select" class="battle-select-grid"></div>
+      <button class="btn btn-outline" style="width:100%;margin-top:0.5rem" onclick="battleRetreat()">Sound the Retreat</button>
+    </div>
+
+    <!-- Defeat announcement overlay -->
+    <div id="battle-defeat-announce-phase" class="hidden">
+      <div style="text-align:center;padding:1.2rem 0.5rem">
+        <div style="font-size:2.6rem;margin-bottom:0.5rem;line-height:1">⚔</div>
+        <div class="defeat-title" id="defeat-announce-title">Companion Fallen!</div>
+        <div id="defeat-announce-msg" style="color:var(--muted);margin:0.5rem 0 1.4rem;font-style:italic;font-size:1.8rem;line-height:1.5"></div>
+        <div style="display:flex;flex-direction:column;gap:0.6rem">
+          <button class="btn btn-gold" id="btn-defeat-continue" style="width:100%"></button>
+          <button class="btn btn-outline" style="width:100%" onclick="battleRetreat()"><img src="/tiles/Monster%20tokens/flee.png" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:6px"> Flee</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Player fights directly -->
+    <div id="battle-player-fight-phase" class="hidden">
+      <div class="battle-arena">
+        <div class="battle-monster-card player-side">
+          <div class="bm-label">Thee</div>
+          <div class="bm-icon"><img src="/tiles/Monster%20tokens/Character.png" style="width:52px;height:52px;object-fit:contain"></div>
+          <div class="bm-name" id="pf-player-name"></div>
+          <div class="bm-hp-bar"><div class="bm-hp-fill" id="pf-player-hpbar" style="background:linear-gradient(90deg,#1e6030,#2a9048)"></div></div>
+          <div class="bm-hp-text" id="pf-player-hptext"></div>
+        </div>
+        <div class="vs-divider">VS</div>
+        <div class="battle-monster-card enemy-side">
+          <div class="bm-label">The Beast</div>
+          <div class="bm-icon" id="pf-e-icon"></div>
+          <div class="bm-name" id="pf-e-name"></div>
+          <div class="bm-element" id="pf-e-el"></div>
+          <div class="bm-hp-bar"><div class="bm-hp-fill" id="pf-e-hpbar" style="background:linear-gradient(90deg,#6a1010,#a02020)"></div></div>
+          <div class="bm-hp-text" id="pf-e-hptext"></div>
+        </div>
+      </div>
+      <div id="pf-dice-zone" style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.55rem">
+        <div class="dice-roll-zone">
+          <div class="dice-zone-label">Thy Strike</div>
+          <div class="dice-attack-name" id="pf-roll-attack-name-p">&nbsp;</div>
+          <div class="die-face" id="pf-die-face-p" style="width:48px;height:48px;font-size:1.4rem;margin:0 auto 0.3rem">—</div>
+          <div class="dice-result-text" id="pf-roll-result-p" style="color:var(--muted)">—</div>
+        </div>
+        <div class="dice-roll-zone">
+          <div class="dice-zone-label" style="color:#c06060">The Beast</div>
+          <div class="dice-attack-name" id="pf-roll-attack-name-e" style="color:#c06060">&nbsp;</div>
+          <div class="die-face die-face-enemy" id="pf-die-face-e" style="width:48px;height:48px;font-size:1.4rem;margin:0 auto 0.3rem">—</div>
+          <div class="dice-result-text" id="pf-roll-result-e" style="color:var(--muted)">—</div>
+        </div>
+      </div>
+      <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(90,64,32,0.4);border-radius:2px;padding:0.4rem 0.8rem;margin-bottom:0.5rem;text-align:center">
+        <div style="font-family:'Cinzel',serif;font-size:0.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--gold);margin-bottom:0.3rem">⚔ Weapon Equipped</div>
+        <div style="font-family:'Cinzel',serif;font-weight:600;color:var(--gold-light)">Sword Strike</div>
+        <div style="font-size:1.6rem;color:var(--muted);font-style:italic">Roll 1 or 2 to hit — 30 damage</div>
+      </div>
+      <div style="display:flex;gap:0.7rem">
+        <button class="btn btn-danger" style="flex:1" onclick="socket.emit('battle_player_attack')">⚔ Strike</button>
+        <button class="btn btn-outline" style="flex:1" onclick="socket.emit('battle_flee')"><img src="/tiles/Monster%20tokens/flee.png" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:6px"> Flee</button>
+      </div>
+    </div>
+
+    <!-- Player defeated (HP reached 0) -->
+    <div id="battle-player-defeated-phase" class="hidden">
+      <div style="text-align:center;padding:1rem">
+        <div class="defeat-title">💀 Thou Art Defeated!</div>
+        <div style="color:var(--muted);margin-bottom:1rem;font-style:italic">The creature hath bested thee in combat.</div>
+        <button class="btn btn-outline" style="width:100%" onclick="battleRetreat()">Withdraw from Battle</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ INVENTORY MODAL ══════════════ -->
+<div id="modal-inventory" class="modal-overlay hidden">
+  <div class="inv-modal">
+    <div class="inv-modal-icon" id="inv-m-icon"></div>
+    <div class="inv-modal-name" id="inv-m-name"></div>
+    <div class="inv-modal-effect" id="inv-m-effect"></div>
+    <div style="text-align:center"><span class="inv-modal-usage" id="inv-m-usage"></span></div>
+    <div id="inv-m-actions" style="margin-top:1rem"></div>
+    <button class="btn btn-outline" style="width:100%;margin-top:0.6rem" onclick="document.getElementById('modal-inventory').classList.add('hidden')">Cancel</button>
+  </div>
+</div>
+
+<!-- ══════════════ MONSTER TOOLTIP ══════════════ -->
+<div id="monster-tooltip">
+  <div class="tt-name" id="tt-name"></div>
+  <div class="tt-el" id="tt-el"></div>
+  <div class="tt-hp-bar"><div class="tt-hp-fill" id="tt-hp-fill"></div></div>
+  <div class="tt-hp-text" id="tt-hp-text"></div>
+  <hr class="tt-divider">
+  <div id="tt-attacks"></div>
+  <div id="tt-equips" class="tt-equip"></div>
+</div>
+
+<!-- How to Play Modal -->
+<div id="modal-how-to-play" class="modal-overlay hidden" onclick="if(event.target===this)this.classList.add('hidden')">
+  <div style="background:linear-gradient(160deg,#13100a,#1a1509);border:1px solid rgba(201,168,76,0.35);border-radius:4px;padding:2rem 2rem 1.5rem;max-width:520px;width:90vw;max-height:85vh;overflow-y:auto;box-shadow:0 0 60px rgba(201,168,76,0.08),0 20px 60px rgba(0,0,0,0.85);scrollbar-width:thin;scrollbar-color:rgba(201,168,76,0.3) transparent">
+    <div style="text-align:center;margin-bottom:1.4rem">
+      <div style="font-family:'Cinzel Decorative',serif;font-size:1.2rem;color:var(--gold);letter-spacing:2px;margin-bottom:0.25rem">How to Play</div>
+      <div style="font-size:1.5rem;color:var(--muted);font-style:italic;letter-spacing:1px">A Guide to the Realm</div>
+    </div>
+
+    <!-- Objective -->
+    <div style="margin-bottom:1.2rem">
+      <div style="display:flex;align-items:center;gap:0.5rem;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;color:var(--gold);margin-bottom:0.5rem;border-bottom:1px solid rgba(201,168,76,0.2);padding-bottom:0.4rem">
+        <img src="/tiles/Monster%20tokens/creature.png" style="width:20px;height:20px;object-fit:contain"> Objective
+      </div>
+      <div style="font-size:0.83rem;color:var(--text);line-height:1.6">
+        Venture across the realm and challenge the four territory bosses — one guardian rules each region. Defeat all four bosses before your rivals and claim victory.
+      </div>
+    </div>
+
+    <!-- Turn Order -->
+    <div style="margin-bottom:1.2rem">
+      <div style="display:flex;align-items:center;gap:0.5rem;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;color:var(--gold);margin-bottom:0.5rem;border-bottom:1px solid rgba(201,168,76,0.2);padding-bottom:0.4rem">
+        <img src="/tiles/Monster%20tokens/dice.png" style="width:20px;height:20px;object-fit:contain"> Turn Order
+      </div>
+      <div style="font-size:0.83rem;color:var(--text);line-height:1.6">
+        Players take turns in sequence. On your turn, click any adjacent hex on the board to move your character there. When you land on a hex you trigger whatever is on that tile — a wild encounter, a village, a camp, or a fate card. End your turn and the next player moves.
+      </div>
+    </div>
+
+    <!-- Combat -->
+    <div style="margin-bottom:1.2rem">
+      <div style="display:flex;align-items:center;gap:0.5rem;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;color:var(--gold);margin-bottom:0.5rem;border-bottom:1px solid rgba(201,168,76,0.2);padding-bottom:0.4rem">
+        <img src="/tiles/Monster%20tokens/gargoyle.png" style="width:20px;height:20px;object-fit:contain"> Combat
+      </div>
+      <div style="font-size:0.83rem;color:var(--text);line-height:1.6;margin-bottom:0.5rem">
+        When you land on a hex occupied by a wild monster, battle begins. First, both sides roll dice to determine initiative — the higher roll acts first. Each round, select one of your monster's attacks. Every attack shows the die rolls required to land a hit: roll within those numbers to deal damage.
+      </div>
+      <div style="font-size:0.83rem;color:var(--text);line-height:1.6;margin-bottom:0.5rem">
+        <strong style="color:var(--gold-light)">Elements matter.</strong> Each monster has an element — Pyro, Aqua, Terra, or Aero. Attacking with an advantaged element deals double damage; a disadvantaged element deals half.
+      </div>
+      <div style="font-size:0.83rem;color:var(--text);line-height:1.6">
+        If your monster falls, you may send in another companion or attempt to flee. Fleeing requires a successful dice roll — roll 4 or higher on a d6 to escape. Win the battle to earn gold and potentially tame the wild monster.
+      </div>
+    </div>
+
+    <!-- Elements -->
+    <div style="margin-bottom:1.2rem">
+      <div style="display:flex;align-items:center;gap:0.5rem;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;color:var(--gold);margin-bottom:0.5rem;border-bottom:1px solid rgba(201,168,76,0.2);padding-bottom:0.4rem">
+        <img src="/tiles/Monster%20tokens/pyro.png" style="width:20px;height:20px;object-fit:contain"> Elemental Strengths
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem 1rem;font-size:0.8rem;color:var(--text);line-height:1.7">
+        <div><img src="/tiles/Monster%20tokens/aqua.png" style="width:14px;height:14px;object-fit:contain;vertical-align:middle;margin-right:4px"><strong style="color:#5ba3d9">Aqua</strong> beats Pyro</div>
+        <div><img src="/tiles/Monster%20tokens/pyro.png" style="width:14px;height:14px;object-fit:contain;vertical-align:middle;margin-right:4px"><strong style="color:#e07050">Pyro</strong> beats Terra</div>
+        <div><img src="/tiles/Monster%20tokens/terra.png" style="width:14px;height:14px;object-fit:contain;vertical-align:middle;margin-right:4px"><strong style="color:#8bc05a">Terra</strong> beats Aero</div>
+        <div><img src="/tiles/Monster%20tokens/Aero.png" style="width:14px;height:14px;object-fit:contain;vertical-align:middle;margin-right:4px"><strong style="color:#a0c8e0">Aero</strong> beats Pyro</div>
+      </div>
+    </div>
+
+    <!-- Village -->
+    <div style="margin-bottom:1.2rem">
+      <div style="display:flex;align-items:center;gap:0.5rem;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;color:var(--gold);margin-bottom:0.5rem;border-bottom:1px solid rgba(201,168,76,0.2);padding-bottom:0.4rem">
+        <img src="/tiles/Monster%20tokens/village.png" style="width:20px;height:20px;object-fit:contain"> The Village
+      </div>
+      <div style="font-size:0.83rem;color:var(--text);line-height:1.6;margin-bottom:0.6rem">Landing on a village hex opens a hub with four services:</div>
+      <div style="display:flex;flex-direction:column;gap:0.5rem">
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.82rem;color:var(--text)">
+          <img src="/tiles/Monster%20tokens/monk-face.png" style="width:22px;height:22px;object-fit:contain;flex-shrink:0;margin-top:1px">
+          <div><strong style="color:var(--gold-light)">Local Goods Supplier</strong> — Browse and purchase items and relics to equip on your monsters or use during your journey.</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.82rem;color:var(--text)">
+          <img src="/tiles/Monster%20tokens/Inn%20Keeper.png" style="width:22px;height:22px;object-fit:contain;flex-shrink:0;margin-top:1px">
+          <div><strong style="color:var(--gold-light)">The Inn</strong> — Rest and fully restore your HP and all your companions for 50 gold.</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.82rem;color:var(--text)">
+          <img src="/tiles/Monster%20tokens/Monster%20Tamer.png" style="width:22px;height:22px;object-fit:contain;flex-shrink:0;margin-top:1px">
+          <div><strong style="color:var(--gold-light)">Monster Tamer</strong> — Trade gold to tame wild monsters and add them to your party, or trade companions you no longer need.</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.82rem;color:var(--text)">
+          <img src="/tiles/Monster%20tokens/Captain.png" style="width:22px;height:22px;object-fit:contain;flex-shrink:0;margin-top:1px">
+          <div><strong style="color:var(--gold-light)">Hire a Ship</strong> — Pay 300 gold to hire a ship and crew, granting access to the Misty Islands region and its boss.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Camp -->
+    <div style="margin-bottom:1.2rem">
+      <div style="display:flex;align-items:center;gap:0.5rem;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;color:var(--gold);margin-bottom:0.5rem;border-bottom:1px solid rgba(201,168,76,0.2);padding-bottom:0.4rem">
+        <img src="/tiles/Monster%20tokens/Camp.png" style="width:20px;height:20px;object-fit:contain"> Making Camp
+      </div>
+      <div style="font-size:0.83rem;color:var(--text);line-height:1.6">
+        When you move to a new hex you have the chance to build a camp there, you need to sacrifice 3 items from your inventory to establish a camp on that hex. Return to your camp at any time to fully restore your HP and all your companions at no cost.
+      </div>
+    </div>
+
+    <!-- Traveling Djinn -->
+    <div style="margin-bottom:1.2rem">
+      <div style="display:flex;align-items:center;gap:0.5rem;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;color:var(--gold);margin-bottom:0.5rem;border-bottom:1px solid rgba(201,168,76,0.2);padding-bottom:0.4rem">
+        <img src="/tiles/Monster%20tokens/djinn.png" style="width:20px;height:20px;object-fit:contain"> The Traveling Djinn
+      </div>
+      <div style="font-size:0.83rem;color:var(--text);line-height:1.6">
+        Every few turns a mysterious Djinn appears on the board looking for a particular item. Land on the Djinn's hex to see what the Djinn is looking for. If you have that item in your inventory, and provide it to the Djinn, the Djinn will offer you something useful for your journey. Once encountered, the Djinn moves on. Only three Djinn will appear on the board at any given time.
+      </div>
+    </div>
+
+    <!-- How to Win -->
+    <div style="margin-bottom:1.4rem">
+      <div style="display:flex;align-items:center;gap:0.5rem;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;color:var(--gold);margin-bottom:0.5rem;border-bottom:1px solid rgba(201,168,76,0.2);padding-bottom:0.4rem">
+        <img src="/tiles/Monster%20tokens/chest.png" style="width:20px;height:20px;object-fit:contain"> How to Win
+      </div>
+      <div style="font-size:0.83rem;color:var(--text);line-height:1.6;margin-bottom:0.5rem">
+        Each region has one powerful boss guarding it. To challenge a boss, move onto the boss hex in their territory. Defeat all four bosses — the guardians of the Volcan Mountains, Misty Islands, Valley Meadows, and Mountain Forests — and you win the game.
+      </div>
+      <div style="font-size:1.66rem;color:var(--muted);line-height:1.6;font-style:italic">
+        Build your party, stock up on relics, and choose your battles wisely. The realm is unforgiving — come prepared.
+      </div>
+    </div>
+
+    <button class="btn btn-outline" style="width:100%" onclick="document.getElementById('modal-how-to-play').classList.add('hidden')">Close</button>
+  </div>
+</div>
+
+<!-- Chronicles Modal -->
+<div id="modal-chronicles" class="modal-overlay hidden" onclick="if(event.target===this)this.classList.add('hidden')">
+  <div class="how-to-play-modal" style="max-height:80vh;display:flex;flex-direction:column">
+    <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;flex-shrink:0">
+      <img src="/tiles/Monster%20tokens/creature.png/icons/ffffff/transparent/1x1/lorc/evil-book.png" style="width:28px;height:28px;object-fit:contain">
+      <div style="font-family:'Cinzel Decorative',serif;font-size:1.2rem;color:var(--gold);letter-spacing:2px">Chronicles</div>
+    </div>
+    <div id="chronicles-log" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:0.25rem;min-height:0"></div>
+    <button class="btn btn-outline" style="width:100%;margin-top:1rem;flex-shrink:0" onclick="document.getElementById('modal-chronicles').classList.add('hidden')">Close</button>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+// ── CONSTANTS ──
+const HEX_SIZE = 28;
+const COLS = 17;
+const ROWS = 14;
+const HS = Math.sqrt(3) * HEX_SIZE;
+const VS = 1.5 * HEX_SIZE;
+const MARGIN_X = 32;
+const MARGIN_Y = 32;
+
+const REGION_TILES = {
+  volcan: ['The Volcan Mountains 1.png','The Volcan Mountains 2.png','The Volcan Mountains 3.png','The Volcan Mountains 4.png','The Volcan Mountains 5.png','The Volcan Mountains 6.png'],
+  misty:  ['The Misty Islands 1.png','The Misty Islands 2.png','The Misty Islands 3.png','The Misty Islands 4.png'],
+  meadow: ['The Valley Meadows 1.png','The Valley Meadows 2.png','The Valley Meadows 3.png','The Valley Meadows 4.png'],
+  forest: ['The Mountain Forest 1.png','The Mountain Forest 2.png','The Mountain Forest 3.png','The Mountain Forest 4.png'],
+};
+
+const ELEMENT_EMOJI = { Pyro:'🔥', Aqua:'💧', Terra:'🪨', Aero:'💨', Fire:'🔥', Water:'💧', Earth:'🪨', Air:'💨' };
+const _EL_URL = {
+  Pyro:'/tiles/Monster%20tokens/pyro.png', Fire:'/tiles/Monster%20tokens/pyro.png',
+  Aqua:'/tiles/Monster%20tokens/aqua.png', Water:'/tiles/Monster%20tokens/aqua.png',
+  Terra:'/tiles/Monster%20tokens/terra.png', Earth:'/tiles/Monster%20tokens/terra.png',
+  Aero:'/tiles/Monster%20tokens/Aero.png', Air:'/tiles/Monster%20tokens/Aero.png',
+};
+const _EL_FILTER = {
+  Pyro:'brightness(0) invert(1) sepia(1) hue-rotate(315deg) saturate(8) brightness(0.88)',
+  Fire:'brightness(0) invert(1) sepia(1) hue-rotate(315deg) saturate(8) brightness(0.88)',
+  Aqua:'brightness(0) invert(1) sepia(1) hue-rotate(175deg) saturate(6) brightness(0.9)',
+  Water:'brightness(0) invert(1) sepia(1) hue-rotate(175deg) saturate(6) brightness(0.9)',
+  Terra:'brightness(0) invert(1) sepia(1) hue-rotate(0deg) saturate(4) brightness(0.52)',
+  Earth:'brightness(0) invert(1) sepia(1) hue-rotate(0deg) saturate(4) brightness(0.52)',
+  Aero:'', Air:'',
+};
+function elIcon(element, size=18) {
+  const url = _EL_URL[element];
+  if (!url) return '';
+  const f = _EL_FILTER[element];
+  return `<img src="${url}" style="width:${size}px;height:${size}px;object-fit:contain;vertical-align:middle${f?';filter:'+f:''}" alt="${element}">`;
+}
+const _CI = '/tiles/Monster%20tokens/creature.png/icons/ffffff/transparent/1x1/';
+const MONSTER_ICONS = {
+  emberling:   _CI+'lorc/spark-spirit.png',
+  tidecrawler: _CI+'skoll/sea-creature.png',
+  pebbrute:    _CI+'delapouite/rock-golem.png',
+  gustling:    _CI+'lorc/harpy.png',
+  guston_p:    _CI+'lorc/ifrit.png',
+  tidear_a:    _CI+'lorc/harpy.png',
+  stormor_t:   _CI+'delapouite/golem-head.png',
+  fangus_a:    _CI+'lorc/evil-bat.png',
+  clawon_p:    _CI+'delapouite/devil-mask.png',
+  gustan_t:    _CI+'delapouite/brute.png',
+  quakeus_a:   _CI+'delapouite/fairy.png',
+  wingar_aq:   _CI+'delapouite/mermaid.png',
+  clawak_p:    _CI+'delapouite/oni.png',
+  tidear_t:    _CI+'lorc/lizardman.png',
+  scaleon_t:   _CI+'delapouite/horned-reptile.png',
+  stormix_aq:  _CI+'delapouite/floating-tentacles.png',
+  mawar_p:     _CI+'lorc/gooey-daemon.png',
+  hidear_a:    _CI+'lorc/wyvern.png',
+  clawus_aq:   _CI+'lorc/sea-dragon.png',
+  hideak_p:    _CI+'delapouite/gargoyle.png',
+  stormor_aq:  _CI+'delapouite/fish-monster.png',
+  quakeix_a:   _CI+'lorc/ghost.png',
+  stormar_p:   _CI+'lorc/ifrit.png',
+  mawor_t:     _CI+'delapouite/ogre.png',
+  fangeth_aq:  _CI+'lorc/triton-head.png',
+  mawon_a:     _CI+'lorc/cyclops.png',
+  tideeth_aq:  _CI+'lorc/sea-dragon.png',
+  hideak_t:    _CI+'delapouite/rock-golem.png',
+  hideon_aq:   _CI+'delapouite/elysium-shade.png',
+  clawix_p:    _CI+'delapouite/oni.png',
+  tideak_p:    _CI+'delapouite/devil-mask.png',
+  wingus_aq:   _CI+'lorc/hydra.png',
+  behemoth:    _CI+'delapouite/giant.png',
+  wingdragon:  _CI+'faithtoken/dragon-head.png',
+  tidalserp:   _CI+'lorc/hydra.png',
+  flamdevil:   _CI+'caro-asercion/tarot-15-the-devil.png',
+};
+function monsterIcon(monster) {
+  const url = monster && MONSTER_ICONS[monster.id];
+  if (!url) return '';
+  return `<img src="${url}" style="width:48px;height:48px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(255,255,255,0.3))" alt="${monster.name}">`;
+}
+function monsterIconSmall(monster) {
+  const url = monster && MONSTER_ICONS[monster.id];
+  if (!url) return elIcon(monster?.element, 36) || ELEMENT_EMOJI[monster?.element] || '⚡';
+  return `<img src="${url}" style="width:36px;height:36px;object-fit:contain" alt="">`;
+}
+const REGION_LABELS = { volcan:'The Volcan\nMountains', misty:'The Misty\nIslands', meadow:'The Valley\nMeadows', forest:'The Mountain\nForests' };
+const REGION_CENTERS = { volcan:{col:4,row:3}, misty:{col:12,row:3}, meadow:{col:4,row:10}, forest:{col:12,row:10} };
+// BOSS_HEXES and regionMap come from gameState (generated per game)
+
+// ── STATE ──
+let socket;
+let myId = null;
+let myColor = null;
+let roomId = null;
+let isHost = false;
+let gameState = null;
+let starterMonsters = [];
+
+// ── INIT ──
+function init() {
+  socket = io();
+
+  socket.on('room_created', ({ roomId: r, player, starters }) => {
+    myId = player.id; myColor = player.color; roomId = r; isHost = true;
+    starterMonsters = starters;
+    showScreen('waiting');
+    document.getElementById('display-room-code').textContent = r;
+    document.getElementById('start-btn').style.display = 'block';
+    document.getElementById('waiting-msg').style.display = 'none';
+  });
+
+  socket.on('room_joined', ({ roomId: r, player, starters }) => {
+    myId = player.id; myColor = player.color; roomId = r; isHost = false;
+    starterMonsters = starters;
+    showScreen('waiting');
+    document.getElementById('display-room-code').textContent = r;
+  });
+
+  socket.on('lobby_update', (room) => {
+    renderWaitingPlayers(room.players);
+  });
+
+  socket.on('error', (msg) => {
+    document.getElementById('lobby-error').textContent = msg;
+  });
+
+  socket.on('game_started', ({ gameState: gs, starters }) => {
+    gameState = gs;
+    starterMonsters = starters;
+    showScreen('monster-select');
+    renderMonsterSelect();
+    document.getElementById('modal-intro-story').classList.remove('hidden');
+  });
+
+  socket.on('move_blocked', ({ message }) => {
+    // Flash a temporary notice on the board
+    const existing = document.getElementById('move-blocked-toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.id = 'move-blocked-toast';
+    toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(20,10,5,0.95);border:1px solid #6a2020;color:#e08080;padding:0.7rem 1.4rem;border-radius:3px;font-family:IM Fell English,serif;font-size:0.9rem;z-index:300;pointer-events:none;animation:fadeIn 0.2s ease';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3500);
+  });
+
+  socket.on('retreat_result', ({ success, roll }) => {
+    const dieFace = document.getElementById('flee-die-face');
+    const result  = document.getElementById('flee-roll-result');
+    // spin the die then land on actual roll
+    let count = 0;
+    dieFace.classList.add('die-rolling');
+    result.textContent = '';
+    const timer = setInterval(() => {
+      dieFace.textContent = Math.ceil(Math.random() * 6);
+      if (++count >= 14) {
+        clearInterval(timer);
+        dieFace.classList.remove('die-rolling');
+        dieFace.textContent = roll;
+        setTimeout(() => {
+          if (success) {
+            dieFace.style.borderColor = '#6BCB77';
+            dieFace.style.color       = '#6BCB77';
+            result.style.color        = '#6BCB77';
+            result.innerHTML = `<div style="font-size:1.4rem;margin-bottom:0.3rem">🏃</div>You successfully escaped!`;
+          } else {
+            dieFace.style.borderColor = '#FF6B6B';
+            dieFace.style.color       = '#FF6B6B';
+            result.style.color        = '#FF6B6B';
+            result.innerHTML = `<div style="font-size:1.4rem;margin-bottom:0.3rem">⚔</div>You failed to escape!`;
+            // re-enable the fight button; hide overlay after a moment so they can fight
+            setTimeout(() => {
+              document.getElementById('flee-dice-overlay').classList.add('hidden');
+              // reset die for potential next attempt
+              dieFace.textContent = '—';
+              dieFace.style.borderColor = '';
+              dieFace.style.color = '';
+            }, 2000);
+          }
+        }, 150);
+      }
+    }, 55);
+  });
+
+  socket.on('game_state_update', (gs) => {
+    const wasPhase = gameState?.phase;
+    gameState = gs;
+    // Clear animation cache when a new turn starts so cards re-animate
+    if (gs.phase === 'moving' || gs.phase === 'idle') _animatedPhases.clear();
+
+    if (gs.phase === 'game_won') {
+      document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('hidden'));
+      const isWinner = gs.winner === myId;
+      document.getElementById('win-title').textContent = isWinner ? '👑 The Realm is Thine!' : `👑 ${escapeHtml(gs.winnerName)} Reigns Supreme!`;
+      document.getElementById('win-msg').textContent = isWinner
+        ? 'Thou hast slain all four territory guardians and conquered the realm. Thy legend shall be sung for ages!'
+        : `${escapeHtml(gs.winnerName)} hath slain all four territory guardians and seized dominion over the realm.`;
+      showScreen('win');
+      return;
+    }
+
+    // True game over — one winner remains (or last player standing)
+    if (gs.gameOver) {
+      const isWinner = gs.gameOver.winnerId === myId;
+      if (isWinner) {
+        showScreen('win');
+      } else {
+        document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('hidden'));
+        document.getElementById('fallen-overlay').classList.add('hidden');
+        document.getElementById('gameover-title').textContent = gs.gameOver.winner ? `${escapeHtml(gs.gameOver.winner)} Wins the Realm!` : 'All Champions Have Fallen';
+        document.getElementById('gameover-msg').textContent = gs.gameOver.winner
+          ? `${gs.gameOver.winner} conquered all four bosses and claimed the realm.`
+          : 'Every champion has fallen. The realm remains unconquered.';
+        showScreen('gameover');
+      }
+      return;
+    }
+
+    // Local player just got eliminated — show watch/leave overlay
+    const me = gs.players.find(p => p.id === myId);
+    if (me?.eliminated) {
+      const overlay = document.getElementById('fallen-overlay');
+      if (overlay.classList.contains('hidden')) {
+        document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('hidden'));
+        overlay.classList.remove('hidden');
+      }
+    }
+
+    if (gs.phase === 'select_monster') {
+      renderMonsterSelect();
+    } else if (gs.phase === 'gathering') {
+      if (wasPhase === 'select_monster') {
+        showScreen('game');
+        renderBoard();
+      }
+      updateGameUI();
+      showGatheringOverlay(gs);
+    } else {
+      if (wasPhase === 'select_monster' || wasPhase === 'gathering') {
+        showScreen('game');
+        renderBoard();
+        document.getElementById('gathering-overlay').classList.add('hidden');
+      }
+      updateGameUI();
+    }
+  });
+}
+
+// ── SCREENS ──
+function showScreen(name) {
+  ['lobby','waiting','monster-select','game','gameover','win'].forEach(s => {
+    document.getElementById(`screen-${s}`).classList.toggle('hidden', s !== name);
+  });
+}
+
+// ── LOBBY ACTIONS ──
+function createRoom() {
+  const name = document.getElementById('player-name').value.trim();
+  if (!name) { document.getElementById('lobby-error').textContent = 'Please enter your name.'; return; }
+  socket.emit('create_room', { name });
+}
+
+function joinRoom() {
+  const name = document.getElementById('player-name').value.trim();
+  const code = document.getElementById('room-code-input').value.trim().toUpperCase();
+  if (!name) { document.getElementById('lobby-error').textContent = 'Please enter your name.'; return; }
+  if (!code) { document.getElementById('lobby-error').textContent = 'Please enter a room code.'; return; }
+  socket.emit('join_room', { roomId: code, name });
+}
+
+function startGame() {
+  socket.emit('start_game');
+}
+
+// ── WAITING ROOM ──
+function renderWaitingPlayers(players) {
+  const el = document.getElementById('waiting-player-list');
+  el.innerHTML = players.map(p => `
+    <div class="player-pill">
+      <div class="player-dot" style="background:${p.color}"></div>
+      <span class="player-name">${escapeHtml(p.name)}</span>
+      ${p.isHost ? '<span class="host-tag">HOST</span>' : ''}
+      ${p.id === myId ? '<span class="host-tag" style="color:#4ECDC4;background:rgba(78,205,196,0.1)">YOU</span>' : ''}
+    </div>
+  `).join('');
+}
+
+// ── MONSTER SELECT ──
+function renderMonsterSelect() {
+  const grid = document.getElementById('starter-grid');
+  const me = gameState?.players?.find(p => p.id === myId);
+  const alreadyChosen = me?.monsters?.length > 0;
+
+  grid.innerHTML = starterMonsters.map(m => {
+    const taken = gameState?.players?.some(p => p.id !== myId && p.monsters?.some(pm => pm.id === m.id));
+    const isMe = me?.monsters?.some(pm => pm.id === m.id);
+    return `
+      <div class="monster-option ${taken ? 'disabled' : ''} ${isMe ? 'selected' : ''}"
+           onclick="selectMonster('${m.id}')">
+        <div class="monster-icon">${elIcon(m.element, 52)}</div>
+        <div class="monster-option-name">${escapeHtml(m.name)}</div>
+        <div class="monster-option-el el-${m.element}">${({'Fire':'Pyro','Water':'Aqua','Earth':'Terra','Air':'Aero','Wind':'Aero'}[m.element]||m.element)}</div>
+        <div class="monster-option-stats">HP: ${m.maxHp}</div>
+        <div class="monster-option-attacks">
+          <div>• ${m.attack1.name} (Roll ${m.attack1.roll1} or ${m.attack1.roll2}): ${m.attack1.damage} dmg</div>
+          <div>• ${m.attack2.name} (Roll ${m.attack2.roll1} or ${m.attack2.roll2}): ${m.attack2.damage} dmg</div>
+        </div>
+        ${isMe ? '<div style="margin-top:0.5rem;color:#27ae60;font-weight:700">✓ Selected</div>' : ''}
+      </div>
+    `;
+  }).join('');
+
+  if (alreadyChosen) {
+    grid.querySelectorAll('.monster-option').forEach(el => {
+      if (!el.classList.contains('selected')) el.classList.add('disabled');
+    });
+    document.getElementById('monster-waiting-msg').classList.remove('hidden');
+  }
+}
+
+function selectMonster(id) {
+  socket.emit('select_monster', { monsterId: id });
+}
+
+// ── BOARD ZOOM & PAN ──
+const BOARD_BASE_W = 870, BOARD_BASE_H = 650;
+const BOARD_MIN_ZOOM = 0.7, BOARD_MAX_ZOOM = 3.5;
+let boardZoom = 1.0, boardVX = 0, boardVY = 0;
+let _panActive = false, _panStartX = 0, _panStartY = 0, _panOriginVX = 0, _panOriginVY = 0;
+
+function applyBoardView() {
+  const w = BOARD_BASE_W / boardZoom;
+  const h = BOARD_BASE_H / boardZoom;
+  // Clamp so board never scrolls beyond its edges
+  boardVX = Math.max(0, Math.min(boardVX, BOARD_BASE_W - w));
+  boardVY = Math.max(0, Math.min(boardVY, BOARD_BASE_H - h));
+  document.getElementById('hex-svg').setAttribute('viewBox', `${boardVX} ${boardVY} ${w} ${h}`);
+}
+
+function boardZoomIn()    { boardZoom = Math.min(BOARD_MAX_ZOOM, boardZoom * 1.25); applyBoardView(); }
+function boardZoomOut()   { boardZoom = Math.max(BOARD_MIN_ZOOM, boardZoom / 1.25); applyBoardView(); }
+function boardZoomReset() { boardZoom = 1.0; boardVX = 0; boardVY = 0; applyBoardView(); }
+
+function initBoardInteraction() {
+  const svg = document.getElementById('hex-svg');
+  const area = document.getElementById('board-area');
+
+  // Mouse wheel zoom — centred on cursor
+  area.addEventListener('wheel', e => {
+    e.preventDefault();
+    const rect = svg.getBoundingClientRect();
+    const relX = (e.clientX - rect.left)  / rect.width;
+    const relY = (e.clientY - rect.top)   / rect.height;
+    const oldW = BOARD_BASE_W / boardZoom;
+    const oldH = BOARD_BASE_H / boardZoom;
+    const svgX = boardVX + relX * oldW;
+    const svgY = boardVY + relY * oldH;
+    const factor = e.deltaY < 0 ? 1.12 : 1 / 1.12;
+    boardZoom = Math.max(BOARD_MIN_ZOOM, Math.min(BOARD_MAX_ZOOM, boardZoom * factor));
+    const newW = BOARD_BASE_W / boardZoom;
+    const newH = BOARD_BASE_H / boardZoom;
+    boardVX = svgX - relX * newW;
+    boardVY = svgY - relY * newH;
+    applyBoardView();
+  }, { passive: false });
+
+  // Click-drag pan
+  area.addEventListener('mousedown', e => {
+    if (e.button !== 0) return;
+    // Only start pan if not clicking an interactive SVG element
+    if (e.target.closest('polygon,image,text,circle')) return;
+    _panActive = true;
+    _panStartX = e.clientX; _panStartY = e.clientY;
+    _panOriginVX = boardVX; _panOriginVY = boardVY;
+    area.style.cursor = 'grabbing';
+  });
+  window.addEventListener('mousemove', e => {
+    if (!_panActive) return;
+    const rect = svg.getBoundingClientRect();
+    const scaleX = (BOARD_BASE_W / boardZoom) / rect.width;
+    const scaleY = (BOARD_BASE_H / boardZoom) / rect.height;
+    boardVX = _panOriginVX - (e.clientX - _panStartX) * scaleX;
+    boardVY = _panOriginVY - (e.clientY - _panStartY) * scaleY;
+    applyBoardView();
+  });
+  window.addEventListener('mouseup', () => {
+    if (!_panActive) return;
+    _panActive = false;
+    area.style.cursor = '';
+  });
+
+  // Touch pinch-zoom and drag
+  let _touches = [], _lastPinchDist = 0;
+  area.addEventListener('touchstart', e => {
+    _touches = Array.from(e.touches);
+    if (_touches.length === 1) {
+      _panActive = true;
+      _panStartX = _touches[0].clientX; _panStartY = _touches[0].clientY;
+      _panOriginVX = boardVX; _panOriginVY = boardVY;
+    } else if (_touches.length === 2) {
+      _panActive = false;
+      _lastPinchDist = Math.hypot(_touches[1].clientX - _touches[0].clientX, _touches[1].clientY - _touches[0].clientY);
+    }
+  }, { passive: true });
+  area.addEventListener('touchmove', e => {
+    e.preventDefault();
+    const touches = Array.from(e.touches);
+    if (touches.length === 1 && _panActive) {
+      const rect = svg.getBoundingClientRect();
+      const scaleX = (BOARD_BASE_W / boardZoom) / rect.width;
+      const scaleY = (BOARD_BASE_H / boardZoom) / rect.height;
+      boardVX = _panOriginVX - (touches[0].clientX - _panStartX) * scaleX;
+      boardVY = _panOriginVY - (touches[0].clientY - _panStartY) * scaleY;
+      applyBoardView();
+    } else if (touches.length === 2) {
+      const dist = Math.hypot(touches[1].clientX - touches[0].clientX, touches[1].clientY - touches[0].clientY);
+      const midX = (touches[0].clientX + touches[1].clientX) / 2;
+      const midY = (touches[0].clientY + touches[1].clientY) / 2;
+      const rect = svg.getBoundingClientRect();
+      const relX = (midX - rect.left) / rect.width;
+      const relY = (midY - rect.top)  / rect.height;
+      const oldW = BOARD_BASE_W / boardZoom, oldH = BOARD_BASE_H / boardZoom;
+      const svgX = boardVX + relX * oldW, svgY = boardVY + relY * oldH;
+      boardZoom = Math.max(BOARD_MIN_ZOOM, Math.min(BOARD_MAX_ZOOM, boardZoom * (dist / _lastPinchDist)));
+      _lastPinchDist = dist;
+      const newW = BOARD_BASE_W / boardZoom, newH = BOARD_BASE_H / boardZoom;
+      boardVX = svgX - relX * newW; boardVY = svgY - relY * newH;
+      applyBoardView();
+    }
+  }, { passive: false });
+  area.addEventListener('touchend', e => {
+    _touches = Array.from(e.touches);
+    if (_touches.length < 1) _panActive = false;
+  }, { passive: true });
+}
+
+// ── HEX GRID ──
+function hexCenter(col, row) {
+  return {
+    x: col * HS + (row % 2 === 1 ? HS / 2 : 0) + MARGIN_X,
+    y: row * VS + MARGIN_Y
+  };
+}
+
+function hexPoints(col, row) {
+  const { x: cx, y: cy } = hexCenter(col, row);
+  return Array.from({length:6}, (_,i) => {
+    const a = Math.PI / 180 * (60 * i + 30);
+    return `${(cx + HEX_SIZE * Math.cos(a)).toFixed(1)},${(cy + HEX_SIZE * Math.sin(a)).toFixed(1)}`;
+  }).join(' ');
+}
+
+function getRegion(col, row) {
+  if (gameState?.regionMap) return gameState.regionMap[`${col},${row}`] || 'meadow';
+  if (col <= 4 && row <= 3) return 'volcan';
+  if (col >= 5 && row <= 3) return 'misty';
+  if (col <= 4 && row >= 4) return 'meadow';
+  return 'forest';
+}
+
+function getNeighbors(col, row) {
+  const dirs = row % 2 === 0
+    ? [[-1,0],[1,0],[-1,-1],[0,-1],[-1,1],[0,1]]
+    : [[-1,0],[1,0],[0,-1],[1,-1],[0,1],[1,1]];
+  return dirs.map(([dc,dr]) => [col+dc, row+dr])
+             .filter(([c,r]) => c>=0 && c<COLS && r>=0 && r<ROWS);
+}
+
+function isAdjacent(p1, p2) {
+  return getNeighbors(p1.col, p1.row).some(([c,r]) => c===p2.col && r===p2.row);
+}
+
+function renderBoard() {
+  const hexLayer = document.getElementById('hex-layer');
+  const labelLayer = document.getElementById('label-layer');
+  hexLayer.innerHTML = '';
+  labelLayer.innerHTML = '';
+
+  // Remove any clip paths from a previous renderBoard call
+  document.querySelectorAll('clipPath[id^="hclip-"]').forEach(el => el.remove());
+  const svgDefs = document.querySelector('#hex-svg defs');
+
+  for (let row = 0; row < ROWS; row++) {
+    for (let col = 0; col < COLS; col++) {
+      const region = getRegion(col, row);
+      const pts = hexPoints(col, row);
+      const { x: cx, y: cy } = hexCenter(col, row);
+      const clipId = `hclip-${col}-${row}`;
+
+      // ClipPath shaped exactly to this hex
+      const clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+      clipPath.setAttribute('id', clipId);
+      const clipPoly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+      clipPoly.setAttribute('points', pts);
+      clipPath.appendChild(clipPoly);
+      svgDefs.appendChild(clipPath);
+
+      // Pick a tile deterministically per hex (so it stays consistent on re-renders)
+      const tiles = REGION_TILES[region] || REGION_TILES.meadow;
+      const tileFile = tiles[(col * 7 + row * 13) % tiles.length];
+      const tileUrl = `/tiles/${encodeURIComponent(tileFile)}`;
+
+      // Region colour base (underneath tile)
+      const overlay = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+      overlay.setAttribute('points', pts);
+      overlay.setAttribute('class', `hex-overlay ${region}`);
+      hexLayer.appendChild(overlay);
+
+      // Terrain image clipped to hex shape (on top of colour)
+      const img = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+      img.setAttribute('href', tileUrl);
+      img.setAttribute('x', cx - HEX_SIZE - 2);
+      img.setAttribute('y', cy - HEX_SIZE - 2);
+      img.setAttribute('width',  (HEX_SIZE + 2) * 2);
+      img.setAttribute('height', (HEX_SIZE + 2) * 2);
+      img.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+      img.setAttribute('clip-path', `url(#${clipId})`);
+      hexLayer.appendChild(img);
+
+      // Transparent hit-target polygon (handles clicks + valid-move highlight)
+      const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+      poly.setAttribute('points', pts);
+      poly.setAttribute('fill', 'transparent');
+      poly.setAttribute('stroke', 'rgba(255,255,255,0.12)');
+      poly.setAttribute('stroke-width', '1');
+      poly.setAttribute('class', `hex ${region}`);
+      poly.setAttribute('data-col', col);
+      poly.setAttribute('data-row', row);
+      poly.addEventListener('click', () => onHexClick(col, row));
+      hexLayer.appendChild(poly);
+    }
+  }
+
+  // Region labels
+  Object.entries(REGION_CENTERS).forEach(([region, center]) => {
+    const { x, y } = hexCenter(center.col, center.row);
+    const lines = REGION_LABELS[region].split('\n');
+    lines.forEach((line, i) => {
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', x);
+      text.setAttribute('y', y + (i - (lines.length-1)/2) * 34);
+      text.setAttribute('class', 'region-label');
+      text.textContent = line;
+      labelLayer.appendChild(text);
+    });
+  });
+}
+
+function updateBoardState() {
+  if (!gameState) return;
+  const currentPlayer = gameState.players[gameState.currentTurn];
+  const me = gameState.players.find(p => p.id === myId);
+  const isMyTurn = currentPlayer?.id === myId;
+  const canMove = isMyTurn && gameState.phase === 'move';
+
+  // Clear valid-move highlights
+  document.querySelectorAll('.hex.valid-move').forEach(el => el.classList.remove('valid-move'));
+
+  if (canMove && me) {
+    getNeighbors(me.position.col, me.position.row).forEach(([c, r]) => {
+      const el = document.querySelector(`.hex[data-col="${c}"][data-row="${r}"]`);
+      if (el) el.classList.add('valid-move');
+    });
+  }
+
+  // Token helper — places an image centred on (x,y) sized s×s
+  function svgToken(href, x, y, s, opacity) {
+    const img = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+    img.setAttribute('href', href);
+    img.setAttribute('x', x - s / 2);
+    img.setAttribute('y', y - s / 2);
+    img.setAttribute('width', s);
+    img.setAttribute('height', s);
+    img.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    img.setAttribute('pointer-events', 'none');
+    if (opacity !== undefined) img.setAttribute('opacity', opacity);
+    return img;
+  }
+
+  const BOSS_TOKEN = {
+    volcan: '/tiles/Monster%20tokens/BOSS%20Volcan%20Mountains.png',
+    misty:  '/tiles/Monster%20tokens/BOSS%20Misty%20Islands.png',
+    meadow: '/tiles/Monster%20tokens/BOSS%20Valley%20Meadow.png',
+    forest: '/tiles/Monster%20tokens/BOSS%20Mountain%20Forest.png',
+  };
+
+  // Render boss hex markers
+  const bossLayer = document.getElementById('boss-layer');
+  bossLayer.innerHTML = '';
+  Object.entries(gameState.bossHexes || {}).forEach(([region, pos]) => {
+    const { x, y } = hexCenter(pos.col, pos.row);
+    const myPlayer = gameState.players.find(p => p.id === myId);
+    const defeated = myPlayer?.bossesDefeated?.includes(region);
+    if (defeated) {
+      // Show a small ✅ text when defeated
+      const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      t.setAttribute('x', x); t.setAttribute('y', y + 5);
+      t.setAttribute('text-anchor', 'middle'); t.setAttribute('font-size', '18');
+      t.setAttribute('pointer-events', 'none'); t.setAttribute('opacity', '0.5');
+      t.textContent = '✅';
+      bossLayer.appendChild(t);
+    } else {
+      bossLayer.appendChild(svgToken(BOSS_TOKEN[region], x, y, 44));
+    }
+  });
+
+  // Render wanderer markers
+  const wandererLayer = document.getElementById('wanderer-layer');
+  wandererLayer.innerHTML = '';
+  (gameState.wanderers || []).forEach(w => {
+    const { x, y } = hexCenter(w.hex.col, w.hex.row);
+    wandererLayer.appendChild(svgToken('/tiles/Monster%20tokens/djinn.png', x, y, 40));
+  });
+
+  // Render village markers
+  const villageLayer = document.getElementById('village-layer');
+  villageLayer.innerHTML = '';
+  (gameState.villages || []).forEach(v => {
+    const { x, y } = hexCenter(v.hex.col, v.hex.row);
+    villageLayer.appendChild(svgToken('/tiles/Monster%20tokens/village.png', x, y, 38));
+  });
+
+  // Render camp markers
+  const campLayer = document.getElementById('camp-layer');
+  campLayer.innerHTML = '';
+  Object.entries(gameState.camps || {}).forEach(([key, camp]) => {
+    const [col, row] = key.split(',').map(Number);
+    const { x, y } = hexCenter(col, row);
+    campLayer.appendChild(svgToken('/tiles/Monster%20tokens/Camp.png', x, y, 36));
+  });
+
+  // Render player tokens
+  const tokenLayer = document.getElementById('token-layer');
+  tokenLayer.innerHTML = '';
+  gameState.players.forEach(player => {
+    if (!player.position) return;
+    const { x, y } = hexCenter(player.position.col, player.position.row);
+    const isActive = player.id === currentPlayer?.id;
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    // Coloured backing circle so players are distinguishable
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', x); circle.setAttribute('cy', y); circle.setAttribute('r', '20');
+    circle.setAttribute('fill', player.color); circle.setAttribute('fill-opacity', '0.55');
+    circle.setAttribute('stroke', isActive ? '#FFD700' : 'rgba(255,255,255,0.35)');
+    circle.setAttribute('stroke-width', isActive ? '2.5' : '1.2');
+    if (isActive) circle.setAttribute('filter', 'url(#glow)');
+    g.appendChild(circle);
+    // Character icon — use Character 2 when player has a ship and is on Misty Islands
+    const onMisty = player.hasShip && getRegion(player.position.col, player.position.row) === 'misty';
+    const img = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+    img.setAttribute('href', onMisty ? '/tiles/Monster%20tokens/Character%202.png' : '/tiles/Monster%20tokens/Character.png');
+    img.setAttribute('x', x - 18); img.setAttribute('y', y - 18);
+    img.setAttribute('width', '36'); img.setAttribute('height', '36');
+    img.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    img.setAttribute('pointer-events', 'none');
+    g.appendChild(img);
+    tokenLayer.appendChild(g);
+  });
+}
+
+function onHexClick(col, row) {
+  if (!gameState) return;
+  const currentPlayer = gameState.players[gameState.currentTurn];
+  if (currentPlayer?.id !== myId || gameState.phase !== 'move') return;
+  socket.emit('move', { col, row });
+}
+
+// ── GAME UI UPDATE ──
+function updateGameUI() {
+  if (!gameState) return;
+  if (!document.getElementById('screen-game').classList.contains('hidden')) {
+    updateBoardState();
+    renderPlayerCards();
+    updateHeader();
+    updateLog();
+    renderInventory();
+    renderPlayerEquipped();
+    if (!isSpectating()) handlePhaseModals();
+  }
+}
+
+function updateHeader() {
+  const cp = gameState.players[gameState.currentTurn];
+  if (!cp) return;
+  document.getElementById('turn-dot').style.background = cp.color;
+  document.getElementById('turn-text').textContent = cp.id === myId ? 'Your Turn' : `${cp.name}'s Turn`;
+  const phases = { move:'Move', scenario:'Choose', treasure:'Treasure', encounter:'Encounter', select_monster:'Setup', battle:'⚔ Battle', village:'🏘️ Village', village_shop:'🛒 Shop', village_tamer:'🐉 Tamer' };
+  document.getElementById('phase-badge').textContent = phases[gameState.phase] || gameState.phase;
+}
+
+function renderPlayerCards() {
+  const container = document.getElementById('player-cards');
+  const cp = gameState.players[gameState.currentTurn];
+  container.innerHTML = gameState.players.map(p => {
+    const isActive = p.id === cp?.id;
+    const isMe = p.id === myId;
+    const hpPct = Math.max(0, Math.round((p.hp / p.maxHp) * 100));
+    const hpColor = hpPct > 60 ? '#27ae60' : hpPct > 30 ? '#f39c12' : '#c0392b';
+    const monsters = p.monsters || [];
+    if (p.eliminated) {
+      return `
+        <div class="player-card" style="margin-bottom:0.6rem;opacity:0.4;filter:grayscale(1)">
+          <div class="player-card-header">
+            <div class="player-avatar" style="background:#555">${p.name[0].toUpperCase()}</div>
+            <span class="player-card-name" style="text-decoration:line-through">${escapeHtml(p.name)}${isMe ? ' (you)' : ''}</span>
+            <span style="margin-left:auto;font-size:0.72rem;color:#c06060;font-family:'Cinzel',serif;letter-spacing:1px">Fallen</span>
+          </div>
+        </div>
+      `;
+    }
+    const activeMonster = monsters[0];
+    const mHpPct = activeMonster ? Math.max(0, Math.round((activeMonster.hp / activeMonster.maxHp) * 100)) : 0;
+    return `
+      <div class="player-card ${isActive ? 'active' : ''} ${isActive && isMe ? 'my-turn' : ''}" style="margin-bottom:0.6rem">
+        <div class="player-card-header">
+          <div class="player-avatar" style="background:${p.color}">${p.name[0].toUpperCase()}</div>
+          <span class="player-card-name">${escapeHtml(p.name)}${isMe ? ' (you)' : ''}</span>
+        </div>
+        <div class="hp-text">Player HP: ${p.hp}/${p.maxHp}</div>
+        <div class="hp-bar"><div class="hp-fill" style="width:${hpPct}%;background:linear-gradient(90deg,${hpColor},${hpColor}99)"></div></div>
+        ${monsters.length > 0 ? `
+          <div style="margin-top:0.5rem">
+            <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:0.3rem">Team (${monsters.length}/5)</div>
+            ${monsters.map((m, mi) => {
+              const mhp = Math.max(0, Math.round((m.hp / m.maxHp) * 100));
+              return `<div class="monster-team-item" onmouseenter="showMonsterTooltip(event,${p.id === myId ? mi : -1},${JSON.stringify(m).replace(/"/g,'&quot;')})" onmouseleave="hideMonsterTooltip()">
+                <span>${elIcon(m.element, 14)}</span>
+                <span style="font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(m.name)}</span>
+                <span style="font-size:0.72rem;color:var(--muted);white-space:nowrap">${m.hp}/${m.maxHp}</span>
+              </div>`;
+            }).join('')}
+          </div>
+        ` : '<div style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem">No monsters</div>'}
+        <div class="inv-count">Inventory: ${p.inventory?.length || 0} item(s) &nbsp;·&nbsp; 🪙 ${p.gold ?? 0}gp${p.hasShip ? ' &nbsp;·&nbsp; ⚓' : ''}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function updateLog() {
+  const entries = (gameState.log || []).slice(-100).reverse();
+  document.getElementById('game-log').innerHTML = entries.map(e => `<div class="log-entry">${escapeHtml(e)}</div>`).join('');
+  const cl = document.getElementById('chronicles-log');
+  if (cl) cl.innerHTML = entries.map(e => `<div class="log-entry">${escapeHtml(e)}</div>`).join('');
+}
+
+function openChroniclesModal() {
+  updateLog();
+  document.getElementById('modal-chronicles').classList.remove('hidden');
+}
+
+function renderPlayerEquipped() {
+  const me = gameState.players.find(p => p.id === myId);
+  const el = document.getElementById('my-player-equipped');
+  if (!el) return;
+  if (!me?.playerEquipped?.length) { el.innerHTML = '<span style="color:var(--muted)">None</span>'; return; }
+  el.innerHTML = me.playerEquipped.map(c => `
+    <div class="inv-item-btn" style="cursor:default">
+      <div style="font-size:0.85rem;display:flex;align-items:center;gap:0.4rem">${itemIcon(c.icon,20)}<strong>${escapeHtml(c.name)}</strong></div>
+      <div style="font-size:0.75rem;color:var(--muted);margin-top:2px">${escapeHtml(c.effect)}</div>
+    </div>
+  `).join('');
+}
+
+function renderInventory() {
+  const me = gameState.players.find(p => p.id === myId);
+  const el = document.getElementById('my-inventory');
+  if (!me?.inventory?.length) { el.innerHTML = '<span style="color:var(--muted)">Empty</span>'; return; }
+  const isMyTurn = gameState.players[gameState.currentTurn]?.id === myId;
+  const canUse = isMyTurn && gameState.phase !== 'battle';
+  el.innerHTML = me.inventory.map(c => `
+    <button class="inv-item-btn" ${canUse ? `onclick="openInventoryItem('${c.id}')"` : 'disabled style="opacity:0.5;cursor:not-allowed"'}>
+      <div style="font-size:0.85rem;display:flex;align-items:center;gap:0.4rem"><span>${itemIcon(c.icon,20)}</span><strong>${escapeHtml(c.name)}</strong></div>
+      <div style="font-size:0.75rem;color:var(--muted);margin-top:2px">${escapeHtml(c.effect)}</div>
+    </button>
+  `).join('');
+}
+
+function openInventoryItem(itemId) {
+  const me = gameState.players.find(p => p.id === myId);
+  const item = me?.inventory?.find(i => i.id === itemId);
+  if (!item) return;
+  document.getElementById('inv-m-icon').innerHTML = itemIcon(item.icon, 48) || '✨';
+  document.getElementById('inv-m-name').textContent = item.name;
+  document.getElementById('inv-m-effect').textContent = item.effect;
+  const usageLabel = item.usage === 'use_once' ? 'Single Use' : item.usage === 'equip_to_player' ? 'Player Equipment' : 'Equipment';
+  document.getElementById('inv-m-usage').textContent = usageLabel;
+  const actions = document.getElementById('inv-m-actions');
+  if (item.usage === 'use_once') {
+    if (item.type === 'heal_player') {
+      actions.innerHTML = `<button class="btn btn-green" style="width:100%;margin-bottom:0.5rem" onclick="useInventoryItem('${itemId}','use',0)">Use on Yourself (+${item.value} HP)</button>`;
+    } else if (item.type === 'heal_monster') {
+      actions.innerHTML = (me.monsters||[]).map((m,i) => `
+        <button class="inv-monster-btn" onclick="useInventoryItem('${itemId}','use',${i})" onmouseenter="showMonsterTooltip(event,-1,${JSON.stringify(m).replace(/"/g,'&quot;')})" onmouseleave="hideMonsterTooltip()">
+          ${elIcon(m.element, 16)} <strong>${escapeHtml(m.name)}</strong>
+          <span style="margin-left:auto;color:var(--muted);font-size:0.78rem">${m.hp}/${m.maxHp} HP → ${Math.min(m.maxHp, m.hp+item.value)} HP</span>
+        </button>
+      `).join('') || '<div style="color:var(--muted);font-size:0.85rem">No monsters to heal.</div>';
+    }
+  } else if (item.usage === 'equip_to_player') {
+    actions.innerHTML = `<button class="inv-monster-btn" onclick="useInventoryItem('${itemId}','equip_to_player')">
+      <img src="/tiles/Monster tokens/Character.png" style="width:18px;height:18px;object-fit:contain;opacity:0.85">
+      <strong>Equip to Yourself</strong>
+    </button>`;
+  } else {
+    // equip to monster
+    actions.innerHTML = (me.monsters||[]).map((m,i) => `
+      <button class="inv-monster-btn" onclick="useInventoryItem('${itemId}','equip',${i})" onmouseenter="showMonsterTooltip(event,-1,${JSON.stringify(m).replace(/"/g,'&quot;')})" onmouseleave="hideMonsterTooltip()">
+        ${elIcon(m.element, 16)} <strong>${escapeHtml(m.name)}</strong>
+        <span style="margin-left:auto;color:var(--muted);font-size:0.75rem">${m.element}</span>
+      </button>
+    `).join('') || '<div style="color:var(--muted);font-size:0.85rem">No monsters to equip.</div>';
+  }
+  document.getElementById('modal-inventory').classList.remove('hidden');
+}
+
+function useInventoryItem(itemId, action, monsterIdx) {
+  socket.emit('use_inventory_item', { itemId, action, monsterIdx });
+  document.getElementById('modal-inventory').classList.add('hidden');
+}
+
+function closeIntroStory() {
+  document.getElementById('modal-intro-story').classList.add('hidden');
+}
+
+function showGatheringOverlay(gs) {
+  const overlay = document.getElementById('gathering-overlay');
+  overlay.classList.remove('hidden');
+  const me = gs.players.find(p => p.id === myId);
+  // Disable button if this player already confirmed
+  const btn = document.getElementById('gathering-btn');
+  if (me?.gatheredReady) {
+    btn.disabled = true;
+    btn.textContent = 'Awaiting other champions...';
+    btn.style.opacity = '0.5';
+    btn.style.cursor = 'not-allowed';
+  } else {
+    btn.disabled = false;
+    btn.textContent = 'Enter the Realm';
+    btn.style.opacity = '';
+    btn.style.cursor = '';
+  }
+  // Show ready status for all players
+  document.getElementById('gathering-ready-list').innerHTML = gs.players.map(p => `
+    <div style="display:flex;align-items:center;gap:0.7rem;font-family:'Cinzel',serif;font-size:0.78rem;color:${p.gatheredReady ? 'var(--gold)' : 'var(--muted)'}">
+      <div style="width:10px;height:10px;border-radius:50%;background:${p.gatheredReady ? '#27ae60' : '#555'};flex-shrink:0"></div>
+      ${escapeHtml(p.name)}${p.id === myId ? ' (you)' : ''}
+      <span style="margin-left:auto;font-size:0.7rem">${p.gatheredReady ? 'Ready' : 'Waiting...'}</span>
+    </div>
+  `).join('');
+}
+
+function enterRealm() {
+  socket.emit('player_enter_realm');
+  const btn = document.getElementById('gathering-btn');
+  btn.disabled = true;
+  btn.textContent = 'Awaiting other champions...';
+  btn.style.opacity = '0.5';
+  btn.style.cursor = 'not-allowed';
+}
+
+function spectatorWatch() {
+  document.getElementById('fallen-overlay').classList.add('hidden');
+  // Overlay dismissed — player stays on game screen in read-only spectator mode
+}
+
+function spectatorLeave() {
+  socket.emit('spectator_leave');
+  location.reload();
+}
+
+function isSpectating() {
+  const me = gameState?.players?.find(p => p.id === myId);
+  return !!me?.eliminated;
+}
+
+// ── MODALS ──
+function handlePhaseModals() {
+  const phase = gameState.phase;
+  const cp = gameState.players[gameState.currentTurn];
+  const isMyTurn = cp?.id === myId;
+
+  // scenario
+  if (phase === 'scenario' && isMyTurn && gameState.currentScenario) {
+    showScenarioModal(gameState.currentScenario);
+  } else if (phase === 'scenario_outcome' && isMyTurn && gameState.scenarioOutcome) {
+    showScenarioOutcome(gameState.scenarioOutcome);
+  } else { document.getElementById('modal-scenario').classList.add('hidden'); }
+
+  // treasure
+  if (phase === 'treasure' && isMyTurn && gameState.pendingCard) {
+    showTreasureModal(gameState.pendingCard);
+  } else { document.getElementById('modal-treasure').classList.add('hidden'); }
+
+  // encounter (pre-battle)
+  if (phase === 'encounter' && isMyTurn && gameState.pendingCard) {
+    showEncounterModal(gameState.pendingCard);
+  } else { document.getElementById('modal-encounter').classList.add('hidden'); }
+
+  // wanderer encounter
+  if (phase === 'wanderer_encounter' && isMyTurn) {
+    showWandererModal();
+  } else { document.getElementById('modal-wanderer').classList.add('hidden'); }
+
+  // wanderer reward
+  if (phase === 'wanderer_reward' && isMyTurn) {
+    document.getElementById('modal-wanderer-reward').classList.remove('hidden');
+  } else { document.getElementById('modal-wanderer-reward').classList.add('hidden'); }
+
+  // camp choice
+  if (phase === 'camp_choice' && isMyTurn) {
+    showCampChoiceModal(cp);
+  } else { document.getElementById('modal-camp-choice').classList.add('hidden'); }
+
+  // camp rest
+  if (phase === 'camp_rest' && isMyTurn) {
+    document.getElementById('modal-camp-rest').classList.remove('hidden');
+  } else { document.getElementById('modal-camp-rest').classList.add('hidden'); }
+
+  // village
+  const VILLAGE_PHASES = ['village','village_shop','village_tamer'];
+  if (VILLAGE_PHASES.includes(phase) && isMyTurn) {
+    showVillagePhaseModal(phase);
+  } else {
+    ['modal-village','modal-village-shop','modal-village-inn','modal-village-tamer','modal-hire-ship'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  }
+
+  // battle
+  if (phase === 'battle' && isMyTurn && gameState.battle) {
+    showBattleModal(gameState.battle, cp);
+  } else if (phase !== 'battle') {
+    document.getElementById('modal-battle').classList.add('hidden');
+  }
+}
+
+// ── CARD FLY ANIMATION ──
+const _deckRegionMap = {
+  'volcan mountains': 'volcan', 'misty islands': 'misty',
+  'valley meadows': 'meadow', 'mountain forests': 'forest',
+  'volcan': 'volcan', 'misty': 'misty', 'meadow': 'meadow', 'forest': 'forest'
+};
+let _lastFlownDeck = null;
+
+function flyCardFromDeck(deckId, bgColor, iconSrc, onDone) {
+  const deck = document.getElementById(deckId);
+  if (!deck) { if (onDone) onDone(); return; }
+  const ghost = document.getElementById('card-fly-ghost');
+  const deckRect = deck.getBoundingClientRect();
+  const vw = window.innerWidth, vh = window.innerHeight;
+  const startX = deckRect.left + deckRect.width / 2 - 44;
+  const startY = deckRect.top + deckRect.height / 2 - 62;
+  const endX = vw / 2 - 44;
+  const endY = vh / 2 - 62;
+  const dx = endX - startX, dy = endY - startY;
+  const rot = dx > 0 ? '8deg' : '-8deg';
+
+  ghost.style.cssText = `
+    display:flex; left:${startX}px; top:${startY}px;
+    background:${bgColor};
+    --fly-x:${dx}px; --fly-y:${dy}px; --fly-rot:${rot};
+    animation:none;
+  `;
+  ghost.innerHTML = iconSrc
+    ? `<img src="${iconSrc}" style="width:22px;height:22px;object-fit:contain;opacity:0.9">`
+    : '';
+
+  ghost.offsetWidth; // reflow
+  ghost.style.animation = 'cardFly 1.1s cubic-bezier(0.25,0.46,0.45,0.94) forwards';
+
+  // pulse the deck
+  deck.style.transition = 'transform 0.15s';
+  deck.style.transform = 'scale(0.93)';
+  setTimeout(() => { deck.style.transform = ''; }, 200);
+
+  setTimeout(() => {
+    ghost.style.display = 'none';
+    ghost.style.animation = 'none';
+    if (onDone) onDone();
+  }, 1150);
+}
+
+function flyScenarioCard(region, onDone) {
+  const key = (region || '').toLowerCase();
+  const r = _deckRegionMap[key] || 'volcan';
+  const bgMap = { volcan:'linear-gradient(160deg,#3a1208,#1e0a04)', misty:'linear-gradient(160deg,#0a1a2e,#060f1a)', meadow:'linear-gradient(160deg,#0e2010,#071408)', forest:'linear-gradient(160deg,#0a1c0c,#050e06)' };
+  const iconMap = { volcan:'/tiles/Monster%20tokens/BOSS%20Volcan%20Mountains.png', misty:'/tiles/Monster%20tokens/BOSS%20Misty%20Islands.png', meadow:'/tiles/Monster%20tokens/BOSS%20Valley%20Meadow.png', forest:'/tiles/Monster%20tokens/BOSS%20Mountain%20Forest.png' };
+  _lastFlownDeck = `deck-scenario-${r}`;
+  flyCardFromDeck(`deck-scenario-${r}`, bgMap[r], iconMap[r], onDone);
+}
+
+function flyTerritoryCard(region, onDone) {
+  const key = (region || '').toLowerCase();
+  const r = _deckRegionMap[key] || 'volcan';
+  const bgMap = { volcan:'linear-gradient(160deg,#3a1208,#1e0a04)', misty:'linear-gradient(160deg,#0a1a2e,#060f1a)', meadow:'linear-gradient(160deg,#0e2010,#071408)', forest:'linear-gradient(160deg,#0a1c0c,#050e06)' };
+  const iconMap = { volcan:'/tiles/Monster%20tokens/pyro.png', misty:'/tiles/Monster%20tokens/aqua.png', meadow:'/tiles/Monster%20tokens/terra.png', forest:'/tiles/Monster%20tokens/Aero.png' };
+  flyCardFromDeck(`deck-territory-${r}`, bgMap[r], iconMap[r], onDone);
+}
+
+function flyTreasureCard(onDone) {
+  flyCardFromDeck('deck-treasure', 'linear-gradient(160deg,#2a1f06,#161002)', '/tiles/Monster%20tokens/chest.png', onDone);
+}
+
+// Track which phases we've already animated to avoid re-triggering on repeated state updates
+const _animatedPhases = new Set();
+
+function showScenarioModal(card) {
+  // Region label + corner pip icon
+  const regionLabel = card.region || 'Fate Card';
+  document.getElementById('sc-region').textContent = regionLabel;
+  const regionIconMap = {
+    'volcan mountains': '/tiles/Monster%20tokens/BOSS%20Volcan%20Mountains.png',
+    'misty islands':    '/tiles/Monster%20tokens/BOSS%20Misty%20Islands.png',
+    'valley meadows':   '/tiles/Monster%20tokens/BOSS%20Valley%20Meadow.png',
+    'mountain forests': '/tiles/Monster%20tokens/BOSS%20Mountain%20Forest.png',
+  };
+  const pipIcon = regionIconMap[(regionLabel).toLowerCase()] || '/tiles/Monster%20tokens/book.png';
+  const pipLabel = regionLabel.split(' ').slice(-1)[0] || 'Fate';
+  ['sc-pip-icon-tl','sc-pip-icon-br'].forEach(id => { const el = document.getElementById(id); if(el) el.src = pipIcon; });
+  ['sc-pip-label-tl','sc-pip-label-br'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = pipLabel; });
+  document.getElementById('sc-name').textContent = card.name;
+  document.getElementById('sc-flavor').textContent = card.flavor;
+  document.getElementById('sc-opt1-text').textContent = card.opt1;
+  document.getElementById('sc-opt2-text').textContent = card.opt2;
+  document.getElementById('sc-opt3-text').textContent = card.opt3;
+  document.getElementById('sc-opt4-text').textContent = card.opt4;
+  document.getElementById('sc-choice-section').classList.remove('hidden');
+  document.getElementById('sc-outcome-section').classList.add('hidden');
+  const modalEl = document.getElementById('modal-scenario');
+  const key = 'scenario:' + card.name;
+  if (!_animatedPhases.has(key)) {
+    _animatedPhases.add(key);
+    flyScenarioCard(card.region, () => { modalEl.classList.remove('hidden'); });
+  } else {
+    modalEl.classList.remove('hidden');
+  }
+}
+
+function showScenarioOutcome(outcome) {
+  const resultLabels = { treasure:'<img src="/tiles/Monster%20tokens/chest.png" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:4px"> You drew a Treasure Card!', territory:'🗺️ You drew a Territory Card!', damage:`💀 You lost ${Math.abs(outcome.hpDelta)} HP!`, heal:`💚 You gained ${outcome.hpDelta} HP!` };
+  document.getElementById('sc-outcome-title').textContent = outcome.choiceText;
+  document.getElementById('sc-outcome-summary').textContent = outcome.summary;
+  document.getElementById('sc-outcome-result').innerHTML = resultLabels[outcome.result] || '';
+  document.getElementById('sc-choice-section').classList.add('hidden');
+  document.getElementById('sc-outcome-section').classList.remove('hidden');
+  document.getElementById('modal-scenario').classList.remove('hidden');
+}
+
+function showTreasureModal(card) {
+  document.getElementById('tr-icon').innerHTML = itemIcon(card.icon, 64) || '✨';
+  document.getElementById('tr-name').textContent = card.name;
+  document.getElementById('tr-effect').textContent = card.effect;
+  document.getElementById('tr-usage').textContent = card.usage === 'use_once' ? 'Single Use' : 'Equipment';
+
+  const actions = document.getElementById('tr-actions');
+  const me2 = gameState.players.find(p => p.id === myId);
+  const hasMonster = (me2?.monsters?.length || 0) > 0;
+  if (card.usage === 'use_once') {
+    const canUse = (card.type === 'heal_player') || (card.type === 'heal_monster' && hasMonster);
+    if (card.type === 'heal_monster' && hasMonster) {
+      actions.innerHTML = (me2.monsters||[]).map((m,i) => `
+        <button class="inv-monster-btn" onclick="useTreasure('use',${i})" onmouseenter="showMonsterTooltip(event,-1,${JSON.stringify(m).replace(/"/g,'&quot;')})" onmouseleave="hideMonsterTooltip()">
+          ${elIcon(m.element, 16)} <strong>${escapeHtml(m.name)}</strong>
+          <span style="margin-left:auto;color:var(--muted);font-size:0.78rem">${m.hp}/${m.maxHp} → ${Math.min(m.maxHp, m.hp+card.value)} HP</span>
+        </button>
+      `).join('') + `<button class="btn btn-outline" style="width:100%;margin-top:0.5rem" onclick="useTreasure('keep')">Keep in Inventory</button>`;
+    } else {
+      actions.innerHTML = `
+        ${canUse ? `<button class="btn btn-green" style="width:100%;margin-bottom:0.5rem" onclick="useTreasure('use',0)">Use Now (+${card.value} HP)</button>` : ''}
+        <button class="btn btn-outline" style="width:100%" onclick="useTreasure('keep')">Keep in Inventory</button>
+      `;
+    }
+  } else {
+    actions.innerHTML = hasMonster
+      ? (me2.monsters||[]).map((m,i) => `
+          <button class="inv-monster-btn" onclick="useTreasure('equip',${i})" onmouseenter="showMonsterTooltip(event,-1,${JSON.stringify(m).replace(/"/g,'&quot;')})" onmouseleave="hideMonsterTooltip()">
+            ${elIcon(m.element, 16)} <strong>${escapeHtml(m.name)}</strong>
+            <span style="margin-left:auto;color:var(--muted);font-size:0.75rem">${m.element}</span>
+          </button>
+        `).join('') + `<button class="btn btn-outline" style="width:100%;margin-top:0.5rem" onclick="useTreasure('keep')">Keep in Inventory</button>`
+      : `<button class="btn btn-outline" style="width:100%" onclick="useTreasure('keep')">Keep in Inventory</button>`;
+  }
+
+  const tKey = 'treasure:' + card.name;
+  if (!_animatedPhases.has(tKey)) {
+    _animatedPhases.add(tKey);
+    flyTreasureCard(() => { document.getElementById('modal-treasure').classList.remove('hidden'); });
+  } else {
+    document.getElementById('modal-treasure').classList.remove('hidden');
+  }
+}
+
+function showEncounterModal(monster) {
+  const isBoss = gameState?.isBossEncounter;
+  const tag = document.getElementById('enc-tag');
+  tag.textContent = isBoss ? '👑 BOSS ENCOUNTER — Territory Guardian' : '⚔ Territory Card — A Beast Stirs';
+  tag.style.color = isBoss ? '#FFD700' : '';
+  // Element-based pip icon on card corners
+  const elPipMap = { Pyro:'/tiles/Monster%20tokens/pyro.png', Aqua:'/tiles/Monster%20tokens/aqua.png', Terra:'/tiles/Monster%20tokens/terra.png', Aero:'/tiles/Monster%20tokens/Aero.png' };
+  const pipSrc = elPipMap[monster.element] || '/tiles/Monster%20tokens/creature.png';
+  ['enc-pip-icon-tl','enc-pip-icon-br'].forEach(id => { const el = document.getElementById(id); if(el) el.src = pipSrc; });
+  document.getElementById('enc-name').textContent = monster.name + (isBoss ? ' ★ BOSS' : '');
+  document.getElementById('enc-icon').innerHTML = monsterIcon(monster);
+  document.getElementById('enc-element').innerHTML = `<span class="el-${monster.element}">${elIcon(monster.element, 18)} ${monster.element}</span>`;
+  document.getElementById('enc-hp').textContent = `HP: ${monster.hp || monster.maxHp} / ${monster.maxHp}`;
+  const equippedInfo = (monster.equipped||[]).length
+    ? `<div style="margin-top:0.4rem;font-size:0.78rem;color:#C8A84B">Equipped: ${monster.equipped.map(e=>e.name).join(', ')}</div>` : '';
+  document.getElementById('enc-attacks').innerHTML = [monster.attack1, monster.attack2].filter(Boolean).map(a => `
+    <div class="attack-card-mini">
+      <div class="attack-name">${escapeHtml(a.name)}</div>
+      <div class="attack-stats">Hits on roll ${a.roll1} or ${a.roll2} → ${a.damage} damage</div>
+    </div>
+  `).join('') + equippedInfo;
+  // Retreat only available for wild encounters, not boss
+  document.getElementById('btn-retreat-enc').classList.toggle('hidden', isBoss);
+  // reset flee overlay for fresh encounter
+  document.getElementById('flee-dice-overlay').classList.add('hidden');
+  const fd = document.getElementById('flee-die-face');
+  if (fd) { fd.textContent = '—'; fd.style.borderColor = ''; fd.style.color = ''; }
+  document.getElementById('flee-roll-result').textContent = '';
+  const eKey = 'encounter:' + monster.name;
+  if (!_animatedPhases.has(eKey)) {
+    _animatedPhases.add(eKey);
+    const region = gameState?.currentHexRegion || gameState?.players?.[gameState.currentTurn]?.region || '';
+    flyTerritoryCard(region, () => { document.getElementById('modal-encounter').classList.remove('hidden'); });
+  } else {
+    document.getElementById('modal-encounter').classList.remove('hidden');
+  }
+}
+
+function chooseOption(opt) {
+  socket.emit('choose_option', { choice: opt });
+}
+
+function scenarioContinue() {
+  socket.emit('scenario_outcome_continue');
+  document.getElementById('modal-scenario').classList.add('hidden');
+}
+
+function useTreasure(action, monsterIdx) {
+  socket.emit('use_treasure', { action, monsterIdx });
+  document.getElementById('modal-treasure').classList.add('hidden');
+}
+
+function startBattle() {
+  socket.emit('battle_start');
+  document.getElementById('modal-encounter').classList.add('hidden');
+}
+
+// ── BATTLE UI ──
+let _lastBattleLogLen = 0;
+let _defeatedAnnounced = false;
+
+let _initAnimated = false;
+
+function animateInitiative(pRoll, eRoll, pWon) {
+  _initAnimated = true;
+  const pEl = document.getElementById('init-p-val');
+  const eEl = document.getElementById('init-e-val');
+  const msg = document.getElementById('first-turn-msg');
+  if (!pEl || !eEl) return;
+  // Reset both; show player rolling, monster waiting
+  pEl.textContent = '?'; eEl.textContent = '—';
+  msg.textContent = '';
+  pEl.style.color = 'var(--gold)'; eEl.style.color = 'var(--muted)';
+  // Player die rolls first
+  pEl.classList.add('die-rolling');
+  let pCount = 0;
+  const pTimer = setInterval(() => {
+    pEl.textContent = Math.ceil(Math.random() * 6);
+    if (++pCount >= 16) {
+      clearInterval(pTimer);
+      pEl.textContent = pRoll;
+      pEl.classList.remove('die-rolling');
+      // Brief pause, then enemy die rolls
+      setTimeout(() => {
+        eEl.textContent = '?';
+        eEl.style.color = 'var(--gold)';
+        eEl.classList.add('die-rolling');
+        let eCount = 0;
+        const eTimer = setInterval(() => {
+          eEl.textContent = Math.ceil(Math.random() * 6);
+          if (++eCount >= 16) {
+            clearInterval(eTimer);
+            eEl.textContent = eRoll;
+            eEl.classList.remove('die-rolling');
+            pEl.style.color = pWon ? '#FFD700' : '#FF6B6B';
+            eEl.style.color = !pWon ? '#FFD700' : '#FF6B6B';
+            setTimeout(() => { msg.textContent = pWon ? '⚡ You go first!' : '⚡ Enemy goes first!'; }, 250);
+          }
+        }, 55);
+      }, 350);
+    }
+  }, 55);
+}
+
+function resetBattleDice() {
+  _lastBattleLogLen = 0;
+  _initAnimated = false;
+  _defeatedAnnounced = false;
+  ['die-face-p','die-face-e','pf-die-face-p','pf-die-face-e'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = '—'; el.classList.remove('die-rolling'); }
+  });
+  ['roll-result-p','roll-result-e','pf-roll-result-p','pf-roll-result-e'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = '—'; el.style.color = 'var(--muted)'; }
+  });
+  ['roll-attack-name-p','roll-attack-name-e','pf-roll-attack-name-p','pf-roll-attack-name-e'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = '&nbsp;';
+  });
+}
+
+function animateDie(dieFaceId, attackNameId, resultId, entry, onDone) {
+  const dieFace = document.getElementById(dieFaceId);
+  const rollResult = document.getElementById(resultId);
+  const attackNameEl = document.getElementById(attackNameId);
+  if (!dieFace || !rollResult) { if (onDone) onDone(); return; }
+  if (attackNameEl) attackNameEl.textContent = entry.attack || '';
+  rollResult.textContent = '...';
+  rollResult.style.color = 'var(--muted)';
+  dieFace.classList.add('die-rolling');
+  let count = 0;
+  const timer = setInterval(() => {
+    dieFace.textContent = Math.ceil(Math.random() * 6);
+    if (++count >= 14) {
+      clearInterval(timer);
+      dieFace.textContent = entry.roll;
+      dieFace.classList.remove('die-rolling');
+      if (entry.hit) {
+        let txt = `⚔ HIT — ${entry.damage} dmg`;
+        if (entry.multiplier > 1) { txt += ' · SUPER!'; rollResult.style.color = '#D4622A'; }
+        else if (entry.multiplier < 1) { txt += ' · Weak'; rollResult.style.color = '#3A9E96'; }
+        else rollResult.style.color = entry.type === 'enemy' || entry.type === 'enemy_vs_player' ? '#c06060' : 'var(--gold)';
+        rollResult.textContent = txt;
+      } else {
+        rollResult.textContent = '✕ Missed!';
+        rollResult.style.color = 'var(--muted)';
+      }
+      if (onDone) setTimeout(onDone, 200);
+    }
+  }, 55);
+}
+
+function triggerBattleEntries(newEntries, prefix, onEachDone, onAllDone) {
+  const p = prefix || '';
+  const sorted = [...newEntries].sort((a, b) => {
+    const aIsPlayer = (a.type === 'player' || a.type === 'player_self') ? 0 : 1;
+    const bIsPlayer = (b.type === 'player' || b.type === 'player_self') ? 0 : 1;
+    return aIsPlayer - bIsPlayer;
+  });
+  function runNext(idx) {
+    if (idx >= sorted.length) { if (onAllDone) onAllDone(); return; }
+    const entry = sorted[idx];
+    const isPlayer = entry.type === 'player' || entry.type === 'player_self';
+    const side = isPlayer ? 'p' : 'e';
+    animateDie(`${p}die-face-${side}`, `${p}roll-attack-name-${side}`, `${p}roll-result-${side}`, entry, () => {
+      if (onEachDone) onEachDone(entry);
+      runNext(idx + 1);
+    });
+  }
+  runNext(0);
+}
+
+const EL_MAP = { Fire:'Pyro', Water:'Aqua', Earth:'Terra', Air:'Aero' };
+function normalizeEl(el) { return EL_MAP[el] || el; }
+function getMultiplier(a, d) {
+  const ae = normalizeEl(a), de = normalizeEl(d);
+  if ((ae==='Aqua'&&de==='Pyro')||(ae==='Pyro'&&de==='Terra')||(ae==='Terra'&&de==='Aero')||(ae==='Aero'&&de==='Pyro')) return 2;
+  if ((ae==='Pyro'&&de==='Aero')||(ae==='Aero'&&de==='Terra')||(ae==='Terra'&&de==='Pyro')||(ae==='Pyro'&&de==='Aqua')||(ae==='Aqua'&&de==='Aero')) return 0.5;
+  return 1;
+}
+
+function showBattleModal(battle, _p) {
+  // Always use fresh player from gameState
+  const player = gameState.players.find(p => p.id === myId) || _p;
+  const modal = document.getElementById('modal-battle');
+  const wasHidden = modal.classList.contains('hidden');
+  modal.classList.remove('hidden');
+
+  // Reset dice when battle first opens or log resets
+  if (wasHidden || !battle.log || battle.log.length === 0) resetBattleDice();
+
+  const phases = ['select-phase','combat-phase','victory-phase','defeat-phase','defeat-announce-phase','player-fight-phase','player-defeated-phase'];
+  phases.forEach(p => document.getElementById(`battle-${p}`).classList.add('hidden'));
+
+  // Reset defeat announce flag when back in combat phases
+  if (['select_monster','initiative','player_turn','enemy_turn'].includes(battle.phase)) {
+    _defeatedAnnounced = false;
+  }
+
+  // Show defeat announcement before the select/player-fight screens
+  if (!_defeatedAnnounced && battle.fallenMonsterName && (battle.phase === 'defeat_select' || battle.phase === 'player_fight')) {
+    _defeatedAnnounced = true;
+    document.getElementById('battle-defeat-announce-phase').classList.remove('hidden');
+    const enemyName = battle.wildMonster?.name || 'The Beast';
+    const fallenName = battle.fallenMonsterName;
+    document.getElementById('defeat-announce-msg').textContent = `${enemyName} has defeated ${fallenName}!`;
+    const continueBtn = document.getElementById('btn-defeat-continue');
+    if (battle.phase === 'player_fight') {
+      continueBtn.textContent = `${player.name}, enter battle!`;
+    } else {
+      continueBtn.textContent = 'Select a new companion →';
+    }
+    continueBtn.onclick = () => {
+      document.getElementById('battle-defeat-announce-phase').classList.add('hidden');
+      showBattleModal(battle, player);
+    };
+    return;
+  }
+
+  if (battle.phase === 'select_monster') {
+    document.getElementById('battle-select-phase').classList.remove('hidden');
+    renderBattleMonsterSelect(player.monsters, 'battle-monster-select', (idx) => {
+      socket.emit('battle_select_monster', { idx });
+    });
+    return;
+  }
+
+  if (battle.phase === 'defeat_select') {
+    document.getElementById('battle-defeat-phase').classList.remove('hidden');
+    const defeatMsg = document.getElementById('defeat-msg');
+    defeatMsg.textContent = `Thy companion hath fallen! Choose thy next creature to fight. (${player.monsters.length} remaining)`;
+    renderBattleMonsterSelect(player.monsters, 'defeat-monster-select', (idx) => {
+      socket.emit('battle_next_monster', { idx });
+    });
+    return;
+  }
+
+  if (battle.phase === 'player_fight') {
+    document.getElementById('battle-player-fight-phase').classList.remove('hidden');
+    const wild = battle.wildMonster;
+    const cp2 = gameState.players.find(p => p.id === myId);
+    document.getElementById('pf-player-name').textContent = cp2.name;
+    document.getElementById('pf-e-icon').innerHTML = monsterIconSmall(wild);
+    document.getElementById('pf-e-name').textContent = wild.name;
+    document.getElementById('pf-e-el').innerHTML = `<span class="el-${wild.element}">${wild.element}</span>`;
+    const _pfPHp = battle.playerHp, _pfPMax = cp2.maxHp;
+    const _pfEHp = battle.wildMonsterHp, _pfEMax = wild.maxHp;
+    function applyPfHpBars() {
+      document.getElementById('pf-player-hpbar').style.width = Math.max(0, Math.round((_pfPHp/_pfPMax)*100)) + '%';
+      document.getElementById('pf-player-hptext').textContent = `${_pfPHp} / ${_pfPMax} HP`;
+      document.getElementById('pf-e-hpbar').style.width = Math.max(0, Math.round((_pfEHp/_pfEMax)*100)) + '%';
+      document.getElementById('pf-e-hptext').textContent = `${_pfEHp} / ${_pfEMax} HP`;
+    }
+    const pfNew = battle.log ? battle.log.slice(_lastBattleLogLen) : [];
+    if (pfNew.length > 0) {
+      triggerBattleEntries(pfNew, 'pf-', (entry) => {
+        if (entry.playerHp !== undefined) {
+          const pPct = Math.max(0, Math.round((entry.playerHp / _pfPMax) * 100));
+          document.getElementById('pf-player-hpbar').style.width = pPct + '%';
+          document.getElementById('pf-player-hptext').textContent = `${entry.playerHp} / ${_pfPMax} HP`;
+        }
+        if (entry.wildHp !== undefined) {
+          const ePct = Math.max(0, Math.round((entry.wildHp / _pfEMax) * 100));
+          document.getElementById('pf-e-hpbar').style.width = ePct + '%';
+          document.getElementById('pf-e-hptext').textContent = `${entry.wildHp} / ${_pfEMax} HP`;
+        }
+      }, applyPfHpBars);
+      _lastBattleLogLen = battle.log.length;
+    } else {
+      applyPfHpBars();
+    }
+    return;
+  }
+
+  if (battle.phase === 'player_defeated') {
+    document.getElementById('battle-player-defeated-phase').classList.remove('hidden');
+    return;
+  }
+
+  if (battle.phase === 'victory') {
+    document.getElementById('battle-victory-phase').classList.remove('hidden');
+    const isBoss = gameState.isBossEncounter;
+    document.getElementById('victory-title').textContent = isBoss ? '👑 Guardian Slain!' : '⚔ Triumph!';
+    document.getElementById('victory-normal-btns').style.display = isBoss ? 'none' : 'flex';
+    document.getElementById('victory-boss-btns').style.display = isBoss ? 'flex' : 'none';
+    if (isBoss) {
+      const regionNames = { volcan:'The Volcan Mountains', misty:'The Misty Islands', meadow:'The Valley Meadows', forest:'The Mountain Forests' };
+      const region = battle.wildMonster?.bossRegion || '';
+      document.getElementById('victory-msg').textContent =
+        `The guardian of ${regionNames[region] || region} hath fallen. Claim thy rightful territory.`;
+    } else {
+      const freshPlayer = gameState.players.find(p => p.id === myId) || player;
+      const canCapture = freshPlayer.monsters.length < 5;
+      document.getElementById('btn-capture').disabled = !canCapture;
+      document.getElementById('btn-capture').title = canCapture ? '' : 'Thy party is full (5/5)';
+      document.getElementById('victory-msg').textContent =
+        `${battle.wildMonster.name} hath been vanquished!${canCapture ? ' Bind the creature to thy cause, or claim a treasure.' : ' Thy party is full — claim a treasure instead.'}`;
+    }
+    return;
+  }
+
+  // Combat phase (player_turn, enemy_turn, initiative)
+  document.getElementById('battle-combat-phase').classList.remove('hidden');
+  const playerMonster = player.monsters[battle.playerMonsterIdx];
+  const wild = battle.wildMonster;
+  if (!playerMonster) return;
+
+  // Update non-HP fields immediately
+  document.getElementById('bm-p-icon').innerHTML = monsterIconSmall(playerMonster);
+  document.getElementById('bm-p-name').textContent = playerMonster.name;
+  document.getElementById('bm-p-el').innerHTML = `<span class="el-${playerMonster.element}">${playerMonster.element}</span>`;
+  document.getElementById('bm-e-icon').innerHTML = monsterIconSmall(wild);
+  document.getElementById('bm-e-name').textContent = wild.name;
+  document.getElementById('bm-e-el').innerHTML = `<span class="el-${wild.element}">${wild.element}</span>`;
+
+  // HP bar updater — called immediately if no animation, or deferred until after dice settle
+  const _pMaxHp = playerMonster.maxHp, _eMaxHp = wild.maxHp;
+  const _pHp = battle.playerMonsterHp, _eHp = battle.wildMonsterHp;
+  function applyHpBars() {
+    document.getElementById('bm-p-hpbar').style.width = Math.max(0, Math.round((_pHp/_pMaxHp)*100)) + '%';
+    document.getElementById('bm-p-hptext').textContent = `${_pHp} / ${_pMaxHp} HP`;
+    document.getElementById('bm-e-hpbar').style.width = Math.max(0, Math.round((_eHp/_eMaxHp)*100)) + '%';
+    document.getElementById('bm-e-hptext').textContent = `${_eHp} / ${_eMaxHp} HP`;
+  }
+
+  // Initiative display
+  const initRow = document.getElementById('initiative-row');
+  if (battle.playerInitRoll !== null) {
+    initRow.classList.remove('hidden');
+    if (!_initAnimated) {
+      animateInitiative(battle.playerInitRoll, battle.wildInitRoll, battle.playerInitRoll >= battle.wildInitRoll);
+    }
+  } else {
+    initRow.classList.add('hidden');
+  }
+
+  // Dice roll animation for new log entries; apply each HP bar after its own animation
+  const newEntries = battle.log ? battle.log.slice(_lastBattleLogLen) : [];
+  if (newEntries.length > 0) {
+    triggerBattleEntries(newEntries, '', (entry) => {
+      if (entry.playerMonsterHp !== undefined) {
+        const pPct = Math.max(0, Math.round((entry.playerMonsterHp / _pMaxHp) * 100));
+        document.getElementById('bm-p-hpbar').style.width = pPct + '%';
+        document.getElementById('bm-p-hptext').textContent = `${entry.playerMonsterHp} / ${_pMaxHp} HP`;
+      }
+      if (entry.wildHp !== undefined) {
+        const ePct = Math.max(0, Math.round((entry.wildHp / _eMaxHp) * 100));
+        document.getElementById('bm-e-hpbar').style.width = ePct + '%';
+        document.getElementById('bm-e-hptext').textContent = `${entry.wildHp} / ${_eMaxHp} HP`;
+      }
+    }, applyHpBars);
+    _lastBattleLogLen = battle.log.length;
+  } else {
+    applyHpBars();
+  }
+
+  // Attack buttons or waiting
+  const attackSection = document.getElementById('attack-section');
+  const waitingSection = document.getElementById('waiting-section');
+  if (battle.phase === 'player_turn') {
+    attackSection.classList.remove('hidden');
+    waitingSection.classList.add('hidden');
+    const equipped = playerMonster.equipped || [];
+    const bonusRolls = equipped.filter(e => e.type === 'roll_bonus').map(e => e.value);
+    const attackBoost = equipped.filter(e => e.type === 'attack_boost' && normalizeEl(e.element) === normalizeEl(playerMonster.element)).reduce((s, e) => s + e.value, 0);
+    const hasRemoveWeakness = equipped.some(e => e.type === 'remove_weakness' && normalizeEl(e.element) === normalizeEl(playerMonster.element));
+    const baseMult = getMultiplier(playerMonster.element, wild.element);
+    const effectiveMult = (baseMult < 1 && hasRemoveWeakness) ? 1 : baseMult;
+    document.getElementById('battle-attack-btns').innerHTML = [playerMonster.attack1, playerMonster.attack2].map((a, i) => {
+      const effDmg = Math.round((a.damage + attackBoost) * effectiveMult);
+      const bonusStr = bonusRolls.length ? bonusRolls.map(r => `, <span style="color:#FFD700">${r}★</span>`).join('') : '';
+      const rollsStr = `<img src="/tiles/Monster%20tokens/dice.png" style="width:14px;height:14px;object-fit:contain;vertical-align:middle;margin-right:3px"> ${a.roll1}, ${a.roll2}${bonusStr} to hit`;
+      const dmgStr = attackBoost > 0 ? `${effDmg} dmg <span style="color:#A78BFA;font-size:0.72rem">(${a.damage}+${attackBoost})</span>` : `${effDmg} dmg`;
+      const multBadge = effectiveMult > 1 ? ' <span class="multiplier-badge mult-super">×2 SUPER</span>' : effectiveMult < 1 ? ' <span class="multiplier-badge mult-resist">×0.5</span>' : '';
+      return `<button class="battle-attack-btn" onclick="socket.emit('battle_attack',{attackIdx:${i}})">
+        <div class="ba-name">${escapeHtml(a.name)}</div>
+        <div class="ba-rolls">${rollsStr}</div>
+        <div class="ba-dmg">${dmgStr}${multBadge}</div>
+      </button>`;
+    }).join('');
+  } else {
+    attackSection.classList.add('hidden');
+    waitingSection.classList.remove('hidden');
+  }
+}
+
+let _battleSelectCallback = null;
+function renderBattleMonsterSelect(monsters, containerId, onSelect) {
+  _battleSelectCallback = onSelect;
+  const container = document.getElementById(containerId);
+  if (!monsters || monsters.length === 0) {
+    container.innerHTML = '<div style="color:var(--muted);text-align:center;padding:1rem">No monsters available.</div>';
+    return;
+  }
+  container.innerHTML = monsters.map((m, i) => {
+    const iconUrl = MONSTER_ICONS[m.id];
+    const iconHtml = iconUrl
+      ? `<img src="${iconUrl}" style="width:40px;height:40px;object-fit:contain" alt="">`
+      : elIcon(m.element, 40);
+    return `
+    <button class="battle-select-btn" onclick="_battleSelectCallback(${i})">
+      <div style="height:40px;display:flex;align-items:center;justify-content:center">${iconHtml}</div>
+      <div style="font-weight:700;font-size:0.88rem;margin:0.2rem 0">${escapeHtml(m.name)}</div>
+      <div style="font-size:0.75rem" class="el-${m.element}">${m.element}</div>
+      <div style="font-size:0.75rem;color:var(--muted)">HP: ${m.hp}/${m.maxHp}</div>
+    </button>
+  `;
+  }).join('');
+}
+
+function formatBattleLog(entry, playerMonster, wild) {
+  if (!entry) return '';
+  let attacker, side;
+  if (entry.type === 'player') {
+    attacker = playerMonster?.name || 'You'; side = 'blog-player';
+  } else if (entry.type === 'player_self') {
+    attacker = 'You'; side = 'blog-player';
+  } else if (entry.type === 'enemy_vs_player') {
+    attacker = wild?.name || 'Enemy'; side = 'blog-enemy';
+  } else {
+    attacker = wild?.name || 'Enemy'; side = 'blog-enemy';
+  }
+  let multTag = '';
+  if (entry.hit && entry.type === 'player') {
+    if (entry.multiplier > 1) multTag = ' <span class="multiplier-badge mult-super">SUPER EFFECTIVE ×2!</span>';
+    else if (entry.multiplier < 1) multTag = ' <span class="multiplier-badge mult-resist">NOT VERY EFFECTIVE ×0.5</span>';
+  }
+  const rollStr = `[rolled ${entry.roll}]`;
+  if (entry.hit) {
+    return `<div class="blog-entry ${side}">${escapeHtml(attacker)} used <strong>${escapeHtml(entry.attack)}</strong> ${rollStr} — HIT! ${entry.damage} dmg${multTag}</div>`;
+  } else {
+    return `<div class="blog-entry blog-miss">${escapeHtml(attacker)} used <strong>${escapeHtml(entry.attack)}</strong> ${rollStr} — Missed!</div>`;
+  }
+}
+
+function battleCapture() { socket.emit('battle_capture'); }
+function battleBossClaim() { socket.emit('battle_boss_claim'); document.getElementById('modal-battle').classList.add('hidden'); }
+function battleTakeTreasure() { socket.emit('battle_take_treasure'); }
+function battleRetreat() { socket.emit('battle_retreat'); }
+
+function attemptFlee() {
+  const overlay = document.getElementById('flee-dice-overlay');
+  const dieFace = document.getElementById('flee-die-face');
+  const result  = document.getElementById('flee-roll-result');
+  // reset state
+  dieFace.textContent = '—';
+  dieFace.style.borderColor = '';
+  dieFace.style.color = '';
+  result.textContent = '';
+  overlay.classList.remove('hidden');
+  document.getElementById('btn-retreat-enc').disabled = true;
+  socket.emit('retreat_encounter');
+}
+
+// ── WANDERER ──
+function showWandererModal() {
+  const wanderer = gameState.wanderers[gameState.activeWandererIdx];
+  if (!wanderer) return;
+  const cp = gameState.players[gameState.currentTurn];
+  const hasItem = (cp.inventory || []).some(item => item.id === wanderer.itemId);
+  document.getElementById('wanderer-item-icon').innerHTML = itemIcon(wanderer.icon, 48) || '';
+  document.getElementById('wanderer-item-name').textContent = wanderer.itemName;
+  document.getElementById('wanderer-request-text').textContent =
+    `"I've been searching for a ${wanderer.itemName}. Bring it to me and I will reward you handsomely."`;
+  const noItemMsg = document.getElementById('wanderer-no-item-msg');
+  const giveBtn = document.getElementById('btn-wanderer-give');
+  if (hasItem) {
+    noItemMsg.classList.add('hidden');
+    giveBtn.disabled = false;
+    giveBtn.innerHTML = `<img src="/tiles/Monster%20tokens/chest.png" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:6px"> Give ${wanderer.itemName}`;
+  } else {
+    noItemMsg.classList.remove('hidden');
+    noItemMsg.textContent = `You don't have a ${wanderer.itemName}. Find one and return here.`;
+    giveBtn.disabled = true;
+    giveBtn.innerHTML = `<img src="/tiles/Monster%20tokens/chest.png" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:6px"> Give Item (not in inventory)`;
+  }
+  document.getElementById('modal-wanderer').classList.remove('hidden');
+}
+
+// ── CAMP ──
+let _campSelectedIndices = new Set();
+
+function showCampChoiceModal(cp) {
+  _campSelectedIndices = new Set();
+  const picker = document.getElementById('camp-item-picker');
+  picker.innerHTML = '';
+  if (!cp.inventory || cp.inventory.length === 0) {
+    picker.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--muted);font-size:0.85rem;padding:0.5rem">Your inventory is empty.</div>';
+  } else {
+    cp.inventory.forEach((item, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'battle-select-btn';
+      btn.id = `camp-item-${i}`;
+      btn.style.cssText = 'font-size:0.8rem;padding:0.5rem;text-align:center';
+      btn.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;min-height:1.6rem">${itemIcon(item.icon, 28) || '📦'}</div><div style="font-size:0.75rem;color:var(--gold);margin-top:2px">${item.name}</div>`;
+      btn.onclick = () => toggleCampItem(i);
+      picker.appendChild(btn);
+    });
+  }
+  const buildBtn = document.getElementById('btn-build-camp');
+  buildBtn.style.display = (cp.inventory && cp.inventory.length >= 3) ? '' : 'none';
+  updateCampBuildBtn();
+  document.getElementById('modal-camp-choice').classList.remove('hidden');
+}
+
+function toggleCampItem(idx) {
+  if (_campSelectedIndices.has(idx)) {
+    _campSelectedIndices.delete(idx);
+  } else if (_campSelectedIndices.size < 3) {
+    _campSelectedIndices.add(idx);
+  }
+  // Update visual selection
+  const cp = gameState.players[gameState.currentTurn];
+  cp.inventory.forEach((_, i) => {
+    const btn = document.getElementById(`camp-item-${i}`);
+    if (!btn) return;
+    btn.style.borderColor = _campSelectedIndices.has(i) ? '#FFD700' : '';
+    btn.style.background = _campSelectedIndices.has(i) ? 'rgba(255,215,0,0.15)' : '';
+  });
+  updateCampBuildBtn();
+}
+
+function updateCampBuildBtn() {
+  const n = _campSelectedIndices.size;
+  const btn = document.getElementById('btn-build-camp');
+  const display = document.getElementById('camp-selected-display');
+  btn.disabled = n !== 3;
+  btn.innerHTML = `<img src="/tiles/Monster%20tokens/Camp.png" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:6px"> Build Camp (${n} / 3 selected)`;
+  display.textContent = n === 3 ? '3 items selected — ready to build!' : `Select ${3 - n} more item${3 - n !== 1 ? 's' : ''} to sacrifice`;
+  display.style.color = n === 3 ? 'var(--gold)' : 'var(--muted)';
+}
+
+function confirmBuildCamp() {
+  if (_campSelectedIndices.size !== 3) return;
+  socket.emit('build_camp', { itemIndices: [..._campSelectedIndices] });
+  document.getElementById('modal-camp-choice').classList.add('hidden');
+}
+
+// ── MONSTER TOOLTIP ──
+function showMonsterTooltip(event, monsterIdx, monster) {
+  if (!monster) return;
+  const tt = document.getElementById('monster-tooltip');
+  const hpPct = Math.max(0, Math.round((monster.hp / monster.maxHp) * 100));
+  const hpColor = hpPct > 60 ? '#27ae60' : hpPct > 30 ? '#f39c12' : '#c0392b';
+  document.getElementById('tt-name').innerHTML = `${elIcon(monster.element, 16)} ${escapeHtml(monster.name)}`;
+  document.getElementById('tt-el').innerHTML = `<span class="el-${monster.element}">${monster.element}</span>`;
+  document.getElementById('tt-hp-fill').style.width = hpPct + '%';
+  document.getElementById('tt-hp-fill').style.background = `linear-gradient(90deg,${hpColor},${hpColor}99)`;
+  document.getElementById('tt-hp-text').textContent = `${monster.hp} / ${monster.maxHp} HP`;
+  const equipped = monster.equipped || [];
+  const bonusRolls = equipped.filter(e => e.type === 'roll_bonus').map(e => e.value);
+  const attackBoost = equipped.filter(e => e.type === 'attack_boost' && normalizeEl(e.element) === normalizeEl(monster.element)).reduce((s, e) => s + e.value, 0);
+  const removedWeakness = equipped.filter(e => e.type === 'remove_weakness').map(e => e.element);
+  const hpBoost = equipped.filter(e => e.type === 'hp_boost').reduce((s, e) => s + e.value, 0);
+  document.getElementById('tt-attacks').innerHTML = [monster.attack1, monster.attack2].filter(Boolean).map(a => {
+    const effDmg = a.damage + attackBoost;
+    const bonusStr = bonusRolls.length ? `, <span style="color:#FFD700">${bonusRolls.join(', ')}★</span>` : '';
+    const dmgStr = attackBoost > 0 ? `${effDmg} dmg <span style="color:#A78BFA">(${a.damage}+${attackBoost})</span>` : `${a.damage} dmg`;
+    return `<div class="tt-attack">
+      <div class="tt-attack-name">${escapeHtml(a.name)}</div>
+      <div class="tt-attack-detail">Roll ${a.roll1}, ${a.roll2}${bonusStr} → ${dmgStr}</div>
+    </div>`;
+  }).join('');
+  let modLines = [];
+  if (hpBoost > 0) modLines.push(`<span class="tt-equip-tag" style="color:#27ae60">❤️ +${hpBoost} Max HP</span>`);
+  if (attackBoost > 0) modLines.push(`<span class="tt-equip-tag" style="color:#e67e22">⚔️ +${attackBoost} Damage</span>`);
+  if (bonusRolls.length) modLines.push(`<span class="tt-equip-tag" style="color:#FFD700"><img src="/tiles/Monster%20tokens/dice.png" style="width:13px;height:13px;object-fit:contain;vertical-align:middle;margin-right:3px"> Also hits on: ${bonusRolls.join(', ')}</span>`);
+  if (removedWeakness.length) modLines.push(`<span class="tt-equip-tag" style="color:#4ECDC4">🛡️ Weakness removed: ${removedWeakness.join(', ')}</span>`);
+  document.getElementById('tt-equips').innerHTML = modLines.join('') || (equipped.length ? equipped.map(e => `<span class="tt-equip-tag" style="display:inline-flex;align-items:center;gap:3px">${itemIcon(e.icon,14)} ${escapeHtml(e.name)}</span>`).join('') : '');
+  // Position tooltip near the cursor but keep it on screen
+  const x = event.clientX + 16;
+  const y = event.clientY - 10;
+  tt.style.left = Math.min(x, window.innerWidth - 240) + 'px';
+  tt.style.top = Math.min(y, window.innerHeight - tt.offsetHeight - 10) + 'px';
+  tt.style.display = 'block';
+}
+
+function hideMonsterTooltip() {
+  document.getElementById('monster-tooltip').style.display = 'none';
+}
+
+// ── VILLAGE ──
+
+function showVillagePhaseModal(phase) {
+  const me = gameState.players.find(p => p.id === myId);
+  const village = gameState.villages?.[gameState.activeVillageIdx];
+  const isCoastal = village?.isCoastal || false;
+
+  document.getElementById('modal-village').classList.toggle('hidden', phase !== 'village');
+  document.getElementById('modal-village-shop').classList.toggle('hidden', phase !== 'village_shop');
+  document.getElementById('modal-village-tamer').classList.toggle('hidden', phase !== 'village_tamer');
+  document.getElementById('modal-village-inn').classList.add('hidden');
+  document.getElementById('modal-hire-ship').classList.add('hidden');
+
+  if (phase === 'village') {
+    // Show/hide ship option based on coastal flag
+    const shipBtn = document.getElementById('btn-hire-ship');
+    if (isCoastal && !me?.hasShip) {
+      shipBtn.style.display = '';
+    } else {
+      shipBtn.style.display = 'none';
+    }
+    // Grey out inn if can't afford
+    const innBtn = document.getElementById('btn-village-inn');
+    innBtn.disabled = (me?.gold ?? 0) < 50;
+    innBtn.title = (me?.gold ?? 0) < 50 ? 'Not enough gold' : '';
+  }
+
+  if (phase === 'village_shop') {
+    renderShopModal(me);
+  }
+
+  if (phase === 'village_tamer') {
+    renderTamerModal(me);
+  }
+}
+
+function renderShopModal(me) {
+  const gold = me?.gold ?? 0;
+  document.getElementById('shop-gold-display').textContent = `🪙 ${gold} gp`;
+
+  // Shop items for sale
+  const shopItems = gameState.villageShopItems || [];
+  const shopEl = document.getElementById('shop-items-list');
+  if (!shopItems.length) {
+    shopEl.innerHTML = '<div style="color:var(--muted);font-size:1.7rem;font-style:italic">No wares available.</div>';
+  } else {
+    shopEl.innerHTML = shopItems.map(item => {
+      const canAfford = gold >= item.gpValue;
+      const rarityStars = '★'.repeat(item.rarity || 1);
+      return `<div style="display:flex;align-items:center;gap:0.6rem;background:rgba(0,0,0,0.25);border:1px solid rgba(90,64,32,0.3);border-radius:2px;padding:0.5rem 0.7rem">
+        <span style="display:flex;align-items:center">${itemIcon(item.icon, 28) || '📦'}</span>
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Cinzel',serif;font-size:0.82rem;font-weight:700;color:var(--gold-light)">${escapeHtml(item.name)}</div>
+          <div style="font-size:1.44rem;color:var(--muted);font-style:italic">${escapeHtml(item.effect)}</div>
+          <div style="font-size:0.68rem;color:var(--brass)">${rarityStars}</div>
+        </div>
+        <button class="btn btn-gold" style="font-size:0.72rem;padding:0.3rem 0.7rem;white-space:nowrap" ${canAfford ? '' : 'disabled'} onclick="socket.emit('village_buy_item',{itemId:'${item.id}'})">Buy ${item.gpValue}gp</button>
+      </div>`;
+    }).join('');
+  }
+
+  // Player inventory for selling
+  const inv = me?.inventory || [];
+  const invEl = document.getElementById('shop-inv-list');
+  if (!inv.length) {
+    invEl.innerHTML = '<div style="color:var(--muted);font-size:1.7rem;font-style:italic">Thy satchel is empty.</div>';
+  } else {
+    invEl.innerHTML = inv.map(item => `
+      <div style="display:flex;align-items:center;gap:0.6rem;background:rgba(0,0,0,0.2);border:1px solid rgba(90,64,32,0.2);border-radius:2px;padding:0.4rem 0.7rem">
+        <span style="display:flex;align-items:center">${itemIcon(item.icon, 22) || '📦'}</span>
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Cinzel',serif;font-size:0.8rem;color:var(--text)">${escapeHtml(item.name)}</div>
+        </div>
+        <button class="btn btn-outline" style="font-size:0.72rem;padding:0.3rem 0.7rem;white-space:nowrap;color:var(--gold)" onclick="socket.emit('village_sell_item',{itemId:'${item.id}'})">Sell ${item.gpValue || 0}gp</button>
+      </div>
+    `).join('');
+  }
+}
+
+function renderTamerModal(me) {
+  const gold = me?.gold ?? 0;
+  document.getElementById('tamer-gold-display').textContent = `🪙 ${gold} gp`;
+
+  // Monster for purchase
+  const offer = gameState.villageTamerMonster;
+  const offerEl = document.getElementById('tamer-monster-offer');
+  if (!offer) {
+    offerEl.innerHTML = '<div style="color:var(--muted);font-size:1.7rem;font-style:italic;text-align:center;padding:0.5rem">No creature available today.</div>';
+  } else {
+    const canAfford = gold >= (offer.gpValue || 0);
+    const partyFull = (me?.monsters?.length || 0) >= 5;
+    const rarityStars = '★'.repeat(offer.rarity || 1);
+    offerEl.innerHTML = `
+      <div style="display:flex;align-items:center;gap:0.8rem;background:rgba(0,0,0,0.25);border:1px solid rgba(90,64,32,0.35);border-radius:3px;padding:0.7rem">
+        <div style="flex-shrink:0">${monsterIconSmall(offer)}</div>
+        <div style="flex:1">
+          <div style="font-family:'Cinzel',serif;font-size:0.88rem;font-weight:700;color:var(--gold-light)">${escapeHtml(offer.name)}</div>
+          <div style="font-size:0.75rem" class="el-${offer.element}">${elIcon(offer.element,14)} ${offer.element}</div>
+          <div style="font-size:0.75rem;color:var(--muted)">HP: ${offer.maxHp} &nbsp;·&nbsp; ${rarityStars}</div>
+        </div>
+        <button class="btn btn-green" style="font-size:0.72rem;padding:0.4rem 0.8rem;white-space:nowrap" ${canAfford && !partyFull ? '' : 'disabled'} title="${partyFull ? 'Party full (5/5)' : !canAfford ? 'Not enough gold' : ''}" onclick="socket.emit('village_buy_monster')">Buy ${offer.gpValue || 0}gp</button>
+      </div>`;
+  }
+
+  // Player's monsters for selling
+  const monsters = me?.monsters || [];
+  const sellEl = document.getElementById('tamer-sell-list');
+  if (!monsters.length) {
+    sellEl.innerHTML = '<div style="color:var(--muted);font-size:1.7rem;font-style:italic">Thou hast no creatures to sell.</div>';
+  } else {
+    sellEl.innerHTML = monsters.map((m, i) => `
+      <div style="display:flex;align-items:center;gap:0.6rem;background:rgba(0,0,0,0.2);border:1px solid rgba(90,64,32,0.2);border-radius:2px;padding:0.4rem 0.7rem">
+        <div style="flex-shrink:0">${monsterIconSmall(m)}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Cinzel',serif;font-size:0.8rem;color:var(--text)">${escapeHtml(m.name)}</div>
+          <div style="font-size:0.7rem;color:var(--muted)">HP ${m.hp}/${m.maxHp}${m.equipped?.length ? ' · ' + m.equipped.length + ' item(s) equipped' : ''}</div>
+        </div>
+        <button class="btn btn-outline" style="font-size:0.72rem;padding:0.3rem 0.7rem;white-space:nowrap;color:var(--gold)" onclick="socket.emit('village_sell_monster',{monsterIdx:${i}})">Sell ${m.gpValue || 0}gp</button>
+      </div>
+    `).join('');
+  }
+}
+
+function villageInn() {
+  const me = gameState.players.find(p => p.id === myId);
+  document.getElementById('inn-gold-display').textContent = `🪙 ${me?.gold ?? 0} gp available`;
+  const payBtn = document.getElementById('btn-inn-pay');
+  payBtn.disabled = (me?.gold ?? 0) < 50;
+  document.getElementById('modal-village').classList.add('hidden');
+  document.getElementById('modal-village-inn').classList.remove('hidden');
+}
+
+function closeInnModal() {
+  document.getElementById('modal-village-inn').classList.add('hidden');
+  document.getElementById('modal-village').classList.remove('hidden');
+}
+
+function showHireShipModal() {
+  const me = gameState.players.find(p => p.id === myId);
+  document.getElementById('ship-gold-display').textContent = `🪙 ${me?.gold ?? 0} gp available`;
+  const payBtn = document.getElementById('btn-hire-ship-pay');
+  payBtn.disabled = (me?.gold ?? 0) < 300;
+  document.getElementById('modal-village').classList.add('hidden');
+  document.getElementById('modal-hire-ship').classList.remove('hidden');
+}
+
+function closeShipModal() {
+  document.getElementById('modal-hire-ship').classList.add('hidden');
+  document.getElementById('modal-village').classList.remove('hidden');
+}
+
+// ── UTILS ──
+function itemIcon(icon, size) {
+  if (!icon) return '';
+  size = size || 28;
+  if (icon.startsWith('/')) return `<img src="${icon}" style="width:${size}px;height:${size}px;object-fit:contain;vertical-align:middle;display:inline-block">`;
+  return icon;
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── BOOT ──
+document.addEventListener('DOMContentLoaded', () => {
+  init();
+  renderBoard();
+  initBoardInteraction();
+});
+</script>
+</body>
+</html>

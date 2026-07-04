@@ -1,0 +1,14 @@
+{
+  "name": "elemental-monsters-game",
+  "version": "1.0.0",
+  "description": "Elemental Monsters multiplayer hex board game",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.6.1",
+    "uuid": "^9.0.0"
+  }
+}
