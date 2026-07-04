@@ -916,15 +916,15 @@
 
 <!-- ══════════════ MONSTER SELECT ══════════════ -->
 <!-- ══════════════ INTRO STORY MODAL ══════════════ -->
-<div id="modal-intro-story" class="modal-overlay hidden" style="z-index:8000;align-items:center;justify-content:center">
+<div id="modal-intro-story" class="modal-overlay hidden" style="z-index:8000;align-items:flex-start;justify-content:center;overflow-y:auto;padding:0.75rem">
   <div style="
     position:relative;
-    width:560px; max-width:93vw;
+    width:560px; max-width:100%;
     background: radial-gradient(ellipse at 50% 0%, #1c1608 0%, #12100a 80%);
     border: 2px solid rgba(201,168,76,0.4);
     border-radius: 6px;
     box-shadow: 0 0 80px rgba(201,168,76,0.1), 0 0 0 8px rgba(10,8,4,0.6), 0 0 0 9px rgba(201,168,76,0.12);
-    padding: 2.4rem 2.2rem 2rem;
+    padding: clamp(1rem, 4vw, 2.4rem) clamp(1rem, 4vw, 2.2rem) clamp(1rem, 3vw, 2rem);
     animation: slideUp 0.4s ease;
   ">
     <!-- inner frame -->
@@ -950,10 +950,10 @@
       <div style="flex:1;height:1px;background:var(--gold)"></div>
     </div>
     <!-- story text -->
-    <p style="font-family:'IM Fell English',serif;font-size:0.92rem;line-height:1.8;color:var(--text);margin:0 0 1rem;text-indent:1.4em">
+    <p style="font-family:'IM Fell English',serif;font-size:clamp(0.75rem,2.5vw,0.92rem);line-height:clamp(1.4,4vw,1.8);color:var(--text);margin:0 0 0.8rem;text-indent:1.4em">
       Since the first dawn, the world of Elementis has been held in balance by four great forces — Pyro, the flame that forges, Aqua, the tide that shapes, Terra, the stone that endures, and Aero, the wind that guides. Each force flows through the land, through its creatures, and through all living things. The monsters of this realm are born of these elements: some are fierce and untamed, born to test the strong; others are loyal and steadfast, waiting to be found by a worthy companion. Champions have long walked these lands, forming bonds with elemental creatures and earning their place in its history.
     </p>
-    <p style="font-family:'IM Fell English',serif;font-size:0.92rem;line-height:1.8;color:var(--text);margin:0 0 1.5rem;text-indent:1.4em">
+    <p style="font-family:'IM Fell English',serif;font-size:clamp(0.75rem,2.5vw,0.92rem);line-height:clamp(1.4,4vw,1.8);color:var(--text);margin:0 0 1rem;text-indent:1.4em">
       But now a shadow stirs at the edges of the realm. Four Elemental Titans — ancient, colossal, and consumed by fury — have broken free from their long slumber, each one threatening to tear the world apart with the unchecked power of their element. The mountains crack. The seas rise. The winds howl without mercy. The fires burn without end. Unless these titans are brought down, the balance of Elementis will collapse entirely, leaving nothing but ruin. Now it falls to you — alone or alongside fellow champions — to venture forth, forge bonds with the creatures of this realm, and face the titans before the world is lost. The fate of Elementis rests in your hands.
     </p>
     <!-- divider -->
