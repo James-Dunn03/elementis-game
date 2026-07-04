@@ -833,16 +833,23 @@
     .turn-dot { width: 7px; height: 7px; flex-shrink: 0; }
     .phase-badge { font-size: 0.48rem; padding: 2px 4px; letter-spacing: 0.5px; white-space: nowrap; }
 
-    /* Left panel: narrow, scrollable */
-    #left-panel { padding: 0.4rem 0.3rem; gap: 0.4rem; }
-    .panel-title { font-size: 0.5rem; letter-spacing: 1px; }
-    .player-card { padding: 0.4rem 0.3rem; }
-    .player-name { font-size: 0.6rem; }
-    .hp-text { font-size: 0.55rem; }
-    .inv-count { font-size: 0.52rem; }
-    .hp-bar { height: 4px; }
-    .monster-team-item { padding: 0.2rem; font-size: 0.55rem; }
-    .monster-team-icon { width: 14px; height: 14px; }
+    /* Left panel: narrow, scrollable, text clipped */
+    #left-panel { padding: 0.4rem 0.3rem; gap: 0.4rem; overflow-y: auto; overflow-x: hidden; min-width: 0; }
+    #left-panel * { min-width: 0; box-sizing: border-box; }
+    .panel-title { font-size: 0.48rem; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .player-card { padding: 0.3rem 0.25rem; }
+    .player-card-header { gap: 0.2rem; margin-bottom: 0.3rem; }
+    .player-avatar { width: 16px; height: 16px; font-size: 0.5rem; flex-shrink: 0; }
+    .player-card-name { font-size: 0.55rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .hp-text { font-size: 0.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .hp-bar { height: 3px; margin-bottom: 0.25rem; }
+    .inv-count { font-size: 0.48rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .monster-mini { font-size: 0.5rem; overflow: hidden; }
+    .monster-mini-name { font-size: 0.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .equip-tag { font-size: 0.42rem; padding: 1px 3px; white-space: nowrap; }
+    #my-inventory { font-size: 0.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #my-player-equipped { font-size: 0.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .divider { margin: 0.2rem 0; }
 
     /* Right panel: narrow, scrollable */
     #right-panel { padding: 0.3rem 0.2rem; gap: 0.3rem; display: flex; }
