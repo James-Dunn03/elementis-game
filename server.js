@@ -917,9 +917,7 @@ io.on('connection', (socket) => {
       gs.phase = 'treasure';
     } else if (outcome?.result==='territory') {
       const region = getRegion(cp.position.col, cp.position.row, gs.regionMap);
-      const allowed = REGION_ALLOWED_ELEMENTS[region] || Object.keys(ELEMENT_BOOST_ID);
-      const pool = REGION_MONSTERS[region].filter(m => !BOSS_IDS.has(m.id) && allowed.includes(m.element));
-      const monsters = pool.length ? pool : REGION_MONSTERS[region].filter(m => !BOSS_IDS.has(m.id));
+      const monsters = REGION_MONSTERS[region].filter(m => !BOSS_IDS.has(m.id));
       const wild = JSON.parse(JSON.stringify(monsters[Math.floor(Math.random()*monsters.length)]));
       wild.hp = wild.maxHp;
       gs.pendingCard = wild;
