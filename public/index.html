@@ -380,7 +380,9 @@
     background: rgba(5,4,2,0.82);
     backdrop-filter: blur(3px);
     display: flex; align-items: center; justify-content: center; z-index: 100;
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
     animation: fadeIn 0.2s ease;
+    padding: 0.5rem;
   }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -402,9 +404,9 @@
   /* ── SCENARIO CARD ── */
   /* ══════════════ PLAYING CARD BASE ══════════════ */
   .playing-card {
-    position: relative; width: 430px; max-width: 93vw;
+    position: relative; width: 430px; max-width: 96vw;
     border-radius: 14px; padding: 0;
-    animation: slideUp 0.35s ease; overflow: hidden;
+    animation: slideUp 0.35s ease; overflow-y: auto; max-height: 92vh;
   }
   /* Multi-layer card edge */
   .playing-card::after {
@@ -699,9 +701,9 @@
   .battle-modal {
     background: linear-gradient(160deg, #13100a, #1a1509);
     border: 1px solid rgba(90,64,32,0.6); border-radius: 4px; padding: 1.1rem 1.4rem;
-    width: 640px; max-width: 95vw;
-    max-height: min(96vh, 720px);
-    overflow: hidden;
+    width: 640px; max-width: 96vw;
+    max-height: 92vh;
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
     display: flex; flex-direction: column;
     box-shadow: 0 0 60px rgba(201,168,76,0.08), 0 20px 60px rgba(0,0,0,0.8);
     animation: slideUp 0.3s ease; position: relative;
@@ -812,6 +814,25 @@
   .multiplier-badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 2px; margin-left: 4px; font-family: 'Cinzel', serif; }
   .mult-super { background: rgba(212,98,42,0.25); color: #D4622A; }
   .mult-resist { background: rgba(58,158,150,0.25); color: #3A9E96; }
+
+  /* ── MOBILE ── */
+  @media (max-width: 640px) {
+    .modal-overlay { align-items: flex-start; padding: 0.5rem; }
+    .playing-card { width: 100%; max-width: 100%; max-height: none; border-radius: 10px; }
+    .card-inner { padding: 0.8rem; }
+    .battle-modal { width: 100%; max-width: 100%; max-height: none; padding: 0.8rem; border-radius: 6px; }
+    .encounter-modal { border-radius: 10px; }
+    .battle-arena { gap: 0.4rem; }
+    .battle-monster-card { padding: 0.5rem; min-width: 0; }
+    .bm-name { font-size: 0.75rem; }
+    .battle-attack-btn { padding: 0.5rem; }
+    .ba-name { font-size: 0.75rem; }
+    #screen-game { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; }
+    #left-panel, #right-panel { display: none; }
+    #board-area { min-height: 60vh; }
+    .card-stack-icon { width: 32px; height: 32px; }
+    .card-stack-label { font-size: 0.55rem; }
+  }
 </style>
 </head>
 <body>
