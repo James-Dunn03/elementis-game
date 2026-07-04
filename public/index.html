@@ -2967,17 +2967,20 @@ function animateDie(dieFaceId, attackNameId, resultId, entry, onDone) {
       clearInterval(timer);
       dieFace.textContent = entry.roll;
       dieFace.classList.remove('die-rolling');
-      if (entry.hit) {
-        let txt = `⚔ HIT — ${entry.damage} dmg`;
-        if (entry.multiplier > 1) { txt += ' · SUPER!'; rollResult.style.color = '#D4622A'; }
-        else if (entry.multiplier < 1) { txt += ' · Weak'; rollResult.style.color = '#3A9E96'; }
-        else rollResult.style.color = entry.type === 'enemy' || entry.type === 'enemy_vs_player' ? '#c06060' : 'var(--gold)';
-        rollResult.textContent = txt;
-      } else {
-        rollResult.textContent = '✕ Missed!';
-        rollResult.style.color = 'var(--muted)';
-      }
-      if (onDone) setTimeout(onDone, 200);
+      // Pause so the player can clearly read the settled die value before the verdict appears
+      setTimeout(() => {
+        if (entry.hit) {
+          let txt = `⚔ HIT — ${entry.damage} dmg`;
+          if (entry.multiplier > 1) { txt += ' · SUPER!'; rollResult.style.color = '#D4622A'; }
+          else if (entry.multiplier < 1) { txt += ' · Weak'; rollResult.style.color = '#3A9E96'; }
+          else rollResult.style.color = entry.type === 'enemy' || entry.type === 'enemy_vs_player' ? '#c06060' : 'var(--gold)';
+          rollResult.textContent = txt;
+        } else {
+          rollResult.textContent = '✕ Missed!';
+          rollResult.style.color = 'var(--muted)';
+        }
+        if (onDone) setTimeout(onDone, 200);
+      }, 600);
     }
   }, 55);
 }
