@@ -650,7 +650,7 @@ io.on('connection', (socket) => {
     if (roll >= 4) {
       gs.log.push(`🏃 ${cp.name} rolled a ${roll} and retreated successfully!`);
       io.to(room.id).emit('retreat_result', { success: true, roll });
-      endTurn(room);
+      setTimeout(() => endTurn(room), 3000);
     } else {
       gs.log.push(`⚔️ ${cp.name} rolled a ${roll} — retreat failed! Must fight!`);
       io.to(room.id).emit('retreat_result', { success: false, roll });

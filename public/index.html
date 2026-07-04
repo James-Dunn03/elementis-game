@@ -856,6 +856,19 @@
     .card-stack-count { font-size: 0.42rem; }
     .divider { margin: 0.25rem 0; }
 
+    /* Companion / Monster select screen */
+    #screen-monster-select {
+      justify-content: flex-start; padding: 1.2rem 0.8rem;
+      overflow-y: auto; min-height: 100dvh;
+    }
+    .monster-grid { grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .monster-option { padding: 0.8rem 0.5rem; }
+    .monster-icon { font-size: 2rem; margin-bottom: 0.3rem; }
+    .monster-option-name { font-size: 0.82rem; }
+    .monster-option-el { font-size: 0.62rem; margin-bottom: 0.5rem; }
+    .monster-option-stats { font-size: 0.72rem; }
+    .monster-option-attacks { font-size: 0.68rem; }
+
     /* Modals */
     .modal-overlay { align-items: flex-start; padding: 0.4rem; }
     .playing-card { width: 100%; max-width: 100%; border-radius: 8px; }
@@ -871,7 +884,6 @@
     .battle-attack-btn { padding: 0.4rem 0.5rem; }
     .ba-name { font-size: 0.72rem; }
     .ba-rolls { font-size: 0.65rem; }
-    .monster-grid { grid-template-columns: 1fr 1fr; gap: 0.5rem; }
   }
 </style>
 </head>
@@ -1892,10 +1904,10 @@ function init() {
             // re-enable the fight button; hide overlay after a moment so they can fight
             setTimeout(() => {
               document.getElementById('flee-dice-overlay').classList.add('hidden');
-              // reset die for potential next attempt
               dieFace.textContent = '—';
               dieFace.style.borderColor = '';
               dieFace.style.color = '';
+              document.getElementById('btn-retreat-enc').disabled = false;
             }, 2000);
           }
         }, 150);
@@ -2757,7 +2769,7 @@ function showScenarioModal(card) {
 }
 
 function showScenarioOutcome(outcome) {
-  const resultLabels = { treasure:'<img src="/tiles/Monster%20tokens/chest.png" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:4px"> You drew a Treasure Card!', territory:'🗺️ You drew a Territory Card!', damage:`💀 You lost ${Math.abs(outcome.hpDelta)} HP!`, heal:`💚 You gained ${outcome.hpDelta} HP!` };
+  const resultLabels = { treasure:'<img src="/tiles/Monster%20tokens/chest.png" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:4px"> You drew a Treasure Card!', territory:'<img src="/tiles/Monster%20tokens/map.png" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:4px"> You drew a Territory Card!', damage:`💀 You lost ${Math.abs(outcome.hpDelta)} HP!`, heal:`💚 You gained ${outcome.hpDelta} HP!` };
   document.getElementById('sc-outcome-title').textContent = outcome.choiceText;
   document.getElementById('sc-outcome-summary').textContent = outcome.summary;
   document.getElementById('sc-outcome-result').innerHTML = resultLabels[outcome.result] || '';
