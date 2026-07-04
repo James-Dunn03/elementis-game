@@ -817,51 +817,87 @@
 
   /* ── MOBILE ── */
   @media (max-width: 700px) {
-    /* Keep 3-column layout but shrink side panels */
+    /* Vertical stack: header → decks → board → players */
     #screen-game {
-      grid-template-columns: 80px 1fr 70px;
-      grid-template-rows: auto 1fr;
-      height: 100dvh; overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      overflow: hidden;
     }
 
-    /* Header: compact single row */
-    #game-header { padding: 0.3rem 0.4rem; gap: 0.3rem; }
-    #game-header > button { display: none; }
-    .header-title { font-size: 0.65rem; flex-shrink: 1; min-width: 0; }
-    .turn-banner { gap: 0.3rem; flex-shrink: 1; min-width: 0; }
-    .turn-text { font-size: 0.6rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px; }
+    /* Header: show all buttons, compact */
+    #game-header { padding: 0.25rem 0.4rem; gap: 0.3rem; flex-shrink: 0; }
+    #game-header > button { display: inline-flex; font-size: 0.55rem; padding: 3px 5px; white-space: nowrap; flex-shrink: 0; }
+    #game-header > button img { width: 11px; height: 11px; margin-right: 3px; }
+    .header-title { font-size: 0.62rem; flex-shrink: 1; min-width: 0; }
+    .turn-banner { gap: 0.25rem; flex-shrink: 1; min-width: 0; }
+    .turn-text { font-size: 0.55rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70px; }
     .turn-dot { width: 7px; height: 7px; flex-shrink: 0; }
-    .phase-badge { font-size: 0.48rem; padding: 2px 4px; letter-spacing: 0.5px; white-space: nowrap; }
+    .phase-badge { font-size: 0.44rem; padding: 2px 3px; letter-spacing: 0.3px; white-space: nowrap; }
 
-    /* Left panel: narrow, scrollable, text clipped */
-    #left-panel { padding: 0.4rem 0.3rem; gap: 0.4rem; overflow-y: auto; overflow-x: hidden; min-width: 0; }
-    #left-panel * { min-width: 0; box-sizing: border-box; }
-    .panel-title { font-size: 0.48rem; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .player-card { padding: 0.3rem 0.25rem; }
-    .player-card-header { gap: 0.2rem; margin-bottom: 0.3rem; }
-    .player-avatar { width: 16px; height: 16px; font-size: 0.5rem; flex-shrink: 0; }
-    .player-card-name { font-size: 0.55rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .hp-text { font-size: 0.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .hp-bar { height: 3px; margin-bottom: 0.25rem; }
-    .inv-count { font-size: 0.48rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .monster-mini { font-size: 0.5rem; overflow: hidden; }
-    .monster-mini-name { font-size: 0.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .equip-tag { font-size: 0.42rem; padding: 1px 3px; white-space: nowrap; }
-    #my-inventory { font-size: 0.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    #my-player-equipped { font-size: 0.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .divider { margin: 0.2rem 0; }
-
-    /* Right panel: narrow, scrollable */
-    #right-panel { padding: 0.3rem 0.2rem; gap: 0.3rem; display: flex; }
-    .deck-group-title { font-size: 0.45rem; letter-spacing: 0.5px; margin-bottom: 0.2rem; }
+    /* ── RIGHT PANEL → top deck strip ── */
+    /* Reorder to appear after header, before board */
+    #right-panel {
+      order: 1;
+      flex-shrink: 0;
+      /* grid-auto-flow column keeps each group (title+grid) in its own column */
+      display: grid;
+      grid-auto-flow: column;
+      grid-template-rows: auto auto;
+      gap: 2px 6px;
+      align-items: start;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 0.25rem 0.5rem;
+      border-left: none;
+      border-bottom: 1px solid var(--border);
+    }
+    /* Hide the dividers — they'd land in the wrong row */
+    #right-panel > .divider { display: none; }
+    .deck-group-title { font-size: 0.42rem; letter-spacing: 0.3px; margin-bottom: 0.15rem; text-align: center; white-space: nowrap; }
     .deck-grid { gap: 3px; }
-    .card-stack { height: 70px; }
-    .card-stack-layer { height: 60px; width: 90%; }
-    .card-stack-face { padding: 0.25rem 0.1rem; gap: 0.15rem; }
-    .card-stack-icon { width: 22px; height: 22px; }
-    .card-stack-label { font-size: 0.42rem; }
-    .card-stack-count { font-size: 0.42rem; }
-    .divider { margin: 0.25rem 0; }
+    .card-stack { height: 54px; width: 42px; }
+    .card-stack-layer { height: 46px; width: 88%; }
+    .card-stack-face { padding: 0.2rem 0.05rem; gap: 0.1rem; }
+    .card-stack-icon { width: 18px; height: 18px; }
+    .card-stack-label { font-size: 0.38rem; }
+    .card-stack-count { font-size: 0.38rem; }
+
+    /* ── BOARD AREA → middle, takes all remaining height ── */
+    #board-area { order: 2; flex: 1; min-height: 0; }
+
+    /* ── LEFT PANEL → bottom player strip ── */
+    #left-panel {
+      order: 3;
+      flex-direction: row;
+      flex-shrink: 0;
+      height: 108px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 0.3rem 0.5rem;
+      gap: 0.4rem;
+      align-items: flex-start;
+      border-right: none;
+      border-top: 1px solid var(--border);
+    }
+    /* Hide section titles and dividers — cards speak for themselves */
+    #left-panel > .panel-title { display: none; }
+    #left-panel > .divider { display: none; }
+    /* Player cards flow horizontally inside their container */
+    #player-cards { display: flex; flex-direction: row; gap: 0.35rem; flex-shrink: 0; }
+    #left-panel * { min-width: 0; box-sizing: border-box; }
+    .player-card { padding: 0.25rem 0.3rem; min-width: 72px; flex-shrink: 0; }
+    .player-card-header { gap: 0.2rem; margin-bottom: 0.2rem; }
+    .player-avatar { width: 15px; height: 15px; font-size: 0.45rem; flex-shrink: 0; }
+    .player-card-name { font-size: 0.52rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .hp-text { font-size: 0.46rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .hp-bar { height: 3px; margin-bottom: 0.2rem; }
+    .inv-count { font-size: 0.44rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .monster-mini { font-size: 0.46rem; overflow: hidden; }
+    .monster-mini-name { font-size: 0.46rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .equip-tag { font-size: 0.4rem; padding: 1px 2px; white-space: nowrap; }
+    #my-inventory { font-size: 0.46rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 0; min-width: 55px; align-self: flex-start; }
+    #my-player-equipped { font-size: 0.46rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 0; min-width: 55px; align-self: flex-start; }
 
     /* Companion / Monster select screen */
     #screen-monster-select {
