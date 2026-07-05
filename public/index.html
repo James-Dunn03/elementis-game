@@ -898,9 +898,9 @@
     /* Move How to Play + Chronicles to bottom bar; hide from header */
     #btn-how-to-play { display: none !important; }
     #btn-chronicles { display: none !important; }
-    #btn-satchel-mobile { display: inline-flex !important; }
-    #btn-how-to-play-mobile { display: inline-flex !important; }
-    #btn-chronicles-mobile { display: inline-flex !important; }
+    #btn-satchel-mobile { display: inline-flex !important; flex: 1; min-width: 0; }
+    #btn-how-to-play-mobile { display: inline-flex !important; flex: 1; min-width: 0; }
+    #btn-chronicles-mobile { display: inline-flex !important; flex: 1; min-width: 0; }
     /* Player cards flow as a horizontal row */
     #player-cards { display: flex; flex-direction: row; gap: 0.35rem; flex-shrink: 0; }
     #left-panel * { min-width: 0; box-sizing: border-box; }
@@ -1119,14 +1119,14 @@
     <div class="divider"></div>
     <div class="panel-title">Equipped</div>
     <div id="my-player-equipped" style="font-size:1.64rem;color:var(--muted);font-style:italic">None</div>
-    <button id="btn-satchel-mobile" class="btn btn-outline" style="display:none;width:40px;height:40px;padding:0;flex-shrink:0;align-self:center;align-items:center;justify-content:center" onclick="openSatchelModal()">
+    <button id="btn-satchel-mobile" class="btn btn-outline" style="display:none;padding:0;flex-shrink:0;align-self:stretch;align-items:center;justify-content:center" onclick="openSatchelModal()">
       <img src="/tiles/Monster%20tokens/backpack.png" style="width:24px;height:24px;object-fit:contain">
     </button>
-    <button id="btn-how-to-play-mobile" class="btn btn-outline" style="display:none;width:40px;height:40px;padding:0;flex-shrink:0;align-self:center;align-items:center;justify-content:center" onclick="document.getElementById('modal-how-to-play').classList.remove('hidden')">
+    <button id="btn-how-to-play-mobile" class="btn btn-outline" style="display:none;padding:0;flex-shrink:0;align-self:stretch;align-items:center;justify-content:center" onclick="document.getElementById('modal-how-to-play').classList.remove('hidden')">
       <img src="/tiles/Monster%20tokens/book.png" style="width:24px;height:24px;object-fit:contain">
     </button>
-    <button id="btn-chronicles-mobile" class="btn btn-outline" style="display:none;width:40px;height:40px;padding:0;flex-shrink:0;align-self:center;align-items:center;justify-content:center" onclick="openChroniclesModal()">
-      <img src="/tiles/Monster%20tokens/creature.png" style="width:24px;height:24px;object-fit:contain">
+    <button id="btn-chronicles-mobile" class="btn btn-outline" style="display:none;padding:0;flex-shrink:0;align-self:stretch;align-items:center;justify-content:center" onclick="openChroniclesModal()">
+      <img src="/tiles/Monster%20tokens/book.png" style="width:24px;height:24px;object-fit:contain">
     </button>
   </div>
 
