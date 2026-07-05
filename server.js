@@ -217,10 +217,10 @@ const TERRITORY_BOSS_ID = { volcan:'flamdevil', misty:'tidalserp', meadow:'wingd
 
 // Elements allowed per region for random wild encounters
 const REGION_ALLOWED_ELEMENTS = {
-  volcan: ['Pyro', 'Terra', 'Aero'],
-  misty:  ['Aqua'],
-  meadow: ['Terra'],
-  forest: ['Terra', 'Aero'],
+  volcan: ['Pyro', 'Aqua'],
+  misty:  ['Aqua', 'Aero', 'Terra'],
+  meadow: ['Terra', 'Aero'],
+  forest: ['Terra', 'Aero', 'Pyro'],
 };
 const BOSS_IDS = new Set(Object.values(TERRITORY_BOSS_ID));
 
@@ -917,7 +917,9 @@ io.on('connection', (socket) => {
       gs.phase = 'treasure';
     } else if (outcome?.result==='territory') {
       const region = getRegion(cp.position.col, cp.position.row, gs.regionMap);
-      const monsters = REGION_MONSTERS[region].filter(m => !BOSS_IDS.has(m.id));
+      const allowed = REGION_ALLOWED_ELEMENTS[region] || [];
+      const pool = REGION_MONSTERS[region].filter(m => !BOSS_IDS.has(m.id) && allowed.includes(m.element));
+      const monsters = pool.length ? pool : REGION_MONSTERS[region].filter(m => !BOSS_IDS.has(m.id));
       const wild = JSON.parse(JSON.stringify(monsters[Math.floor(Math.random()*monsters.length)]));
       wild.hp = wild.maxHp;
       gs.pendingCard = wild;

@@ -895,8 +895,12 @@
     #left-panel > .divider { display: none; }
     #my-inventory { display: none; }
     #my-player-equipped { display: none; }
-    /* Show the satchel button instead */
+    /* Move How to Play + Chronicles to bottom bar; hide from header */
+    #btn-how-to-play { display: none !important; }
+    #btn-chronicles { display: none !important; }
     #btn-satchel-mobile { display: inline-flex !important; }
+    #btn-how-to-play-mobile { display: inline-flex !important; }
+    #btn-chronicles-mobile { display: inline-flex !important; }
     /* Player cards flow as a horizontal row */
     #player-cards { display: flex; flex-direction: row; gap: 0.35rem; flex-shrink: 0; }
     #left-panel * { min-width: 0; box-sizing: border-box; }
@@ -1091,7 +1095,7 @@
 <!-- ══════════════ GAME SCREEN ══════════════ -->
 <div id="screen-game" class="hidden">
   <div id="game-header">
-    <button class="btn btn-outline" style="font-size:0.75rem;padding:4px 10px;white-space:nowrap;flex-shrink:0" onclick="document.getElementById('modal-how-to-play').classList.remove('hidden')">
+    <button id="btn-how-to-play" class="btn btn-outline" style="font-size:0.75rem;padding:4px 10px;white-space:nowrap;flex-shrink:0" onclick="document.getElementById('modal-how-to-play').classList.remove('hidden')">
       <img src="/tiles/Monster%20tokens/book.png" style="width:14px;height:14px;object-fit:contain;vertical-align:middle;margin-right:5px">How to Play
     </button>
     <span class="header-title" style="margin: 0 auto">Elementis</span>
@@ -1100,7 +1104,7 @@
       <span class="turn-text" id="turn-text">Loading...</span>
     </div>
     <div class="phase-badge" id="phase-badge">—</div>
-    <button class="btn btn-outline" style="font-size:0.75rem;padding:4px 10px;white-space:nowrap;flex-shrink:0" onclick="openChroniclesModal()">
+    <button id="btn-chronicles" class="btn btn-outline" style="font-size:0.75rem;padding:4px 10px;white-space:nowrap;flex-shrink:0" onclick="openChroniclesModal()">
       <img src="/tiles/Monster%20tokens/creature.png/icons/ffffff/transparent/1x1/lorc/evil-book.png" style="width:14px;height:14px;object-fit:contain;vertical-align:middle;margin-right:5px">Chronicles
     </button>
   </div>
@@ -1115,7 +1119,15 @@
     <div class="divider"></div>
     <div class="panel-title">Equipped</div>
     <div id="my-player-equipped" style="font-size:1.64rem;color:var(--muted);font-style:italic">None</div>
-    <button id="btn-satchel-mobile" class="btn btn-outline" style="display:none;font-size:0.6rem;padding:4px 7px;white-space:nowrap;flex-shrink:0;align-self:center" onclick="openSatchelModal()">⚗ Satchel</button>
+    <button id="btn-satchel-mobile" class="btn btn-outline" style="display:none;width:40px;height:40px;padding:0;flex-shrink:0;align-self:center;align-items:center;justify-content:center" onclick="openSatchelModal()">
+      <img src="/tiles/Monster%20tokens/backpack.png" style="width:24px;height:24px;object-fit:contain">
+    </button>
+    <button id="btn-how-to-play-mobile" class="btn btn-outline" style="display:none;width:40px;height:40px;padding:0;flex-shrink:0;align-self:center;align-items:center;justify-content:center" onclick="document.getElementById('modal-how-to-play').classList.remove('hidden')">
+      <img src="/tiles/Monster%20tokens/book.png" style="width:24px;height:24px;object-fit:contain">
+    </button>
+    <button id="btn-chronicles-mobile" class="btn btn-outline" style="display:none;width:40px;height:40px;padding:0;flex-shrink:0;align-self:center;align-items:center;justify-content:center" onclick="openChroniclesModal()">
+      <img src="/tiles/Monster%20tokens/creature.png" style="width:24px;height:24px;object-fit:contain">
+    </button>
   </div>
 
   <!-- Center: Board -->
@@ -1334,7 +1346,7 @@
     <div id="camp-item-picker" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:0.8rem"></div>
     <div id="camp-selected-display" style="font-size:0.82rem;color:var(--muted);text-align:center;margin-bottom:0.8rem;font-style:italic">Choose 3 relics to offer</div>
     <button class="btn btn-gold" id="btn-build-camp" onclick="confirmBuildCamp()" disabled style="width:100%;margin-bottom:0.6rem"><img src="/tiles/Monster%20tokens/Camp.png" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:6px"> Raise the Camp (0 / 3 offered)</button>
-    <button class="btn btn-outline" style="width:100%" onclick="socket.emit('skip_camp')">Draw a Fate Card →</button>
+    <button class="btn btn-outline" style="width:100%" onclick="socket.emit('skip_camp')"><img src="/tiles/Monster%20tokens/map.png" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:6px">Draw a Fate Card</button>
   </div>
 </div>
 
@@ -1612,7 +1624,7 @@
         <div style="font-size:1.6rem;color:var(--muted);font-style:italic">Roll 1 or 2 to hit — 30 damage</div>
       </div>
       <div style="display:flex;gap:0.7rem">
-        <button class="btn btn-danger" style="flex:1" onclick="socket.emit('battle_player_attack')">⚔ Strike</button>
+        <button class="btn btn-danger" style="flex:1" id="btn-pf-attack" onclick="if(_battleTurnLocked)return;_battleTurnLocked=true;this.disabled=true;socket.emit('battle_player_attack')">⚔ Strike</button>
         <button class="btn btn-outline" style="flex:1" onclick="socket.emit('battle_flee')"><img src="/tiles/Monster%20tokens/flee.png" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:6px"> Flee</button>
       </div>
     </div>
@@ -2966,8 +2978,16 @@ function startBattle() {
 // ── BATTLE UI ──
 let _lastBattleLogLen = 0;
 let _defeatedAnnounced = false;
-
 let _initAnimated = false;
+let _battleTurnLocked = false;
+const _dieTimers = {}; // { dieFaceId: { timer, timeout } }
+function _cancelDieAnimation(dieFaceId) {
+  const t = _dieTimers[dieFaceId];
+  if (!t) return;
+  if (t.timer) clearInterval(t.timer);
+  if (t.timeout) clearTimeout(t.timeout);
+  delete _dieTimers[dieFaceId];
+}
 
 function animateInitiative(pRoll, eRoll, pWon) {
   _initAnimated = true;
@@ -3014,6 +3034,7 @@ function resetBattleDice() {
   _lastBattleLogLen = 0;
   _initAnimated = false;
   _defeatedAnnounced = false;
+  ['die-face-p','die-face-e','pf-die-face-p','pf-die-face-e'].forEach(id => _cancelDieAnimation(id));
   ['die-face-p','die-face-e','pf-die-face-p','pf-die-face-e'].forEach(id => {
     const el = document.getElementById(id);
     if (el) { el.textContent = '—'; el.classList.remove('die-rolling'); }
@@ -3029,6 +3050,7 @@ function resetBattleDice() {
 }
 
 function animateDie(dieFaceId, attackNameId, resultId, entry, onDone) {
+  _cancelDieAnimation(dieFaceId);
   const dieFace = document.getElementById(dieFaceId);
   const rollResult = document.getElementById(resultId);
   const attackNameEl = document.getElementById(attackNameId);
@@ -3038,14 +3060,18 @@ function animateDie(dieFaceId, attackNameId, resultId, entry, onDone) {
   rollResult.style.color = 'var(--muted)';
   dieFace.classList.add('die-rolling');
   let count = 0;
-  const timer = setInterval(() => {
+  const state = {};
+  _dieTimers[dieFaceId] = state;
+  state.timer = setInterval(() => {
     dieFace.textContent = Math.ceil(Math.random() * 6);
     if (++count >= 14) {
-      clearInterval(timer);
+      clearInterval(state.timer);
+      state.timer = null;
       dieFace.textContent = entry.roll;
       dieFace.classList.remove('die-rolling');
-      // Pause so the player can clearly read the settled die value before the verdict appears
-      setTimeout(() => {
+      state.timeout = setTimeout(() => {
+        if (_dieTimers[dieFaceId] !== state) return;
+        delete _dieTimers[dieFaceId];
         if (entry.hit) {
           let txt = `⚔ HIT — ${entry.damage} dmg`;
           if (entry.multiplier > 1) { txt += ' · SUPER!'; rollResult.style.color = '#D4622A'; }
@@ -3148,6 +3174,9 @@ function showBattleModal(battle, _p) {
   }
 
   if (battle.phase === 'player_fight') {
+    _battleTurnLocked = false;
+    const pfAttackBtn = document.getElementById('btn-pf-attack');
+    if (pfAttackBtn) pfAttackBtn.disabled = false;
     document.getElementById('battle-player-fight-phase').classList.remove('hidden');
     const wild = battle.wildMonster;
     const cp2 = gameState.players.find(p => p.id === myId);
@@ -3270,6 +3299,7 @@ function showBattleModal(battle, _p) {
   const attackSection = document.getElementById('attack-section');
   const waitingSection = document.getElementById('waiting-section');
   if (battle.phase === 'player_turn') {
+    _battleTurnLocked = false;
     attackSection.classList.remove('hidden');
     waitingSection.classList.add('hidden');
     const equipped = playerMonster.equipped || [];
@@ -3284,7 +3314,7 @@ function showBattleModal(battle, _p) {
       const rollsStr = `<img src="/tiles/Monster%20tokens/dice.png" style="width:14px;height:14px;object-fit:contain;vertical-align:middle;margin-right:3px"> ${a.roll1}, ${a.roll2}${bonusStr} to hit`;
       const dmgStr = attackBoost > 0 ? `${effDmg} dmg <span style="color:#A78BFA;font-size:0.72rem">(${a.damage}+${attackBoost})</span>` : `${effDmg} dmg`;
       const multBadge = effectiveMult > 1 ? ' <span class="multiplier-badge mult-super">×2 SUPER</span>' : effectiveMult < 1 ? ' <span class="multiplier-badge mult-resist">×0.5</span>' : '';
-      return `<button class="battle-attack-btn" onclick="socket.emit('battle_attack',{attackIdx:${i}})">
+      return `<button class="battle-attack-btn" onclick="if(_battleTurnLocked)return;_battleTurnLocked=true;document.querySelectorAll('.battle-attack-btn').forEach(b=>b.disabled=true);socket.emit('battle_attack',{attackIdx:${i}})">
         <div class="ba-name">${escapeHtml(a.name)}</div>
         <div class="ba-rolls">${rollsStr}</div>
         <div class="ba-dmg">${dmgStr}${multBadge}</div>
