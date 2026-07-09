@@ -499,11 +499,11 @@ function editMonster(m, idx) {
 
     <div class="section-title">Monster Icon</div>
     <div class="icon-picker-wrap">
-      <div class="icon-preview" onclick="openIconModal('monster-icon', '${iconUrl}')">
+      <div class="icon-preview" onclick="openIconModal('m-icon', document.getElementById('m-icon-url').value)">
         ${iconUrl ? `<img id="m-icon-img" src="${iconUrl}" onerror="this.src=''">` : '<span class="icon-preview-empty">🖼</span>'}
       </div>
       <input class="icon-url-input field-group" id="m-icon-url" value="${esc(iconUrl)}" placeholder="/tiles/..." oninput="updateIconPreview('m-icon-img','m-icon-url')">
-      <button class="btn-pick" onclick="openIconModal('monster-icon', document.getElementById('m-icon-url').value)">Browse</button>
+      <button class="btn-pick" onclick="openIconModal('m-icon', document.getElementById('m-icon-url').value)">Browse</button>
     </div>
 
     <div class="section-title">Attack 1</div>
