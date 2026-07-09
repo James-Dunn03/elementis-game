@@ -1373,7 +1373,7 @@
 
 <div id="modal-wanderer" class="modal-overlay hidden">
   <div class="encounter-modal" style="max-width:440px;text-align:center">
-    <img src="/tiles/Monster%20tokens/djinn.png" style="width:64px;height:64px;object-fit:contain;margin-bottom:0.4rem;filter:drop-shadow(0 0 6px rgba(201,168,76,0.3))">
+    <img src="/tiles/New%20tiles/Djinn.png" style="width:64px;height:64px;object-fit:contain;image-rendering:pixelated;margin-bottom:0.4rem;filter:drop-shadow(0 0 6px rgba(201,168,76,0.3))">
     <div style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--gold);letter-spacing:2px;margin-bottom:0.3rem">A Roaming Sage</div>
     <div style="font-size:0.88rem;color:var(--muted);margin-bottom:1rem;font-style:italic" id="wanderer-request-text"></div>
     <div id="wanderer-item-display" style="background:rgba(90,64,32,0.15);border:1px solid rgba(90,64,32,0.3);border-radius:2px;padding:0.8rem;margin-bottom:1.2rem">
@@ -1777,7 +1777,7 @@
     <!-- Traveling Djinn -->
     <div style="margin-bottom:1.2rem">
       <div style="display:flex;align-items:center;gap:0.5rem;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;color:var(--gold);margin-bottom:0.5rem;border-bottom:1px solid rgba(201,168,76,0.2);padding-bottom:0.4rem">
-        <img src="/tiles/Monster%20tokens/djinn.png" style="width:20px;height:20px;object-fit:contain"> The Traveling Djinn
+        <img src="/tiles/New%20tiles/Djinn.png" style="width:20px;height:20px;object-fit:contain;image-rendering:pixelated"> The Traveling Djinn
       </div>
       <div style="font-size:0.83rem;color:var(--text);line-height:1.6">
         Every few turns a mysterious Djinn appears on the board looking for a particular item. Land on the Djinn's hex to see what the Djinn is looking for. If you have that item in your inventory, and provide it to the Djinn, the Djinn will offer you something useful for your journey. Once encountered, the Djinn moves on. Only three Djinn will appear on the board at any given time.
@@ -2432,7 +2432,7 @@ function updateBoardState() {
   wandererLayer.innerHTML = '';
   (gameState.wanderers || []).forEach(w => {
     const { x, y } = hexCenter(w.hex.col, w.hex.row);
-    wandererLayer.appendChild(svgToken('/tiles/Monster%20tokens/djinn.png', x, y, 40));
+    wandererLayer.appendChild(svgToken('/tiles/New%20tiles/Djinn.png', x, y, 40));
   });
 
   // Village markers are rendered as terrain tiles in the hex grid loop (no overlay tokens)
