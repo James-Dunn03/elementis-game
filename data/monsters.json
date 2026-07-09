@@ -1,0 +1,870 @@
+{
+  "starters": [
+    {
+      "id": "emberling",
+      "name": "Emberling",
+      "element": "Pyro",
+      "maxHp": 40,
+      "bio": "A fiery imp-like creature born from volcanic rock. Quick and aggressive.",
+      "equipped": [],
+      "attack1": {
+        "name": "Flare Spark",
+        "desc": "Shoots a small bolt of fire",
+        "roll1": 1,
+        "roll2": 2,
+        "damage": 20
+      },
+      "attack2": {
+        "name": "Lava Sputter",
+        "desc": "Spits molten droplets",
+        "roll1": 3,
+        "roll2": 4,
+        "damage": 20
+      }
+    },
+    {
+      "id": "tidecrawler",
+      "name": "Tidecrawler",
+      "element": "Aqua",
+      "maxHp": 40,
+      "bio": "A sleek aquatic creature that can glide along water surfaces.",
+      "equipped": [],
+      "attack1": {
+        "name": "Aqua Slash",
+        "desc": "A blade of water slices the foe",
+        "roll1": 1,
+        "roll2": 2,
+        "damage": 20
+      },
+      "attack2": {
+        "name": "Bubble Bomb",
+        "desc": "A bubble that bursts on impact",
+        "roll1": 3,
+        "roll2": 4,
+        "damage": 20
+      }
+    },
+    {
+      "id": "pebbrute",
+      "name": "Pebbrute",
+      "element": "Terra",
+      "maxHp": 40,
+      "bio": "A stocky stone-fisted creature with tough hide and a stubborn will.",
+      "equipped": [],
+      "attack1": {
+        "name": "Rock Jab",
+        "desc": "Strikes with a sharp stone fist",
+        "roll1": 1,
+        "roll2": 2,
+        "damage": 20
+      },
+      "attack2": {
+        "name": "Dust Pulse",
+        "desc": "A concussive blast of earthy dust",
+        "roll1": 3,
+        "roll2": 4,
+        "damage": 20
+      }
+    },
+    {
+      "id": "gustling",
+      "name": "Gustling",
+      "element": "Aero",
+      "maxHp": 40,
+      "bio": "A swift wind-spirit that dances through the air with unpredictable bursts.",
+      "equipped": [],
+      "attack1": {
+        "name": "Whirl Peck",
+        "desc": "Dives in a spinning wind strike",
+        "roll1": 1,
+        "roll2": 2,
+        "damage": 20
+      },
+      "attack2": {
+        "name": "Air Snap",
+        "desc": "A quick air pressure burst",
+        "roll1": 3,
+        "roll2": 4,
+        "damage": 20
+      }
+    }
+  ],
+  "regions": {
+    "meadow": [
+      {
+        "id": "guston_p",
+        "name": "Guston",
+        "element": "Pyro",
+        "maxHp": 10,
+        "rarity": 1,
+        "gpValue": 5,
+        "bio": "A small ember sprite that haunts the sunlit meadows.",
+        "equipped": [],
+        "attack1": {
+          "name": "Blazing Claw",
+          "desc": "",
+          "roll1": 1,
+          "roll2": 6,
+          "damage": 50
+        },
+        "attack2": {
+          "name": "Inferno Burst",
+          "desc": "",
+          "roll1": 2,
+          "roll2": 6,
+          "damage": 20
+        }
+      },
+      {
+        "id": "tidear_a",
+        "name": "Tidear",
+        "element": "Aero",
+        "maxHp": 10,
+        "rarity": 1,
+        "gpValue": 5,
+        "bio": "A wind-borne creature with hollow bones and a piercing shriek.",
+        "equipped": [],
+        "attack1": {
+          "name": "Gale Slash",
+          "desc": "",
+          "roll1": 4,
+          "roll2": 5,
+          "damage": 40
+        },
+        "attack2": {
+          "name": "Gale Slash",
+          "desc": "",
+          "roll1": 2,
+          "roll2": 2,
+          "damage": 30
+        }
+      },
+      {
+        "id": "stormor_t",
+        "name": "Stormor",
+        "element": "Terra",
+        "maxHp": 10,
+        "rarity": 1,
+        "gpValue": 5,
+        "bio": "A pebble-armored critter that rolls into enemies.",
+        "equipped": [],
+        "attack1": {
+          "name": "Quake Stomp",
+          "desc": "",
+          "roll1": 1,
+          "roll2": 5,
+          "damage": 10
+        },
+        "attack2": {
+          "name": "Stone Slam",
+          "desc": "",
+          "roll1": 1,
+          "roll2": 2,
+          "damage": 20
+        }
+      },
+      {
+        "id": "fangus_a",
+        "name": "Fangus",
+        "element": "Aero",
+        "maxHp": 10,
+        "rarity": 1,
+        "gpValue": 5,
+        "bio": "A sharp-fanged wind beast that ambushes from tall grass.",
+        "equipped": [],
+        "attack1": {
+          "name": "Whirlwind Pulse",
+          "desc": "",
+          "roll1": 5,
+          "roll2": 2,
+          "damage": 50
+        },
+        "attack2": {
+          "name": "Sky Jab",
+          "desc": "",
+          "roll1": 4,
+          "roll2": 3,
+          "damage": 20
+        }
+      },
+      {
+        "id": "clawon_p",
+        "name": "Clawon",
+        "element": "Pyro",
+        "maxHp": 20,
+        "rarity": 1,
+        "gpValue": 10,
+        "bio": "A claw-footed fire lizard that scorches the grass beneath it.",
+        "equipped": [],
+        "attack1": {
+          "name": "Blazing Claw",
+          "desc": "",
+          "roll1": 6,
+          "roll2": 5,
+          "damage": 50
+        },
+        "attack2": {
+          "name": "Blazing Claw",
+          "desc": "",
+          "roll1": 3,
+          "roll2": 3,
+          "damage": 10
+        }
+      },
+      {
+        "id": "gustan_t",
+        "name": "Gustan",
+        "element": "Terra",
+        "maxHp": 20,
+        "rarity": 1,
+        "gpValue": 11,
+        "bio": "A boulder-backed creature with thunderous footfalls.",
+        "equipped": [],
+        "attack1": {
+          "name": "Quake Stomp",
+          "desc": "",
+          "roll1": 4,
+          "roll2": 4,
+          "damage": 20
+        },
+        "attack2": {
+          "name": "Boulder Bash",
+          "desc": "",
+          "roll1": 4,
+          "roll2": 5,
+          "damage": 30
+        }
+      },
+      {
+        "id": "quakeus_a",
+        "name": "Quakeus",
+        "element": "Aero",
+        "maxHp": 20,
+        "rarity": 1,
+        "gpValue": 13,
+        "bio": "A floating eye that generates localized wind bursts.",
+        "equipped": [],
+        "attack1": {
+          "name": "Sky Jab",
+          "desc": "",
+          "roll1": 6,
+          "roll2": 4,
+          "damage": 30
+        },
+        "attack2": {
+          "name": "Gale Slash",
+          "desc": "",
+          "roll1": 5,
+          "roll2": 4,
+          "damage": 20
+        }
+      },
+      {
+        "id": "wingar_aq",
+        "name": "Wingar",
+        "element": "Aqua",
+        "maxHp": 30,
+        "rarity": 1,
+        "gpValue": 15,
+        "bio": "A bat-like water elemental that haunts riverside meadows.",
+        "equipped": [],
+        "attack1": {
+          "name": "Aqua Lance",
+          "desc": "",
+          "roll1": 5,
+          "roll2": 6,
+          "damage": 10
+        },
+        "attack2": {
+          "name": "Drench Strike",
+          "desc": "",
+          "roll1": 3,
+          "roll2": 4,
+          "damage": 40
+        }
+      }
+    ],
+    "forest": [
+      {
+        "id": "clawak_p",
+        "name": "Clawak",
+        "element": "Pyro",
+        "maxHp": 40,
+        "rarity": 1,
+        "gpValue": 20,
+        "bio": "A cunning fire spider that weaves blazing webs in the forest.",
+        "equipped": [],
+        "attack1": {
+          "name": "Flame Spiral",
+          "desc": "",
+          "roll1": 1,
+          "roll2": 1,
+          "damage": 20
+        },
+        "attack2": {
+          "name": "Blazing Claw",
+          "desc": "",
+          "roll1": 5,
+          "roll2": 3,
+          "damage": 20
+        }
+      },
+      {
+        "id": "tidear_t",
+        "name": "Tidear",
+        "element": "Terra",
+        "maxHp": 40,
+        "rarity": 1,
+        "gpValue": 20,
+        "bio": "A stone-plated rat that gnaws through rocks and roots alike.",
+        "equipped": [],
+        "attack1": {
+          "name": "Quake Stomp",
+          "desc": "",
+          "roll1": 2,
+          "roll2": 2,
+          "damage": 40
+        },
+        "attack2": {
+          "name": "Stone Slam",
+          "desc": "",
+          "roll1": 6,
+          "roll2": 4,
+          "damage": 20
+        }
+      },
+      {
+        "id": "scaleon_t",
+        "name": "Scaleon",
+        "element": "Terra",
+        "maxHp": 50,
+        "rarity": 2,
+        "gpValue": 25,
+        "bio": "A massive mud golem that lumbers through ancient groves.",
+        "equipped": [],
+        "attack1": {
+          "name": "Boulder Bash",
+          "desc": "",
+          "roll1": 1,
+          "roll2": 4,
+          "damage": 50
+        },
+        "attack2": {
+          "name": "Stone Slam",
+          "desc": "",
+          "roll1": 4,
+          "roll2": 5,
+          "damage": 50
+        }
+      },
+      {
+        "id": "stormix_aq",
+        "name": "Stormix",
+        "element": "Aqua",
+        "maxHp": 50,
+        "rarity": 2,
+        "gpValue": 25,
+        "bio": "A crystalline spider that spins webs of frozen dew.",
+        "equipped": [],
+        "attack1": {
+          "name": "Drench Strike",
+          "desc": "",
+          "roll1": 6,
+          "roll2": 2,
+          "damage": 50
+        },
+        "attack2": {
+          "name": "Drench Strike",
+          "desc": "",
+          "roll1": 3,
+          "roll2": 6,
+          "damage": 50
+        }
+      },
+      {
+        "id": "mawar_p",
+        "name": "Mawar",
+        "element": "Pyro",
+        "maxHp": 50,
+        "rarity": 2,
+        "gpValue": 25,
+        "bio": "A fierce fire-eye that sweeps through the forest canopy.",
+        "equipped": [],
+        "attack1": {
+          "name": "Inferno Burst",
+          "desc": "",
+          "roll1": 4,
+          "roll2": 6,
+          "damage": 50
+        },
+        "attack2": {
+          "name": "Flame Spiral",
+          "desc": "",
+          "roll1": 6,
+          "roll2": 4,
+          "damage": 40
+        }
+      },
+      {
+        "id": "hidear_a",
+        "name": "Hidear",
+        "element": "Aero",
+        "maxHp": 60,
+        "rarity": 2,
+        "gpValue": 30,
+        "bio": "A ghost that floats between the trees carrying a swaying lantern.",
+        "equipped": [],
+        "attack1": {
+          "name": "Cyclone Spin",
+          "desc": "",
+          "roll1": 4,
+          "roll2": 1,
+          "damage": 50
+        },
+        "attack2": {
+          "name": "Gale Slash",
+          "desc": "",
+          "roll1": 4,
+          "roll2": 4,
+          "damage": 30
+        }
+      },
+      {
+        "id": "clawus_aq",
+        "name": "Clawus",
+        "element": "Aqua",
+        "maxHp": 60,
+        "rarity": 2,
+        "gpValue": 30,
+        "bio": "A spider-like creature with legs made of flowing water.",
+        "equipped": [],
+        "attack1": {
+          "name": "Tidal Crash",
+          "desc": "",
+          "roll1": 3,
+          "roll2": 2,
+          "damage": 10
+        },
+        "attack2": {
+          "name": "Tidal Crash",
+          "desc": "",
+          "roll1": 5,
+          "roll2": 2,
+          "damage": 40
+        }
+      },
+      {
+        "id": "hideak_p",
+        "name": "Hideak",
+        "element": "Pyro",
+        "maxHp": 70,
+        "rarity": 3,
+        "gpValue": 35,
+        "bio": "A slime-like blob that glows a deep crimson, leaving scorch marks.",
+        "equipped": [],
+        "attack1": {
+          "name": "Flame Spiral",
+          "desc": "",
+          "roll1": 5,
+          "roll2": 1,
+          "damage": 20
+        },
+        "attack2": {
+          "name": "Scorching Ray",
+          "desc": "",
+          "roll1": 3,
+          "roll2": 5,
+          "damage": 40
+        }
+      }
+    ],
+    "misty": [
+      {
+        "id": "stormor_aq",
+        "name": "Stormor",
+        "element": "Aqua",
+        "maxHp": 80,
+        "rarity": 3,
+        "gpValue": 40,
+        "bio": "A frost-covered eye that watches travellers from the misty banks.",
+        "equipped": [],
+        "attack1": {
+          "name": "Aqua Lance",
+          "desc": "",
+          "roll1": 2,
+          "roll2": 5,
+          "damage": 50
+        },
+        "attack2": {
+          "name": "Bubble Barrage",
+          "desc": "",
+          "roll1": 3,
+          "roll2": 2,
+          "damage": 50
+        }
+      },
+      {
+        "id": "quakeix_a",
+        "name": "Quakeix",
+        "element": "Aero",
+        "maxHp": 80,
+        "rarity": 3,
+        "gpValue": 40,
+        "bio": "A shadow-wraith that drifts silently through sea fog.",
+        "equipped": [],
+        "attack1": {
+          "name": "Cyclone Spin",
+          "desc": "",
+          "roll1": 1,
+          "roll2": 2,
+          "damage": 30
+        },
+        "attack2": {
+          "name": "Gale Slash",
+          "desc": "",
+          "roll1": 1,
+          "roll2": 2,
+          "damage": 30
+        }
+      },
+      {
+        "id": "stormar_p",
+        "name": "Stormar",
+        "element": "Pyro",
+        "maxHp": 80,
+        "rarity": 2,
+        "gpValue": 40,
+        "bio": "A bloodshot fire-eye that burns through island mist like a torch.",
+        "equipped": [],
+        "attack1": {
+          "name": "Inferno Burst",
+          "desc": "",
+          "roll1": 1,
+          "roll2": 2,
+          "damage": 50
+        },
+        "attack2": {
+          "name": "Inferno Burst",
+          "desc": "",
+          "roll1": 6,
+          "roll2": 6,
+          "damage": 20
+        }
+      },
+      {
+        "id": "mawor_t",
+        "name": "Mawor",
+        "element": "Terra",
+        "maxHp": 90,
+        "rarity": 3,
+        "gpValue": 45,
+        "bio": "A stone golem risen from the seabed, draped in kelp.",
+        "equipped": [],
+        "attack1": {
+          "name": "Boulder Bash",
+          "desc": "",
+          "roll1": 3,
+          "roll2": 6,
+          "damage": 10
+        },
+        "attack2": {
+          "name": "Stone Slam",
+          "desc": "",
+          "roll1": 3,
+          "roll2": 1,
+          "damage": 30
+        }
+      },
+      {
+        "id": "fangeth_aq",
+        "name": "Fangeth",
+        "element": "Aqua",
+        "maxHp": 90,
+        "rarity": 3,
+        "gpValue": 45,
+        "bio": "An ice imp summoned by the frozen currents of the misty sea.",
+        "equipped": [],
+        "attack1": {
+          "name": "Bubble Barrage",
+          "desc": "",
+          "roll1": 2,
+          "roll2": 4,
+          "damage": 20
+        },
+        "attack2": {
+          "name": "Bubble Barrage",
+          "desc": "",
+          "roll1": 5,
+          "roll2": 3,
+          "damage": 50
+        }
+      },
+      {
+        "id": "mawon_a",
+        "name": "Mawon",
+        "element": "Aero",
+        "maxHp": 90,
+        "rarity": 3,
+        "gpValue": 45,
+        "bio": "A lost soul condemned to wander the misty islands forever.",
+        "equipped": [],
+        "attack1": {
+          "name": "Whirlwind Pulse",
+          "desc": "",
+          "roll1": 5,
+          "roll2": 5,
+          "damage": 50
+        },
+        "attack2": {
+          "name": "Whirlwind Pulse",
+          "desc": "",
+          "roll1": 4,
+          "roll2": 5,
+          "damage": 40
+        }
+      },
+      {
+        "id": "tideeth_aq",
+        "name": "Tideeth",
+        "element": "Aqua",
+        "maxHp": 100,
+        "rarity": 4,
+        "gpValue": 50,
+        "bio": "A metallic sea-slime with a surface hard as steel.",
+        "equipped": [],
+        "attack1": {
+          "name": "Aqua Lance",
+          "desc": "",
+          "roll1": 6,
+          "roll2": 3,
+          "damage": 10
+        },
+        "attack2": {
+          "name": "Tidal Crash",
+          "desc": "",
+          "roll1": 2,
+          "roll2": 1,
+          "damage": 50
+        }
+      },
+      {
+        "id": "hideak_t",
+        "name": "Hideak",
+        "element": "Terra",
+        "maxHp": 100,
+        "rarity": 4,
+        "gpValue": 50,
+        "bio": "A scrap-iron golem assembled from shipwreck debris.",
+        "equipped": [],
+        "attack1": {
+          "name": "Quake Stomp",
+          "desc": "",
+          "roll1": 1,
+          "roll2": 6,
+          "damage": 50
+        },
+        "attack2": {
+          "name": "Boulder Bash",
+          "desc": "",
+          "roll1": 4,
+          "roll2": 5,
+          "damage": 10
+        }
+      }
+    ],
+    "volcan": [
+      {
+        "id": "hideon_aq",
+        "name": "Hideon",
+        "element": "Aqua",
+        "maxHp": 110,
+        "rarity": 5,
+        "gpValue": 55,
+        "bio": "A deep-ocean creature that scaled the volcanic cliffs chasing heat.",
+        "equipped": [],
+        "attack1": {
+          "name": "Aqua Lance",
+          "desc": "",
+          "roll1": 5,
+          "roll2": 3,
+          "damage": 30
+        },
+        "attack2": {
+          "name": "Drench Strike",
+          "desc": "",
+          "roll1": 2,
+          "roll2": 2,
+          "damage": 50
+        }
+      },
+      {
+        "id": "clawix_p",
+        "name": "Clawix",
+        "element": "Pyro",
+        "maxHp": 110,
+        "rarity": 5,
+        "gpValue": 55,
+        "bio": "A serpentine lava worm that burrows through magma flows.",
+        "equipped": [],
+        "attack1": {
+          "name": "Flame Spiral",
+          "desc": "",
+          "roll1": 1,
+          "roll2": 4,
+          "damage": 50
+        },
+        "attack2": {
+          "name": "Flame Spiral",
+          "desc": "",
+          "roll1": 6,
+          "roll2": 4,
+          "damage": 20
+        }
+      },
+      {
+        "id": "tideak_p",
+        "name": "Tideak",
+        "element": "Pyro",
+        "maxHp": 110,
+        "rarity": 5,
+        "gpValue": 55,
+        "bio": "A tiny demon forged in the volcano's heart with burning ambition.",
+        "equipped": [],
+        "attack1": {
+          "name": "Inferno Burst",
+          "desc": "",
+          "roll1": 5,
+          "roll2": 6,
+          "damage": 30
+        },
+        "attack2": {
+          "name": "Inferno Burst",
+          "desc": "",
+          "roll1": 5,
+          "roll2": 2,
+          "damage": 10
+        }
+      },
+      {
+        "id": "wingus_aq",
+        "name": "Wingus",
+        "element": "Aqua",
+        "maxHp": 120,
+        "rarity": 5,
+        "gpValue": 60,
+        "bio": "A rare aquatic titan that thrives in the superheated volcanic pools.",
+        "equipped": [],
+        "attack1": {
+          "name": "Bubble Barrage",
+          "desc": "",
+          "roll1": 4,
+          "roll2": 1,
+          "damage": 40
+        },
+        "attack2": {
+          "name": "Bubble Barrage",
+          "desc": "",
+          "roll1": 3,
+          "roll2": 2,
+          "damage": 10
+        }
+      },
+      {
+        "id": "behemoth",
+        "name": "The Behemoth",
+        "element": "Terra",
+        "maxHp": 150,
+        "rarity": 5,
+        "gpValue": 0,
+        "bio": "An ancient earth titan that has claimed the forest as its domain for centuries.",
+        "equipped": [],
+        "attack1": {
+          "name": "Boulder Bash",
+          "desc": "",
+          "roll1": 4,
+          "roll2": 4,
+          "damage": 60
+        },
+        "attack2": {
+          "name": "Stone Slam",
+          "desc": "",
+          "roll1": 1,
+          "roll2": 1,
+          "damage": 40
+        }
+      },
+      {
+        "id": "wingdragon",
+        "name": "The Great Winged Dragon",
+        "element": "Aero",
+        "maxHp": 150,
+        "rarity": 5,
+        "gpValue": 0,
+        "bio": "A legendary sky leviathan whose wingbeats shake the mountain peaks.",
+        "equipped": [],
+        "attack1": {
+          "name": "Cyclone Spin",
+          "desc": "",
+          "roll1": 1,
+          "roll2": 1,
+          "damage": 50
+        },
+        "attack2": {
+          "name": "Sky Jab",
+          "desc": "",
+          "roll1": 6,
+          "roll2": 6,
+          "damage": 50
+        }
+      },
+      {
+        "id": "tidalserp",
+        "name": "The Tidal Serpent",
+        "element": "Aqua",
+        "maxHp": 150,
+        "rarity": 5,
+        "gpValue": 0,
+        "bio": "A sea serpent of immense power said to control the tides of the Misty Islands.",
+        "equipped": [],
+        "attack1": {
+          "name": "Drench Strike",
+          "desc": "",
+          "roll1": 3,
+          "roll2": 3,
+          "damage": 40
+        },
+        "attack2": {
+          "name": "Tidal Crash",
+          "desc": "",
+          "roll1": 6,
+          "roll2": 6,
+          "damage": 60
+        }
+      },
+      {
+        "id": "flamdevil",
+        "name": "The Flamed Devil",
+        "element": "Pyro",
+        "maxHp": 150,
+        "rarity": 5,
+        "gpValue": 0,
+        "bio": "The demonic guardian of the Volcan Mountains, wreathed in eternal flame.",
+        "equipped": [],
+        "attack1": {
+          "name": "Scorching Ray",
+          "desc": "",
+          "roll1": 2,
+          "roll2": 2,
+          "damage": 30
+        },
+        "attack2": {
+          "name": "Inferno Burst",
+          "desc": "",
+          "roll1": 5,
+          "roll2": 5,
+          "damage": 70
+        }
+      }
+    ]
+  }
+}

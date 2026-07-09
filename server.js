@@ -2,18 +2,99 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: '*' } });
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
 
 // =================== GAME DATA ===================
 
-const SCENARIO_CARDS = require('./scenario_cards_generated.js');
+const DATA_DIR = path.join(__dirname, 'data');
+
+function loadData(file) {
+  return JSON.parse(fs.readFileSync(path.join(DATA_DIR, file), 'utf8'));
+}
+function saveData(file, data) {
+  fs.writeFileSync(path.join(DATA_DIR, file), JSON.stringify(data, null, 2));
+}
+
+let SCENARIO_CARDS   = loadData('scenario-cards.json');
+let TREASURE_CARDS   = loadData('treasure-cards.json');
+let PLAYER_ITEMS     = loadData('player-items.json');
+let MONSTER_DATA     = loadData('monsters.json');
+let MONSTER_ICONS_DB = loadData('monster-icons.json');
+
+// Flatten monster data into the shapes the game expects
+let STARTER_MONSTERS = MONSTER_DATA.starters;
+let REGION_MONSTERS  = MONSTER_DATA.regions;
+
+// =================== ADMIN API ===================
+
+// Serve monster-icons to the client
+app.get('/api/monster-icons', (req, res) => res.json(MONSTER_ICONS_DB));
+
+// List available monster icon images from the token folders
+app.get('/api/admin/monster-icon-list', (req, res) => {
+  const folders = [
+    { prefix: '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/', dir: path.join(__dirname, 'public/tiles/Monster tokens/New Monster Tokens/Tiny Dungeon Monsters/Tiny Dungeon Monsters') },
+    { prefix: '/tiles/Monster%20tokens/New%20Monster%20Tokens/Free-Chaos-Monsters-32x32-Icon-Pack/PNG/Transperent/', dir: path.join(__dirname, 'public/tiles/Monster tokens/New Monster Tokens/Free-Chaos-Monsters-32x32-Icon-Pack/PNG/Transperent') },
+    { prefix: '/tiles/New%20tiles/', dir: path.join(__dirname, 'public/tiles/New tiles') },
+  ];
+  const icons = [];
+  for (const { prefix, dir } of folders) {
+    try {
+      fs.readdirSync(dir).filter(f => /\.(png|jpg|gif|webp)$/i.test(f)).forEach(f => {
+        icons.push({ url: prefix + encodeURIComponent(f), name: f.replace(/\.[^.]+$/, '') });
+      });
+    } catch (_) {}
+  }
+  res.json(icons);
+});
+
+// GET/POST each data type
+app.get('/api/admin/scenario-cards', (req, res) => res.json(SCENARIO_CARDS));
+app.post('/api/admin/scenario-cards', (req, res) => {
+  SCENARIO_CARDS = req.body;
+  saveData('scenario-cards.json', SCENARIO_CARDS);
+  res.json({ ok: true });
+});
+
+app.get('/api/admin/treasure-cards', (req, res) => res.json(TREASURE_CARDS));
+app.post('/api/admin/treasure-cards', (req, res) => {
+  TREASURE_CARDS = req.body;
+  saveData('treasure-cards.json', TREASURE_CARDS);
+  res.json({ ok: true });
+});
+
+app.get('/api/admin/player-items', (req, res) => res.json(PLAYER_ITEMS));
+app.post('/api/admin/player-items', (req, res) => {
+  PLAYER_ITEMS = req.body;
+  saveData('player-items.json', PLAYER_ITEMS);
+  res.json({ ok: true });
+});
+
+app.get('/api/admin/monsters', (req, res) => res.json(MONSTER_DATA));
+app.post('/api/admin/monsters', (req, res) => {
+  MONSTER_DATA = req.body;
+  STARTER_MONSTERS = MONSTER_DATA.starters;
+  REGION_MONSTERS  = MONSTER_DATA.regions;
+  saveData('monsters.json', MONSTER_DATA);
+  res.json({ ok: true });
+});
+
+app.get('/api/admin/monster-icons', (req, res) => res.json(MONSTER_ICONS_DB));
+app.post('/api/admin/monster-icons', (req, res) => {
+  MONSTER_ICONS_DB = req.body;
+  saveData('monster-icons.json', MONSTER_ICONS_DB);
+  res.json({ ok: true });
+});
 
 const _I = n => `/tiles/New%20tiles/64x64/fc${n}.png`;
-const TREASURE_CARDS = [
+// TREASURE_CARDS, PLAYER_ITEMS, STARTER_MONSTERS, REGION_MONSTERS loaded from JSON above
+const _LEGACY_TREASURE_CARDS = [
   { id:'t1',  name:"Elixir of Behemoth",     effect:"Heals a monster for 50 HP.",                           type:"heal_monster",    value:50, usage:"use_once", icon:_I(271),  rarity:4, gpValue:40 },
   { id:'t2',  name:"Draught of Vital Flame",  effect:"Heals a monster for 40 HP.",                           type:"heal_monster",    value:40, usage:"use_once", icon:_I(283),  rarity:3, gpValue:30 },
   { id:'t3',  name:"Siren's Brew",            effect:"Heals a monster for 30 HP.",                           type:"heal_monster",    value:30, usage:"use_once", icon:_I(280),  rarity:3, gpValue:20 },
@@ -45,7 +126,7 @@ const TREASURE_CARDS = [
   { id:'t29', name:"Windshell Cloak",         effect:"Removes elemental weakness from an Aero monster.",     type:"remove_weakness", element:"Aero",  usage:"equip", icon:_I(1953), rarity:5, gpValue:50 },
 ];
 
-const PLAYER_ITEMS = [
+const _LEGACY_PLAYER_ITEMS = [
   { id:'pi1',  name:"Emberglass Lantern Shard",    effect:"Add 6 to a Player's attack roll.",     type:"player_roll_bonus",    value:6,  usage:"equip_to_player", icon:_I(86),   rarity:4, gpValue:40 },
   { id:'pi2',  name:"Wayfinder's Compass",         effect:"Add 5 to a Player's attack roll.",     type:"player_roll_bonus",    value:5,  usage:"equip_to_player", icon:_I(333),  rarity:4, gpValue:40 },
   { id:'pi3',  name:"Whisperleaf Charm",            effect:"Add 4 to a Player's attack roll.",     type:"player_roll_bonus",    value:4,  usage:"equip_to_player", icon:_I(22),   rarity:4, gpValue:40 },
@@ -62,7 +143,7 @@ const PLAYER_ITEMS = [
   { id:'pi14', name:"Bracelet of Whispering Stars", effect:"Increases a Player's attack by +30.",  type:"player_attack_bonus",  value:30, usage:"equip_to_player", icon:_I(1836), rarity:5, gpValue:60 },
 ];
 
-const STARTER_MONSTERS = [
+const _LEGACY_STARTER_MONSTERS = [
   { id:'emberling',   name:"Emberling",   element:"Pyro",  maxHp:40, equipped:[],
     attack1:{ name:"Flare Spark",  desc:"Shoots a small bolt of fire",    roll1:1, roll2:2, damage:20 },
     attack2:{ name:"Lava Sputter", desc:"Spits molten droplets",          roll1:3, roll2:4, damage:20 } },
@@ -78,7 +159,7 @@ const STARTER_MONSTERS = [
 ];
 
 // roll1/roll2 = specific d6 values required to hit (from Excel data)
-const REGION_MONSTERS = {
+const _LEGACY_REGION_MONSTERS = {
   meadow: [
     { id:'guston_p',  name:"Guston",   element:"Pyro",  maxHp:10,  rarity:1, gpValue:5,  equipped:[], attack1:{name:"Blazing Claw",    roll1:1,roll2:6,damage:50}, attack2:{name:"Inferno Burst",    roll1:2,roll2:6,damage:20} },
     { id:'tidear_a',  name:"Tidear",   element:"Aero",  maxHp:10,  rarity:1, gpValue:5,  equipped:[], attack1:{name:"Gale Slash",      roll1:4,roll2:5,damage:40}, attack2:{name:"Gale Slash",       roll1:2,roll2:2,damage:30} },

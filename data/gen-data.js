@@ -1,0 +1,158 @@
+// Script to generate data JSON files - run once
+const fs = require('fs');
+const path = require('path');
+
+const _I = n => `/tiles/New%20tiles/64x64/fc${n}.png`;
+
+const TREASURE_CARDS = [
+  { id:'t1',  name:"Elixir of Behemoth",     effect:"Heals a monster for 50 HP.",                           type:"heal_monster",    value:50, usage:"use_once", icon:_I(271),  rarity:4, gpValue:40 },
+  { id:'t2',  name:"Draught of Vital Flame",  effect:"Heals a monster for 40 HP.",                           type:"heal_monster",    value:40, usage:"use_once", icon:_I(283),  rarity:3, gpValue:30 },
+  { id:'t3',  name:"Siren's Brew",            effect:"Heals a monster for 30 HP.",                           type:"heal_monster",    value:30, usage:"use_once", icon:_I(280),  rarity:3, gpValue:20 },
+  { id:'t4',  name:"Stonefruit Salve",        effect:"Heals a monster for 20 HP.",                           type:"heal_monster",    value:20, usage:"use_once", icon:_I(269),  rarity:1, gpValue:10 },
+  { id:'t5',  name:"Breeze Balm",             effect:"Heals a monster for 10 HP.",                           type:"heal_monster",    value:10, usage:"use_once", icon:_I(267),  rarity:1, gpValue:5  },
+  { id:'t6',  name:"Ambrosia Vial",           effect:"Heals the player for 50 HP.",                          type:"heal_player",     value:50, usage:"use_once", icon:_I(121),  rarity:4, gpValue:40 },
+  { id:'t7',  name:"Sanctified Bandage",      effect:"Heals the player for 40 HP.",                          type:"heal_player",     value:40, usage:"use_once", icon:_I(123),  rarity:3, gpValue:30 },
+  { id:'t8',  name:"Golden Nectar",           effect:"Heals the player for 30 HP.",                          type:"heal_player",     value:30, usage:"use_once", icon:_I(65),   rarity:3, gpValue:20 },
+  { id:'t9',  name:"Phoenix Feather",         effect:"Heals the player for 20 HP.",                          type:"heal_player",     value:20, usage:"use_once", icon:_I(183),  rarity:1, gpValue:10 },
+  { id:'t10', name:"Healing Crystal",         effect:"Heals the player for 10 HP.",                          type:"heal_player",     value:10, usage:"use_once", icon:_I(170),  rarity:1, gpValue:5  },
+  { id:'t11', name:"Infernal Charm",          effect:"Boosts a Pyro attack's damage by +20.",                type:"attack_boost",    element:"Pyro",  value:20, usage:"equip", icon:_I(163),  rarity:4, gpValue:40 },
+  { id:'t12', name:"Tidal Ring",              effect:"Boosts an Aqua attack's damage by +20.",               type:"attack_boost",    element:"Aqua",  value:20, usage:"equip", icon:_I(1847), rarity:4, gpValue:40 },
+  { id:'t13', name:"Earthen Gauntlet",        effect:"Boosts a Terra attack's damage by +20.",               type:"attack_boost",    element:"Terra", value:20, usage:"equip", icon:_I(707),  rarity:4, gpValue:40 },
+  { id:'t14', name:"Sky Medallion",           effect:"Boosts an Aero attack's damage by +20.",               type:"attack_boost",    element:"Aero",  value:20, usage:"equip", icon:_I(1841), rarity:4, gpValue:40 },
+  { id:'t15', name:"Titan's Armor Plate",     effect:"Increases monster HP by 50.",                          type:"hp_boost",        value:50, usage:"equip", icon:_I(1862), rarity:5, gpValue:40 },
+  { id:'t16', name:"Heart of the Mountain",   effect:"Increases monster HP by 40.",                          type:"hp_boost",        value:40, usage:"equip", icon:_I(1818), rarity:5, gpValue:30 },
+  { id:'t17', name:"Blessed Chainmail",       effect:"Increases monster HP by 30.",                          type:"hp_boost",        value:30, usage:"equip", icon:_I(1860), rarity:4, gpValue:20 },
+  { id:'t18', name:"Ironhide Buckler",        effect:"Increases monster HP by 20.",                          type:"hp_boost",        value:20, usage:"equip", icon:_I(851),  rarity:2, gpValue:10 },
+  { id:'t19', name:"Oakroot Tonic",           effect:"Increases monster HP by 10.",                          type:"hp_boost",        value:10, usage:"equip", icon:_I(62),   rarity:1, gpValue:5  },
+  { id:'t20', name:"Blade of Fate",           effect:"Add 6 to a monster's attack roll.",                    type:"roll_bonus",      value:6, usage:"equip", icon:_I(717),  rarity:3, gpValue:30 },
+  { id:'t21', name:"Rune-Etched Coin",        effect:"Add 5 to a monster's attack roll.",                    type:"roll_bonus",      value:5, usage:"equip", icon:_I(314),  rarity:3, gpValue:30 },
+  { id:'t22', name:"Guiding Amulet",          effect:"Add 4 to a monster's attack roll.",                    type:"roll_bonus",      value:4, usage:"equip", icon:_I(90),   rarity:3, gpValue:30 },
+  { id:'t23', name:"Warrior's Whisper",       effect:"Add 3 to a monster's attack roll.",                    type:"roll_bonus",      value:3, usage:"equip", icon:_I(716),  rarity:3, gpValue:30 },
+  { id:'t24', name:"Sharpened Rune",          effect:"Add 2 to a monster's attack roll.",                    type:"roll_bonus",      value:2, usage:"equip", icon:_I(316),  rarity:3, gpValue:30 },
+  { id:'t25', name:"Strategist's Dice",       effect:"Add 1 to a monster's attack roll.",                    type:"roll_bonus",      value:1, usage:"equip", icon:_I(200),  rarity:3, gpValue:30 },
+  { id:'t26', name:"Orb of Balance",          effect:"Removes elemental weakness from a Pyro monster.",      type:"remove_weakness", element:"Pyro",  usage:"equip", icon:_I(745),  rarity:5, gpValue:50 },
+  { id:'t27', name:"Aegis of Harmony",        effect:"Removes elemental weakness from an Aqua monster.",     type:"remove_weakness", element:"Aqua",  usage:"equip", icon:_I(783),  rarity:5, gpValue:50 },
+  { id:'t28', name:"Gaia's Ward",             effect:"Removes elemental weakness from a Terra monster.",     type:"remove_weakness", element:"Terra", usage:"equip", icon:_I(112),  rarity:5, gpValue:50 },
+  { id:'t29', name:"Windshell Cloak",         effect:"Removes elemental weakness from an Aero monster.",     type:"remove_weakness", element:"Aero",  usage:"equip", icon:_I(1953), rarity:5, gpValue:50 },
+];
+
+const PLAYER_ITEMS = [
+  { id:'pi1',  name:"Emberglass Lantern Shard",    effect:"Add 6 to a Player's attack roll.",     type:"player_roll_bonus",    value:6,  usage:"equip_to_player", icon:_I(86),   rarity:4, gpValue:40 },
+  { id:'pi2',  name:"Wayfinder's Compass",         effect:"Add 5 to a Player's attack roll.",     type:"player_roll_bonus",    value:5,  usage:"equip_to_player", icon:_I(333),  rarity:4, gpValue:40 },
+  { id:'pi3',  name:"Whisperleaf Charm",            effect:"Add 4 to a Player's attack roll.",     type:"player_roll_bonus",    value:4,  usage:"equip_to_player", icon:_I(22),   rarity:4, gpValue:40 },
+  { id:'pi4',  name:"Clockwork Cricket",            effect:"Add 3 to a Player's attack roll.",     type:"player_roll_bonus",    value:3,  usage:"equip_to_player", icon:_I(87),   rarity:4, gpValue:40 },
+  { id:'pi5',  name:"Moonthread Spool",             effect:"Add 2 to a Player's attack roll.",     type:"player_roll_bonus",    value:2,  usage:"equip_to_player", icon:_I(88),   rarity:4, gpValue:40 },
+  { id:'pi6',  name:"Echo Pebble",                  effect:"Add 1 to a Player's attack roll.",     type:"player_roll_bonus",    value:1,  usage:"equip_to_player", icon:_I(209),  rarity:4, gpValue:40 },
+  { id:'pi7',  name:"Starlight Pocketwatch",        effect:"Increases Player's HP by 50.",         type:"player_hp_boost",      value:50, usage:"equip_to_player", icon:_I(171),  rarity:5, gpValue:70 },
+  { id:'pi8',  name:"Mosskeeper's Brooch",          effect:"Increases Player's HP by 40.",         type:"player_hp_boost",      value:40, usage:"equip_to_player", icon:_I(1840), rarity:4, gpValue:60 },
+  { id:'pi9',  name:"Veilweaver's Ribbon",          effect:"Increases Player's HP by 30.",         type:"player_hp_boost",      value:30, usage:"equip_to_player", icon:_I(1952), rarity:3, gpValue:50 },
+  { id:'pi10', name:"Frostglass Tear",              effect:"Increases Player's HP by 20.",         type:"player_hp_boost",      value:20, usage:"equip_to_player", icon:_I(170),  rarity:2, gpValue:40 },
+  { id:'pi11', name:"Oracle's Monocle",             effect:"Increases Player's HP by 10.",         type:"player_hp_boost",      value:10, usage:"equip_to_player", icon:_I(1851), rarity:1, gpValue:30 },
+  { id:'pi12', name:"Ring of the First Dawn",       effect:"Increases a Player's attack by +10.",  type:"player_attack_bonus",  value:10, usage:"equip_to_player", icon:_I(1844), rarity:3, gpValue:40 },
+  { id:'pi13', name:"Serpent's Eye Pendant",        effect:"Increases a Player's attack by +20.",  type:"player_attack_bonus",  value:20, usage:"equip_to_player", icon:_I(1848), rarity:4, gpValue:50 },
+  { id:'pi14', name:"Bracelet of Whispering Stars", effect:"Increases a Player's attack by +30.",  type:"player_attack_bonus",  value:30, usage:"equip_to_player", icon:_I(1836), rarity:5, gpValue:60 },
+];
+
+const MONSTERS = {
+  starters: [
+    { id:'emberling',   name:"Emberling",   element:"Pyro",  maxHp:40, bio:"A fiery imp-like creature born from volcanic rock. Quick and aggressive.", equipped:[],
+      attack1:{ name:"Flare Spark",  desc:"Shoots a small bolt of fire",    roll1:1, roll2:2, damage:20 },
+      attack2:{ name:"Lava Sputter", desc:"Spits molten droplets",          roll1:3, roll2:4, damage:20 } },
+    { id:'tidecrawler', name:"Tidecrawler", element:"Aqua", maxHp:40, bio:"A sleek aquatic creature that can glide along water surfaces.", equipped:[],
+      attack1:{ name:"Aqua Slash",   desc:"A blade of water slices the foe", roll1:1, roll2:2, damage:20 },
+      attack2:{ name:"Bubble Bomb",  desc:"A bubble that bursts on impact",  roll1:3, roll2:4, damage:20 } },
+    { id:'pebbrute',    name:"Pebbrute",    element:"Terra", maxHp:40, bio:"A stocky stone-fisted creature with tough hide and a stubborn will.", equipped:[],
+      attack1:{ name:"Rock Jab",     desc:"Strikes with a sharp stone fist", roll1:1, roll2:2, damage:20 },
+      attack2:{ name:"Dust Pulse",   desc:"A concussive blast of earthy dust",roll1:3, roll2:4, damage:20 } },
+    { id:'gustling',    name:"Gustling",    element:"Aero",   maxHp:40, bio:"A swift wind-spirit that dances through the air with unpredictable bursts.", equipped:[],
+      attack1:{ name:"Whirl Peck",   desc:"Dives in a spinning wind strike", roll1:1, roll2:2, damage:20 },
+      attack2:{ name:"Air Snap",     desc:"A quick air pressure burst",      roll1:3, roll2:4, damage:20 } },
+  ],
+  regions: {
+    meadow: [
+      { id:'guston_p',  name:"Guston",   element:"Pyro",  maxHp:10,  rarity:1, gpValue:5,  bio:"A small ember sprite that haunts the sunlit meadows.", equipped:[], attack1:{name:"Blazing Claw",    desc:"",roll1:1,roll2:6,damage:50}, attack2:{name:"Inferno Burst",    desc:"",roll1:2,roll2:6,damage:20} },
+      { id:'tidear_a',  name:"Tidear",   element:"Aero",  maxHp:10,  rarity:1, gpValue:5,  bio:"A wind-borne creature with hollow bones and a piercing shriek.", equipped:[], attack1:{name:"Gale Slash",      desc:"",roll1:4,roll2:5,damage:40}, attack2:{name:"Gale Slash",       desc:"",roll1:2,roll2:2,damage:30} },
+      { id:'stormor_t', name:"Stormor",  element:"Terra", maxHp:10,  rarity:1, gpValue:5,  bio:"A pebble-armored critter that rolls into enemies.", equipped:[], attack1:{name:"Quake Stomp",     desc:"",roll1:1,roll2:5,damage:10}, attack2:{name:"Stone Slam",       desc:"",roll1:1,roll2:2,damage:20} },
+      { id:'fangus_a',  name:"Fangus",   element:"Aero",  maxHp:10,  rarity:1, gpValue:5,  bio:"A sharp-fanged wind beast that ambushes from tall grass.", equipped:[], attack1:{name:"Whirlwind Pulse", desc:"",roll1:5,roll2:2,damage:50}, attack2:{name:"Sky Jab",          desc:"",roll1:4,roll2:3,damage:20} },
+      { id:'clawon_p',  name:"Clawon",   element:"Pyro",  maxHp:20,  rarity:1, gpValue:10, bio:"A claw-footed fire lizard that scorches the grass beneath it.", equipped:[], attack1:{name:"Blazing Claw",    desc:"",roll1:6,roll2:5,damage:50}, attack2:{name:"Blazing Claw",     desc:"",roll1:3,roll2:3,damage:10} },
+      { id:'gustan_t',  name:"Gustan",   element:"Terra", maxHp:20,  rarity:1, gpValue:11, bio:"A boulder-backed creature with thunderous footfalls.", equipped:[], attack1:{name:"Quake Stomp",     desc:"",roll1:4,roll2:4,damage:20}, attack2:{name:"Boulder Bash",     desc:"",roll1:4,roll2:5,damage:30} },
+      { id:'quakeus_a', name:"Quakeus",  element:"Aero",  maxHp:20,  rarity:1, gpValue:13, bio:"A floating eye that generates localized wind bursts.", equipped:[], attack1:{name:"Sky Jab",         desc:"",roll1:6,roll2:4,damage:30}, attack2:{name:"Gale Slash",       desc:"",roll1:5,roll2:4,damage:20} },
+      { id:'wingar_aq', name:"Wingar",   element:"Aqua",  maxHp:30,  rarity:1, gpValue:15, bio:"A bat-like water elemental that haunts riverside meadows.", equipped:[], attack1:{name:"Aqua Lance",      desc:"",roll1:5,roll2:6,damage:10}, attack2:{name:"Drench Strike",    desc:"",roll1:3,roll2:4,damage:40} },
+    ],
+    forest: [
+      { id:'clawak_p',  name:"Clawak",   element:"Pyro",  maxHp:40,  rarity:1, gpValue:20, bio:"A cunning fire spider that weaves blazing webs in the forest.", equipped:[], attack1:{name:"Flame Spiral",    desc:"",roll1:1,roll2:1,damage:20}, attack2:{name:"Blazing Claw",     desc:"",roll1:5,roll2:3,damage:20} },
+      { id:'tidear_t',  name:"Tidear",   element:"Terra", maxHp:40,  rarity:1, gpValue:20, bio:"A stone-plated rat that gnaws through rocks and roots alike.", equipped:[], attack1:{name:"Quake Stomp",     desc:"",roll1:2,roll2:2,damage:40}, attack2:{name:"Stone Slam",       desc:"",roll1:6,roll2:4,damage:20} },
+      { id:'scaleon_t', name:"Scaleon",  element:"Terra", maxHp:50,  rarity:2, gpValue:25, bio:"A massive mud golem that lumbers through ancient groves.", equipped:[], attack1:{name:"Boulder Bash",    desc:"",roll1:1,roll2:4,damage:50}, attack2:{name:"Stone Slam",       desc:"",roll1:4,roll2:5,damage:50} },
+      { id:'stormix_aq',name:"Stormix",  element:"Aqua",  maxHp:50,  rarity:2, gpValue:25, bio:"A crystalline spider that spins webs of frozen dew.", equipped:[], attack1:{name:"Drench Strike",   desc:"",roll1:6,roll2:2,damage:50}, attack2:{name:"Drench Strike",    desc:"",roll1:3,roll2:6,damage:50} },
+      { id:'mawar_p',   name:"Mawar",    element:"Pyro",  maxHp:50,  rarity:2, gpValue:25, bio:"A fierce fire-eye that sweeps through the forest canopy.", equipped:[], attack1:{name:"Inferno Burst",   desc:"",roll1:4,roll2:6,damage:50}, attack2:{name:"Flame Spiral",     desc:"",roll1:6,roll2:4,damage:40} },
+      { id:'hidear_a',  name:"Hidear",   element:"Aero",  maxHp:60,  rarity:2, gpValue:30, bio:"A ghost that floats between the trees carrying a swaying lantern.", equipped:[], attack1:{name:"Cyclone Spin",    desc:"",roll1:4,roll2:1,damage:50}, attack2:{name:"Gale Slash",       desc:"",roll1:4,roll2:4,damage:30} },
+      { id:'clawus_aq', name:"Clawus",   element:"Aqua",  maxHp:60,  rarity:2, gpValue:30, bio:"A spider-like creature with legs made of flowing water.", equipped:[], attack1:{name:"Tidal Crash",     desc:"",roll1:3,roll2:2,damage:10}, attack2:{name:"Tidal Crash",      desc:"",roll1:5,roll2:2,damage:40} },
+      { id:'hideak_p',  name:"Hideak",   element:"Pyro",  maxHp:70,  rarity:3, gpValue:35, bio:"A slime-like blob that glows a deep crimson, leaving scorch marks.", equipped:[], attack1:{name:"Flame Spiral",    desc:"",roll1:5,roll2:1,damage:20}, attack2:{name:"Scorching Ray",    desc:"",roll1:3,roll2:5,damage:40} },
+    ],
+    misty: [
+      { id:'stormor_aq',name:"Stormor",  element:"Aqua",  maxHp:80,  rarity:3, gpValue:40, bio:"A frost-covered eye that watches travellers from the misty banks.", equipped:[], attack1:{name:"Aqua Lance",      desc:"",roll1:2,roll2:5,damage:50}, attack2:{name:"Bubble Barrage",   desc:"",roll1:3,roll2:2,damage:50} },
+      { id:'quakeix_a', name:"Quakeix",  element:"Aero",  maxHp:80,  rarity:3, gpValue:40, bio:"A shadow-wraith that drifts silently through sea fog.", equipped:[], attack1:{name:"Cyclone Spin",    desc:"",roll1:1,roll2:2,damage:30}, attack2:{name:"Gale Slash",       desc:"",roll1:1,roll2:2,damage:30} },
+      { id:'stormar_p', name:"Stormar",  element:"Pyro",  maxHp:80,  rarity:2, gpValue:40, bio:"A bloodshot fire-eye that burns through island mist like a torch.", equipped:[], attack1:{name:"Inferno Burst",   desc:"",roll1:1,roll2:2,damage:50}, attack2:{name:"Inferno Burst",    desc:"",roll1:6,roll2:6,damage:20} },
+      { id:'mawor_t',   name:"Mawor",    element:"Terra", maxHp:90,  rarity:3, gpValue:45, bio:"A stone golem risen from the seabed, draped in kelp.", equipped:[], attack1:{name:"Boulder Bash",    desc:"",roll1:3,roll2:6,damage:10}, attack2:{name:"Stone Slam",       desc:"",roll1:3,roll2:1,damage:30} },
+      { id:'fangeth_aq',name:"Fangeth",  element:"Aqua",  maxHp:90,  rarity:3, gpValue:45, bio:"An ice imp summoned by the frozen currents of the misty sea.", equipped:[], attack1:{name:"Bubble Barrage",  desc:"",roll1:2,roll2:4,damage:20}, attack2:{name:"Bubble Barrage",   desc:"",roll1:5,roll2:3,damage:50} },
+      { id:'mawon_a',   name:"Mawon",    element:"Aero",  maxHp:90,  rarity:3, gpValue:45, bio:"A lost soul condemned to wander the misty islands forever.", equipped:[], attack1:{name:"Whirlwind Pulse", desc:"",roll1:5,roll2:5,damage:50}, attack2:{name:"Whirlwind Pulse",  desc:"",roll1:4,roll2:5,damage:40} },
+      { id:'tideeth_aq',name:"Tideeth",  element:"Aqua",  maxHp:100, rarity:4, gpValue:50, bio:"A metallic sea-slime with a surface hard as steel.", equipped:[], attack1:{name:"Aqua Lance",      desc:"",roll1:6,roll2:3,damage:10}, attack2:{name:"Tidal Crash",      desc:"",roll1:2,roll2:1,damage:50} },
+      { id:'hideak_t',  name:"Hideak",   element:"Terra", maxHp:100, rarity:4, gpValue:50, bio:"A scrap-iron golem assembled from shipwreck debris.", equipped:[], attack1:{name:"Quake Stomp",     desc:"",roll1:1,roll2:6,damage:50}, attack2:{name:"Boulder Bash",     desc:"",roll1:4,roll2:5,damage:10} },
+    ],
+    volcan: [
+      { id:'hideon_aq', name:"Hideon",          element:"Aqua",  maxHp:110, rarity:5, gpValue:55, bio:"A deep-ocean creature that scaled the volcanic cliffs chasing heat.", equipped:[], attack1:{name:"Aqua Lance",     desc:"",roll1:5,roll2:3,damage:30}, attack2:{name:"Drench Strike",   desc:"",roll1:2,roll2:2,damage:50} },
+      { id:'clawix_p',  name:"Clawix",          element:"Pyro",  maxHp:110, rarity:5, gpValue:55, bio:"A serpentine lava worm that burrows through magma flows.", equipped:[], attack1:{name:"Flame Spiral",   desc:"",roll1:1,roll2:4,damage:50}, attack2:{name:"Flame Spiral",    desc:"",roll1:6,roll2:4,damage:20} },
+      { id:'tideak_p',  name:"Tideak",          element:"Pyro",  maxHp:110, rarity:5, gpValue:55, bio:"A tiny demon forged in the volcano's heart with burning ambition.", equipped:[], attack1:{name:"Inferno Burst",  desc:"",roll1:5,roll2:6,damage:30}, attack2:{name:"Inferno Burst",   desc:"",roll1:5,roll2:2,damage:10} },
+      { id:'wingus_aq', name:"Wingus",          element:"Aqua",  maxHp:120, rarity:5, gpValue:60, bio:"A rare aquatic titan that thrives in the superheated volcanic pools.", equipped:[], attack1:{name:"Bubble Barrage", desc:"",roll1:4,roll2:1,damage:40}, attack2:{name:"Bubble Barrage",  desc:"",roll1:3,roll2:2,damage:10} },
+      { id:'behemoth',  name:"The Behemoth",    element:"Terra", maxHp:150, rarity:5, gpValue:0,  bio:"An ancient earth titan that has claimed the forest as its domain for centuries.", equipped:[], attack1:{name:"Boulder Bash",   desc:"",roll1:4,roll2:4,damage:60}, attack2:{name:"Stone Slam",      desc:"",roll1:1,roll2:1,damage:40} },
+      { id:'wingdragon',name:"The Great Winged Dragon", element:"Aero", maxHp:150, rarity:5, gpValue:0, bio:"A legendary sky leviathan whose wingbeats shake the mountain peaks.", equipped:[], attack1:{name:"Cyclone Spin", desc:"",roll1:1,roll2:1,damage:50}, attack2:{name:"Sky Jab", desc:"",roll1:6,roll2:6,damage:50} },
+      { id:'tidalserp', name:"The Tidal Serpent",      element:"Aqua", maxHp:150, rarity:5, gpValue:0, bio:"A sea serpent of immense power said to control the tides of the Misty Islands.", equipped:[], attack1:{name:"Drench Strike",desc:"",roll1:3,roll2:3,damage:40}, attack2:{name:"Tidal Crash",desc:"",roll1:6,roll2:6,damage:60} },
+      { id:'flamdevil',  name:"The Flamed Devil",       element:"Pyro", maxHp:150, rarity:5, gpValue:0, bio:"The demonic guardian of the Volcan Mountains, wreathed in eternal flame.", equipped:[], attack1:{name:"Scorching Ray",desc:"",roll1:2,roll2:2,damage:30}, attack2:{name:"Inferno Burst",desc:"",roll1:5,roll2:5,damage:70} },
+    ],
+  }
+};
+
+const MONSTER_ICONS = {
+  emberling:   '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/fire-imp.png',
+  tidecrawler: '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/blue-slime.png',
+  pebbrute:    '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/mini-golem.png',
+  gustling:    '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/small-ghost.png',
+  guston_p:    '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/fire-bat.png',
+  tidear_a:    '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/cave-bat.png',
+  stormor_t:   '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/cave-spider.png',
+  fangus_a:    '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/vampire-bat.png',
+  clawon_p:    '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/horned-imp.png',
+  gustan_t:    '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/mushroom-creature.png',
+  quakeus_a:   '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/floating-eye.png',
+  wingar_aq:   '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/ice-bat.png',
+  clawak_p:    '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/fire-spider.png',
+  tidear_t:    '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/armored-rat.png',
+  scaleon_t:   '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/mud-golem.png',
+  stormix_aq:  '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/ice-spider.png',
+  mawar_p:     '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/fire-eye.png',
+  hidear_a:    '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/lantern-ghost.png',
+  clawus_aq:   '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/crystal-spider.png',
+  hideak_p:    '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/red-slime.png',
+  stormor_aq:  '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/frost-eye.png',
+  quakeix_a:   '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/shadow-ghost.png',
+  stormar_p:   '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/blood-eye.png',
+  mawor_t:     '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/stone-golem.png',
+  fangeth_aq:  '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/ice-imp.png',
+  mawon_a:     '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/lost-soul.png',
+  tideeth_aq:  '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/metal-slime.png',
+  hideak_t:    '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/scrap-golem.png',
+  hideon_aq:   '/tiles/Monster%20tokens/New%20Monster%20Tokens/Free-Chaos-Monsters-32x32-Icon-Pack/PNG/Transperent/Icon5.png',
+  clawix_p:    '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/lava-worm.png',
+  tideak_p:    '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/tiny-demon.png',
+  wingus_aq:   '/tiles/Monster%20tokens/New%20Monster%20Tokens/Free-Chaos-Monsters-32x32-Icon-Pack/PNG/Transperent/Icon8.png',
+  behemoth:    '/tiles/New%20tiles/The%20Valley%20Meadow%20Boss.png',
+  wingdragon:  '/tiles/New%20tiles/The%20Mountain%20Forest%20Boss.png',
+  tidalserp:   '/tiles/New%20tiles/The%20Misty%20Island%20Boss.png',
+  flamdevil:   '/tiles/New%20tiles/The%20Volcan%20Mountain%20Boss.png',
+};
+
+fs.writeFileSync('./data/treasure-cards.json', JSON.stringify(TREASURE_CARDS, null, 2));
+fs.writeFileSync('./data/player-items.json', JSON.stringify(PLAYER_ITEMS, null, 2));
+fs.writeFileSync('./data/monsters.json', JSON.stringify(MONSTERS, null, 2));
+fs.writeFileSync('./data/monster-icons.json', JSON.stringify(MONSTER_ICONS, null, 2));
+console.log('All data files written.');

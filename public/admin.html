@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elementis Game Editor</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #0f0f1a; color: #d4af37; min-height: 100vh; }
+
+header { background: linear-gradient(135deg, #1a0a00, #2a1500); border-bottom: 2px solid #8B6914; padding: 14px 24px; display: flex; align-items: center; gap: 16px; }
+header h1 { font-size: 1.4rem; letter-spacing: 2px; color: #d4af37; text-shadow: 0 0 12px rgba(212,175,55,0.5); }
+header .badge { background: #8B1A1A; color: #ffa; padding: 3px 10px; border-radius: 12px; font-size: 0.7rem; letter-spacing: 1px; }
+
+.tabs { display: flex; gap: 4px; padding: 16px 24px 0; background: #0d0d1f; border-bottom: 2px solid #2a2540; flex-wrap: wrap; }
+.tab { padding: 10px 22px; border: 1px solid #2a2540; border-bottom: none; border-radius: 6px 6px 0 0; cursor: pointer; font-size: 0.85rem; letter-spacing: 1px; color: #888; background: #141428; transition: all 0.2s; }
+.tab:hover { color: #d4af37; background: #1a1a35; }
+.tab.active { color: #d4af37; background: #1a1030; border-color: #8B6914; font-weight: 600; }
+
+.content { padding: 24px; max-width: 1400px; }
+
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* Two-column layout */
+.editor-layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; height: calc(100vh - 160px); }
+.list-pane { background: #12122a; border: 1px solid #2a2540; border-radius: 6px; overflow-y: auto; display: flex; flex-direction: column; }
+.list-header { padding: 12px 14px; border-bottom: 1px solid #2a2540; display: flex; align-items: center; justify-content: space-between; background: #0f0f20; position: sticky; top: 0; z-index: 1; }
+.list-header span { font-size: 0.75rem; letter-spacing: 1px; color: #888; text-transform: uppercase; }
+.list-items { flex: 1; overflow-y: auto; }
+.list-item { padding: 10px 14px; cursor: pointer; border-bottom: 1px solid #1a1a30; display: flex; align-items: center; gap: 10px; transition: background 0.15s; }
+.list-item:hover { background: #1a1a35; }
+.list-item.selected { background: #1a1030; border-left: 3px solid #d4af37; }
+.list-item img { width: 32px; height: 32px; object-fit: contain; image-rendering: pixelated; }
+.list-item .item-name { font-size: 0.82rem; color: #ccc; flex: 1; }
+.list-item .item-tag { font-size: 0.65rem; color: #888; background: #1a1a30; padding: 2px 6px; border-radius: 8px; }
+
+.edit-pane { background: #12122a; border: 1px solid #2a2540; border-radius: 6px; overflow-y: auto; padding: 24px; }
+.edit-pane h2 { font-size: 1rem; color: #d4af37; letter-spacing: 2px; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #2a2540; }
+
+.field-group { margin-bottom: 16px; }
+.field-group label { display: block; font-size: 0.72rem; color: #888; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
+.field-group input, .field-group select, .field-group textarea {
+  width: 100%; background: #0d0d20; border: 1px solid #2a2540; border-radius: 4px;
+  color: #ddd; padding: 8px 10px; font-size: 0.85rem; font-family: inherit;
+}
+.field-group input:focus, .field-group select:focus, .field-group textarea:focus {
+  outline: none; border-color: #8B6914; background: #0f0f25;
+}
+.field-group textarea { resize: vertical; min-height: 60px; }
+.field-group select option { background: #1a1a30; }
+
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.row4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
+
+.section-title { font-size: 0.75rem; color: #8B6914; letter-spacing: 2px; text-transform: uppercase; margin: 22px 0 12px; padding-bottom: 6px; border-bottom: 1px solid #2a2540; }
+
+.option-card { background: #0d0d20; border: 1px solid #2a2540; border-radius: 6px; padding: 14px; margin-bottom: 12px; }
+.option-card .opt-header { font-size: 0.72rem; color: #d4af37; letter-spacing: 1px; margin-bottom: 10px; text-transform: uppercase; }
+
+/* Icon picker */
+.icon-picker-wrap { display: flex; align-items: center; gap: 10px; }
+.icon-preview { width: 56px; height: 56px; border: 1px solid #2a2540; border-radius: 4px; background: #0d0d20; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+.icon-preview img { width: 48px; height: 48px; object-fit: contain; image-rendering: pixelated; }
+.icon-preview-empty { font-size: 1.4rem; }
+.icon-url-input { flex: 1; }
+.btn-pick { background: #1a1030; border: 1px solid #8B6914; color: #d4af37; padding: 7px 14px; border-radius: 4px; cursor: pointer; font-size: 0.78rem; letter-spacing: 1px; white-space: nowrap; }
+.btn-pick:hover { background: #2a1050; }
+
+/* Buttons */
+.btn { padding: 9px 20px; border-radius: 4px; border: none; cursor: pointer; font-size: 0.82rem; letter-spacing: 1px; font-family: inherit; transition: all 0.2s; }
+.btn-primary { background: linear-gradient(135deg, #8B6914, #d4af37); color: #0a0a0a; font-weight: 700; }
+.btn-primary:hover { filter: brightness(1.15); }
+.btn-danger { background: #6b1010; color: #faa; border: 1px solid #8B1A1A; }
+.btn-danger:hover { background: #8B1A1A; }
+.btn-success { background: #0f4020; color: #5f5; border: 1px solid #1a6030; }
+.btn-success:hover { background: #1a6030; }
+.btn-sm { padding: 5px 12px; font-size: 0.75rem; }
+
+.action-bar { display: flex; gap: 10px; align-items: center; padding-top: 20px; border-top: 1px solid #2a2540; margin-top: 20px; }
+
+.toast { position: fixed; bottom: 24px; right: 24px; background: #1a3020; color: #5f5; border: 1px solid #1a6030; padding: 12px 20px; border-radius: 6px; font-size: 0.85rem; z-index: 9999; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+.toast.show { opacity: 1; }
+.toast.error { background: #300; color: #f88; border-color: #600; }
+
+/* Region selector */
+.region-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.region-tab { padding: 6px 16px; border: 1px solid #2a2540; border-radius: 4px; cursor: pointer; font-size: 0.78rem; color: #888; background: #0d0d20; transition: all 0.15s; }
+.region-tab.active { border-color: #8B6914; color: #d4af37; background: #1a1030; }
+.region-tab:hover { color: #d4af37; }
+
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+.modal-overlay.hidden { display: none; }
+.modal { background: #12122a; border: 1px solid #8B6914; border-radius: 8px; width: 90vw; max-width: 900px; max-height: 85vh; display: flex; flex-direction: column; }
+.modal-header { padding: 16px 20px; border-bottom: 1px solid #2a2540; display: flex; justify-content: space-between; align-items: center; }
+.modal-header h3 { color: #d4af37; font-size: 0.9rem; letter-spacing: 2px; }
+.modal-close { background: none; border: none; color: #888; font-size: 1.4rem; cursor: pointer; line-height: 1; }
+.modal-close:hover { color: #d4af37; }
+.modal-body { padding: 16px; flex: 1; overflow-y: auto; }
+.modal-footer { padding: 12px 20px; border-top: 1px solid #2a2540; display: flex; gap: 10px; justify-content: flex-end; }
+
+/* Icon search */
+.icon-search-bar { display: flex; gap: 10px; margin-bottom: 14px; }
+.icon-search-bar input { flex: 1; background: #0d0d20; border: 1px solid #2a2540; color: #ddd; padding: 8px 12px; border-radius: 4px; font-size: 0.85rem; }
+.icon-search-bar input:focus { outline: none; border-color: #8B6914; }
+
+/* Icon grid */
+.icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 6px; }
+.icon-tile { border: 1px solid #2a2540; border-radius: 4px; padding: 6px; cursor: pointer; text-align: center; background: #0d0d20; transition: all 0.15s; }
+.icon-tile:hover { border-color: #8B6914; background: #1a1030; }
+.icon-tile.selected { border-color: #d4af37; background: #1a1030; }
+.icon-tile img { width: 48px; height: 48px; object-fit: contain; image-rendering: pixelated; display: block; margin: 0 auto 4px; }
+.icon-tile span { font-size: 0.6rem; color: #666; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* fc icon grid (numbered) */
+.fc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 6px; }
+.fc-page { display: flex; gap: 10px; align-items: center; justify-content: center; margin-bottom: 14px; }
+.fc-page button { background: #1a1030; border: 1px solid #2a2540; color: #d4af37; padding: 5px 14px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+.fc-page button:disabled { opacity: 0.3; cursor: default; }
+.fc-page span { color: #888; font-size: 0.8rem; }
+
+.elem-badge { display: inline-block; padding: 2px 8px; border-radius: 8px; font-size: 0.65rem; letter-spacing: 1px; font-weight: 600; }
+.elem-Pyro  { background: #3a0a00; color: #ff8060; border: 1px solid #6a2010; }
+.elem-Aqua  { background: #001a3a; color: #60a8ff; border: 1px solid #104060; }
+.elem-Terra { background: #1a1000; color: #a0c060; border: 1px solid #2a3010; }
+.elem-Aero  { background: #0a1a2a; color: #80d8ff; border: 1px solid #205070; }
+
+.empty-state { color: #444; text-align: center; padding: 40px; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚔ ELEMENTIS GAME EDITOR</h1>
+  <span class="badge">ADMIN</span>
+  <div style="margin-left:auto;display:flex;gap:8px">
+    <a href="/" style="color:#888;font-size:0.8rem;text-decoration:none">← Back to Game</a>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" data-tab="scenarios">Territory Cards</div>
+  <div class="tab" data-tab="monsters">Monsters</div>
+  <div class="tab" data-tab="treasure">Treasure Cards</div>
+  <div class="tab" data-tab="items">Player Items</div>
+</div>
+
+<div class="content">
+
+  <!-- TERRITORY CARDS -->
+  <div class="panel active" id="panel-scenarios">
+    <div class="region-tabs">
+      <div class="region-tab active" data-region="meadow">🌿 Valley Meadow</div>
+      <div class="region-tab" data-region="forest">🌲 Mountain Forest</div>
+      <div class="region-tab" data-region="misty">🌊 Misty Islands</div>
+      <div class="region-tab" data-region="volcan">🔥 Volcan Mountains</div>
+    </div>
+    <div class="editor-layout">
+      <div class="list-pane" id="scenario-list-pane">
+        <div class="list-header">
+          <span>Cards</span>
+          <button class="btn btn-sm btn-success" onclick="newScenarioCard()">+ New</button>
+        </div>
+        <div class="list-items" id="scenario-list"></div>
+      </div>
+      <div class="edit-pane" id="scenario-edit">
+        <div class="empty-state">Select a card to edit</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MONSTERS -->
+  <div class="panel" id="panel-monsters">
+    <div class="region-tabs">
+      <div class="region-tab active" data-mregion="starters">⭐ Starters</div>
+      <div class="region-tab" data-mregion="meadow">🌿 Meadow</div>
+      <div class="region-tab" data-mregion="forest">🌲 Forest</div>
+      <div class="region-tab" data-mregion="misty">🌊 Misty</div>
+      <div class="region-tab" data-mregion="volcan">🔥 Volcan</div>
+    </div>
+    <div class="editor-layout">
+      <div class="list-pane" id="monster-list-pane">
+        <div class="list-header">
+          <span>Monsters</span>
+          <button class="btn btn-sm btn-success" onclick="newMonster()">+ New</button>
+        </div>
+        <div class="list-items" id="monster-list"></div>
+      </div>
+      <div class="edit-pane" id="monster-edit">
+        <div class="empty-state">Select a monster to edit</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TREASURE CARDS -->
+  <div class="panel" id="panel-treasure">
+    <div class="editor-layout">
+      <div class="list-pane">
+        <div class="list-header">
+          <span>Treasure Cards</span>
+          <button class="btn btn-sm btn-success" onclick="newTreasure()">+ New</button>
+        </div>
+        <div class="list-items" id="treasure-list"></div>
+      </div>
+      <div class="edit-pane" id="treasure-edit">
+        <div class="empty-state">Select a card to edit</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLAYER ITEMS -->
+  <div class="panel" id="panel-items">
+    <div class="editor-layout">
+      <div class="list-pane">
+        <div class="list-header">
+          <span>Player Items</span>
+          <button class="btn btn-sm btn-success" onclick="newPlayerItem()">+ New</button>
+        </div>
+        <div class="list-items" id="items-list"></div>
+      </div>
+      <div class="edit-pane" id="items-edit">
+        <div class="empty-state">Select an item to edit</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Icon Picker Modal -->
+<div class="modal-overlay hidden" id="icon-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>CHOOSE ICON</h3>
+      <button class="modal-close" onclick="closeIconModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="region-tabs" id="icon-type-tabs" style="margin-bottom:14px">
+        <div class="region-tab active" data-itype="fc" onclick="setIconTab('fc')">Item Icons (64×64)</div>
+        <div class="region-tab" data-itype="monster" onclick="setIconTab('monster')">Monster Tokens</div>
+      </div>
+      <!-- FC icons -->
+      <div id="fc-panel">
+        <div class="icon-search-bar">
+          <input type="number" id="fc-search" placeholder="Icon number (1–2192)" min="1" max="2192" oninput="renderFcGrid()">
+          <input type="number" id="fc-page-num" placeholder="Page" value="1" min="1" oninput="goFcPage()">
+          <span style="color:#888;font-size:0.8rem;align-self:center">/ <span id="fc-total-pages"></span></span>
+        </div>
+        <div class="fc-page">
+          <button onclick="fcPageStep(-1)" id="fc-prev">◀ Prev</button>
+          <span id="fc-page-label">Icons 1–100</span>
+          <button onclick="fcPageStep(1)" id="fc-next">Next ▶</button>
+        </div>
+        <div class="fc-grid" id="fc-grid"></div>
+      </div>
+      <!-- Monster icons -->
+      <div id="monster-panel" style="display:none">
+        <div class="icon-search-bar">
+          <input type="text" id="monster-search" placeholder="Search monster icons..." oninput="filterMonsterIcons()">
+        </div>
+        <div class="icon-grid" id="monster-icon-grid"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" onclick="closeIconModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmIconPick()">Use Selected Icon</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===================== STATE =====================
+let scenarioCards = {};
+let monsterData = {};
+let monsterIcons = {};
+let treasureCards = [];
+let playerItems = [];
+let monsterIconList = [];
+
+let activeTab = 'scenarios';
+let activeScenarioRegion = 'meadow';
+let activeMonsterRegion = 'starters';
+let selectedScenarioIdx = -1;
+let selectedMonsterIdx = -1;
+let selectedTreasureIdx = -1;
+let selectedItemIdx = -1;
+
+let iconPickCallback = null;
+let iconPickCurrentUrl = '';
+let currentIconType = 'fc';
+let fcPage = 1;
+const FC_PER_PAGE = 100;
+const FC_TOTAL = 2192;
+let selectedFcIcon = null;
+let selectedMonsterIcon = null;
+let filteredMonsterIcons = [];
+
+// ===================== INIT =====================
+async function init() {
+  [scenarioCards, monsterData, monsterIcons, treasureCards, playerItems, monsterIconList] = await Promise.all([
+    fetch('/api/admin/scenario-cards').then(r => r.json()),
+    fetch('/api/admin/monsters').then(r => r.json()),
+    fetch('/api/admin/monster-icons').then(r => r.json()),
+    fetch('/api/admin/treasure-cards').then(r => r.json()),
+    fetch('/api/admin/player-items').then(r => r.json()),
+    fetch('/api/admin/monster-icon-list').then(r => r.json()),
+  ]);
+  filteredMonsterIcons = [...monsterIconList];
+  renderScenarioList();
+  renderMonsterList();
+  renderTreasureList();
+  renderItemsList();
+}
+
+// ===================== TABS =====================
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    activeTab = t.dataset.tab;
+    document.getElementById('panel-' + activeTab).classList.add('active');
+  });
+});
+
+document.querySelectorAll('[data-region]').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('[data-region]').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    activeScenarioRegion = t.dataset.region;
+    selectedScenarioIdx = -1;
+    renderScenarioList();
+    document.getElementById('scenario-edit').innerHTML = '<div class="empty-state">Select a card to edit</div>';
+  });
+});
+
+document.querySelectorAll('[data-mregion]').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('[data-mregion]').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    activeMonsterRegion = t.dataset.mregion;
+    selectedMonsterIdx = -1;
+    renderMonsterList();
+    document.getElementById('monster-edit').innerHTML = '<div class="empty-state">Select a monster to edit</div>';
+  });
+});
+
+// ===================== SCENARIO CARDS =====================
+function getScenarioList() {
+  return scenarioCards[activeScenarioRegion] || [];
+}
+
+function renderScenarioList() {
+  const list = getScenarioList();
+  const el = document.getElementById('scenario-list');
+  el.innerHTML = list.length === 0 ? '<div class="empty-state">No cards yet</div>' : '';
+  list.forEach((card, i) => {
+    const div = document.createElement('div');
+    div.className = 'list-item' + (i === selectedScenarioIdx ? ' selected' : '');
+    div.innerHTML = `<div class="item-name">${card.name || '(unnamed)'}</div><div class="item-tag">${card.id}</div>`;
+    div.onclick = () => { selectedScenarioIdx = i; renderScenarioList(); editScenario(card, i); };
+    el.appendChild(div);
+  });
+}
+
+function editScenario(card, idx) {
+  const pane = document.getElementById('scenario-edit');
+  const resultOptions = ['treasure','territory','damage','heal','wild'].map(r => `<option value="${r}">${r}</option>`).join('');
+  pane.innerHTML = `
+    <h2>TERRITORY CARD</h2>
+    <div class="row2">
+      <div class="field-group"><label>Card ID</label><input id="sc-id" value="${esc(card.id)}"></div>
+      <div class="field-group"><label>Name</label><input id="sc-name" value="${esc(card.name)}"></div>
+    </div>
+    <div class="field-group"><label>Flavor Text</label><textarea id="sc-flavor">${esc(card.flavor)}</textarea></div>
+
+    ${[1,2,3,4].map(n => `
+    <div class="option-card">
+      <div class="opt-header">Option ${n}</div>
+      <div class="field-group"><label>Choice Text</label><input id="sc-opt${n}" value="${esc(card['opt'+n]||'')}"></div>
+      <div class="row2">
+        <div class="field-group"><label>Result Type</label>
+          <select id="sc-result${n}">${resultOptions.replace(`value="${card['result'+n]}"`,`value="${card['result'+n]}" selected`)}</select>
+        </div>
+        <div class="field-group"><label>HP Delta (negative = damage)</label><input type="number" id="sc-hp${n}" value="${card['hp'+n]||0}"></div>
+      </div>
+      <div class="field-group"><label>Outcome Summary</label><textarea id="sc-summary${n}">${esc(card['summary'+n]||'')}</textarea></div>
+    </div>`).join('')}
+
+    <div class="action-bar">
+      <button class="btn btn-primary" onclick="saveScenario(${idx})">💾 Save Card</button>
+      <button class="btn btn-danger" onclick="deleteScenario(${idx})">🗑 Delete</button>
+    </div>
+  `;
+  // Fix selects
+  [1,2,3,4].forEach(n => {
+    const sel = document.getElementById(`sc-result${n}`);
+    sel.value = card['result'+n] || 'treasure';
+  });
+}
+
+function collectScenario() {
+  return {
+    id: v('sc-id'), name: v('sc-name'), flavor: v('sc-flavor'),
+    opt1: v('sc-opt1'), result1: v('sc-result1'), hp1: num('sc-hp1'), summary1: v('sc-summary1'),
+    opt2: v('sc-opt2'), result2: v('sc-result2'), hp2: num('sc-hp2'), summary2: v('sc-summary2'),
+    opt3: v('sc-opt3'), result3: v('sc-result3'), hp3: num('sc-hp3'), summary3: v('sc-summary3'),
+    opt4: v('sc-opt4'), result4: v('sc-result4'), hp4: num('sc-hp4'), summary4: v('sc-summary4'),
+  };
+}
+
+function saveScenario(idx) {
+  const card = collectScenario();
+  const list = getScenarioList();
+  list[idx] = card;
+  scenarioCards[activeScenarioRegion] = list;
+  postData('/api/admin/scenario-cards', scenarioCards).then(() => {
+    toast('Card saved!');
+    renderScenarioList();
+  });
+}
+
+function deleteScenario(idx) {
+  if (!confirm('Delete this card?')) return;
+  const list = getScenarioList();
+  list.splice(idx, 1);
+  selectedScenarioIdx = -1;
+  scenarioCards[activeScenarioRegion] = list;
+  postData('/api/admin/scenario-cards', scenarioCards).then(() => {
+    toast('Card deleted.');
+    renderScenarioList();
+    document.getElementById('scenario-edit').innerHTML = '<div class="empty-state">Select a card to edit</div>';
+  });
+}
+
+function newScenarioCard() {
+  const list = getScenarioList();
+  const newId = activeScenarioRegion[0] + String(list.length + 1).padStart(2, '0');
+  const card = {
+    id: newId, name: 'New Card', flavor: 'A mysterious event unfolds...',
+    opt1: 'Option 1', result1: 'treasure', hp1: 0, summary1: 'You find something valuable.',
+    opt2: 'Option 2', result2: 'territory', hp2: 0, summary2: 'You claim the territory.',
+    opt3: 'Option 3', result3: 'damage',    hp3: -20, summary3: 'You take 20 damage.',
+    opt4: 'Option 4', result4: 'heal',      hp4: 15, summary4: 'You heal 15 HP.',
+  };
+  list.push(card);
+  scenarioCards[activeScenarioRegion] = list;
+  selectedScenarioIdx = list.length - 1;
+  renderScenarioList();
+  editScenario(card, selectedScenarioIdx);
+}
+
+// ===================== MONSTERS =====================
+function getMonsterList() {
+  if (activeMonsterRegion === 'starters') return monsterData.starters || [];
+  return (monsterData.regions || {})[activeMonsterRegion] || [];
+}
+
+function renderMonsterList() {
+  const list = getMonsterList();
+  const el = document.getElementById('monster-list');
+  el.innerHTML = list.length === 0 ? '<div class="empty-state">No monsters yet</div>' : '';
+  list.forEach((m, i) => {
+    const div = document.createElement('div');
+    div.className = 'list-item' + (i === selectedMonsterIdx ? ' selected' : '');
+    const iconUrl = monsterIcons[m.id] || '';
+    div.innerHTML = `
+      ${iconUrl ? `<img src="${iconUrl}" onerror="this.style.display='none'">` : '<div style="width:32px"></div>'}
+      <div class="item-name">${m.name || '(unnamed)'}</div>
+      <span class="elem-badge elem-${m.element}">${m.element||''}</span>`;
+    div.onclick = () => { selectedMonsterIdx = i; renderMonsterList(); editMonster(m, i); };
+    el.appendChild(div);
+  });
+}
+
+function editMonster(m, idx) {
+  const pane = document.getElementById('monster-edit');
+  const iconUrl = monsterIcons[m.id] || '';
+  const elemOpts = ['Pyro','Aqua','Terra','Aero'].map(e => `<option value="${e}"${m.element===e?' selected':''}>${e}</option>`).join('');
+  const isStarter = activeMonsterRegion === 'starters';
+  pane.innerHTML = `
+    <h2>MONSTER EDITOR</h2>
+    <div class="row3">
+      <div class="field-group"><label>Monster ID</label><input id="m-id" value="${esc(m.id)}"></div>
+      <div class="field-group"><label>Name</label><input id="m-name" value="${esc(m.name)}"></div>
+      <div class="field-group"><label>Element</label><select id="m-element">${elemOpts}</select></div>
+    </div>
+    <div class="field-group"><label>Bio / Description</label><textarea id="m-bio">${esc(m.bio||'')}</textarea></div>
+    <div class="row4">
+      <div class="field-group"><label>Max HP</label><input type="number" id="m-hp" value="${m.maxHp||40}"></div>
+      ${!isStarter ? `
+      <div class="field-group"><label>Rarity (1-5)</label><input type="number" id="m-rarity" min="1" max="5" value="${m.rarity||1}"></div>
+      <div class="field-group"><label>GP Value</label><input type="number" id="m-gp" value="${m.gpValue||0}"></div>
+      ` : '<div></div><div></div>'}
+    </div>
+
+    <div class="section-title">Monster Icon</div>
+    <div class="icon-picker-wrap">
+      <div class="icon-preview" onclick="openIconModal('monster-icon', '${iconUrl}')">
+        ${iconUrl ? `<img id="m-icon-img" src="${iconUrl}" onerror="this.src=''">` : '<span class="icon-preview-empty">🖼</span>'}
+      </div>
+      <input class="icon-url-input field-group" id="m-icon-url" value="${esc(iconUrl)}" placeholder="/tiles/..." oninput="updateIconPreview('m-icon-img','m-icon-url')">
+      <button class="btn-pick" onclick="openIconModal('monster-icon', document.getElementById('m-icon-url').value)">Browse</button>
+    </div>
+
+    <div class="section-title">Attack 1</div>
+    <div class="row2">
+      <div class="field-group"><label>Name</label><input id="m-a1name" value="${esc(m.attack1?.name||'')}"></div>
+      <div class="field-group"><label>Description</label><input id="m-a1desc" value="${esc(m.attack1?.desc||'')}"></div>
+    </div>
+    <div class="row3">
+      <div class="field-group"><label>Roll 1 (hit)</label><input type="number" id="m-a1r1" min="1" max="6" value="${m.attack1?.roll1||1}"></div>
+      <div class="field-group"><label>Roll 2 (hit)</label><input type="number" id="m-a1r2" min="1" max="6" value="${m.attack1?.roll2||2}"></div>
+      <div class="field-group"><label>Damage</label><input type="number" id="m-a1dmg" value="${m.attack1?.damage||20}"></div>
+    </div>
+
+    <div class="section-title">Attack 2</div>
+    <div class="row2">
+      <div class="field-group"><label>Name</label><input id="m-a2name" value="${esc(m.attack2?.name||'')}"></div>
+      <div class="field-group"><label>Description</label><input id="m-a2desc" value="${esc(m.attack2?.desc||'')}"></div>
+    </div>
+    <div class="row3">
+      <div class="field-group"><label>Roll 1 (hit)</label><input type="number" id="m-a2r1" min="1" max="6" value="${m.attack2?.roll1||3}"></div>
+      <div class="field-group"><label>Roll 2 (hit)</label><input type="number" id="m-a2r2" min="1" max="6" value="${m.attack2?.roll2||4}"></div>
+      <div class="field-group"><label>Damage</label><input type="number" id="m-a2dmg" value="${m.attack2?.damage||20}"></div>
+    </div>
+
+    <div class="action-bar">
+      <button class="btn btn-primary" onclick="saveMonster(${idx})">💾 Save Monster</button>
+      <button class="btn btn-danger" onclick="deleteMonster(${idx})">🗑 Delete</button>
+    </div>
+  `;
+  // store callback info
+  document.getElementById('monster-edit').__monsterIdx = idx;
+  document.getElementById('monster-edit').__monsterId = m.id;
+}
+
+function collectMonster(isStarter) {
+  const m = {
+    id: v('m-id'), name: v('m-name'), element: v('m-element'),
+    bio: v('m-bio'), maxHp: num('m-hp'), equipped: [],
+    attack1: { name: v('m-a1name'), desc: v('m-a1desc'), roll1: num('m-a1r1'), roll2: num('m-a1r2'), damage: num('m-a1dmg') },
+    attack2: { name: v('m-a2name'), desc: v('m-a2desc'), roll1: num('m-a2r1'), roll2: num('m-a2r2'), damage: num('m-a2dmg') },
+  };
+  if (!isStarter) {
+    m.rarity = num('m-rarity');
+    m.gpValue = num('m-gp');
+  }
+  return m;
+}
+
+async function saveMonster(idx) {
+  const isStarter = activeMonsterRegion === 'starters';
+  const m = collectMonster(isStarter);
+  const oldId = document.getElementById('monster-edit').__monsterId;
+
+  // Update monster icon if URL changed
+  const iconUrl = v('m-icon-url').trim();
+  if (oldId && oldId !== m.id) delete monsterIcons[oldId];
+  if (iconUrl) monsterIcons[m.id] = iconUrl;
+  else delete monsterIcons[m.id];
+
+  if (isStarter) monsterData.starters[idx] = m;
+  else monsterData.regions[activeMonsterRegion][idx] = m;
+
+  await Promise.all([
+    postData('/api/admin/monsters', monsterData),
+    postData('/api/admin/monster-icons', monsterIcons),
+  ]);
+  toast('Monster saved!');
+  renderMonsterList();
+}
+
+function deleteMonster(idx) {
+  if (!confirm('Delete this monster?')) return;
+  if (activeMonsterRegion === 'starters') monsterData.starters.splice(idx, 1);
+  else monsterData.regions[activeMonsterRegion].splice(idx, 1);
+  selectedMonsterIdx = -1;
+  postData('/api/admin/monsters', monsterData).then(() => {
+    toast('Monster deleted.');
+    renderMonsterList();
+    document.getElementById('monster-edit').innerHTML = '<div class="empty-state">Select a monster to edit</div>';
+  });
+}
+
+function newMonster() {
+  const list = getMonsterList();
+  const isStarter = activeMonsterRegion === 'starters';
+  const m = {
+    id: 'new_monster_' + Date.now(), name: 'New Monster', element: 'Pyro',
+    bio: '', maxHp: 40, equipped: [],
+    attack1: { name: 'Attack 1', desc: '', roll1: 1, roll2: 2, damage: 20 },
+    attack2: { name: 'Attack 2', desc: '', roll1: 3, roll2: 4, damage: 20 },
+  };
+  if (!isStarter) { m.rarity = 1; m.gpValue = 10; }
+  list.push(m);
+  if (isStarter) monsterData.starters = list;
+  else monsterData.regions[activeMonsterRegion] = list;
+  selectedMonsterIdx = list.length - 1;
+  renderMonsterList();
+  editMonster(m, selectedMonsterIdx);
+}
+
+// ===================== TREASURE CARDS =====================
+function renderTreasureList() {
+  const el = document.getElementById('treasure-list');
+  el.innerHTML = '';
+  treasureCards.forEach((card, i) => {
+    const div = document.createElement('div');
+    div.className = 'list-item' + (i === selectedTreasureIdx ? ' selected' : '');
+    div.innerHTML = `
+      <img src="${card.icon||''}" onerror="this.style.display='none'" style="width:32px;height:32px;object-fit:contain;image-rendering:pixelated">
+      <div class="item-name">${card.name}</div>
+      <div class="item-tag">r${card.rarity}</div>`;
+    div.onclick = () => { selectedTreasureIdx = i; renderTreasureList(); editTreasure(card, i); };
+    el.appendChild(div);
+  });
+}
+
+function editTreasure(card, idx) {
+  const pane = document.getElementById('treasure-edit');
+  const typeOptions = ['heal_monster','heal_player','attack_boost','hp_boost','roll_bonus','remove_weakness'].map(t => `<option value="${t}"${card.type===t?' selected':''}>${t}</option>`).join('');
+  const usageOptions = ['use_once','equip'].map(u => `<option value="${u}"${card.usage===u?' selected':''}>${u}</option>`).join('');
+  const elemOpts = ['','Pyro','Aqua','Terra','Aero'].map(e => `<option value="${e}"${(card.element||'')===e?' selected':''}>${e||'(none)'}</option>`).join('');
+  pane.innerHTML = `
+    <h2>TREASURE CARD</h2>
+    <div class="row2">
+      <div class="field-group"><label>Card ID</label><input id="tc-id" value="${esc(card.id)}"></div>
+      <div class="field-group"><label>Name</label><input id="tc-name" value="${esc(card.name)}"></div>
+    </div>
+    <div class="field-group"><label>Effect Description</label><textarea id="tc-effect">${esc(card.effect)}</textarea></div>
+    <div class="row3">
+      <div class="field-group"><label>Type</label><select id="tc-type">${typeOptions}</select></div>
+      <div class="field-group"><label>Usage</label><select id="tc-usage">${usageOptions}</select></div>
+      <div class="field-group"><label>Element (if applicable)</label><select id="tc-element">${elemOpts}</select></div>
+    </div>
+    <div class="row3">
+      <div class="field-group"><label>Value</label><input type="number" id="tc-value" value="${card.value||0}"></div>
+      <div class="field-group"><label>Rarity (1-5)</label><input type="number" id="tc-rarity" min="1" max="5" value="${card.rarity||1}"></div>
+      <div class="field-group"><label>GP Value</label><input type="number" id="tc-gp" value="${card.gpValue||0}"></div>
+    </div>
+    <div class="section-title">Icon</div>
+    <div class="icon-picker-wrap">
+      <div class="icon-preview" onclick="openIconModal('tc-icon', document.getElementById('tc-icon-url').value)">
+        <img id="tc-icon-img" src="${card.icon||''}" onerror="this.src=''">
+      </div>
+      <input class="icon-url-input" id="tc-icon-url" value="${esc(card.icon||'')}" placeholder="/tiles/New%20tiles/64x64/fc1.png" oninput="updateIconPreview('tc-icon-img','tc-icon-url')">
+      <button class="btn-pick" onclick="openIconModal('tc-icon', document.getElementById('tc-icon-url').value)">Browse</button>
+    </div>
+    <div class="action-bar">
+      <button class="btn btn-primary" onclick="saveTreasure(${idx})">💾 Save Card</button>
+      <button class="btn btn-danger" onclick="deleteTreasure(${idx})">🗑 Delete</button>
+    </div>
+  `;
+}
+
+function collectTreasure() {
+  return {
+    id: v('tc-id'), name: v('tc-name'), effect: v('tc-effect'),
+    type: v('tc-type'), usage: v('tc-usage'), element: v('tc-element') || undefined,
+    value: num('tc-value'), rarity: num('tc-rarity'), gpValue: num('tc-gp'),
+    icon: v('tc-icon-url'),
+  };
+}
+
+function saveTreasure(idx) {
+  treasureCards[idx] = collectTreasure();
+  if (!treasureCards[idx].element) delete treasureCards[idx].element;
+  postData('/api/admin/treasure-cards', treasureCards).then(() => {
+    toast('Treasure card saved!');
+    renderTreasureList();
+  });
+}
+
+function deleteTreasure(idx) {
+  if (!confirm('Delete this treasure card?')) return;
+  treasureCards.splice(idx, 1);
+  selectedTreasureIdx = -1;
+  postData('/api/admin/treasure-cards', treasureCards).then(() => {
+    toast('Card deleted.'); renderTreasureList();
+    document.getElementById('treasure-edit').innerHTML = '<div class="empty-state">Select a card to edit</div>';
+  });
+}
+
+function newTreasure() {
+  const card = { id: 't' + (treasureCards.length + 1), name: 'New Treasure', effect: '', type: 'heal_monster', usage: 'use_once', value: 10, rarity: 1, gpValue: 10, icon: '' };
+  treasureCards.push(card);
+  selectedTreasureIdx = treasureCards.length - 1;
+  renderTreasureList();
+  editTreasure(card, selectedTreasureIdx);
+}
+
+// ===================== PLAYER ITEMS =====================
+function renderItemsList() {
+  const el = document.getElementById('items-list');
+  el.innerHTML = '';
+  playerItems.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'list-item' + (i === selectedItemIdx ? ' selected' : '');
+    div.innerHTML = `
+      <img src="${item.icon||''}" onerror="this.style.display='none'" style="width:32px;height:32px;object-fit:contain;image-rendering:pixelated">
+      <div class="item-name">${item.name}</div>
+      <div class="item-tag">r${item.rarity}</div>`;
+    div.onclick = () => { selectedItemIdx = i; renderItemsList(); editPlayerItem(item, i); };
+    el.appendChild(div);
+  });
+}
+
+function editPlayerItem(item, idx) {
+  const pane = document.getElementById('items-edit');
+  const typeOptions = ['player_roll_bonus','player_hp_boost','player_attack_bonus'].map(t => `<option value="${t}"${item.type===t?' selected':''}>${t}</option>`).join('');
+  pane.innerHTML = `
+    <h2>PLAYER ITEM</h2>
+    <div class="row2">
+      <div class="field-group"><label>Item ID</label><input id="pi-id" value="${esc(item.id)}"></div>
+      <div class="field-group"><label>Name</label><input id="pi-name" value="${esc(item.name)}"></div>
+    </div>
+    <div class="field-group"><label>Effect Description</label><textarea id="pi-effect">${esc(item.effect)}</textarea></div>
+    <div class="row3">
+      <div class="field-group"><label>Type</label><select id="pi-type">${typeOptions}</select></div>
+      <div class="field-group"><label>Value</label><input type="number" id="pi-value" value="${item.value||0}"></div>
+      <div class="field-group"><label>Rarity (1-5)</label><input type="number" id="pi-rarity" min="1" max="5" value="${item.rarity||1}"></div>
+    </div>
+    <div class="row2">
+      <div class="field-group"><label>GP Value</label><input type="number" id="pi-gp" value="${item.gpValue||0}"></div>
+      <div class="field-group"><label>Usage</label><input id="pi-usage" value="${esc(item.usage||'equip_to_player')}"></div>
+    </div>
+    <div class="section-title">Icon</div>
+    <div class="icon-picker-wrap">
+      <div class="icon-preview" onclick="openIconModal('pi-icon', document.getElementById('pi-icon-url').value)">
+        <img id="pi-icon-img" src="${item.icon||''}" onerror="this.src=''">
+      </div>
+      <input class="icon-url-input" id="pi-icon-url" value="${esc(item.icon||'')}" placeholder="/tiles/New%20tiles/64x64/fc1.png" oninput="updateIconPreview('pi-icon-img','pi-icon-url')">
+      <button class="btn-pick" onclick="openIconModal('pi-icon', document.getElementById('pi-icon-url').value)">Browse</button>
+    </div>
+    <div class="action-bar">
+      <button class="btn btn-primary" onclick="savePlayerItem(${idx})">💾 Save Item</button>
+      <button class="btn btn-danger" onclick="deletePlayerItem(${idx})">🗑 Delete</button>
+    </div>
+  `;
+}
+
+function collectPlayerItem() {
+  return {
+    id: v('pi-id'), name: v('pi-name'), effect: v('pi-effect'),
+    type: v('pi-type'), value: num('pi-value'), rarity: num('pi-rarity'),
+    gpValue: num('pi-gp'), usage: v('pi-usage'), icon: v('pi-icon-url'),
+  };
+}
+
+function savePlayerItem(idx) {
+  playerItems[idx] = collectPlayerItem();
+  postData('/api/admin/player-items', playerItems).then(() => {
+    toast('Item saved!'); renderItemsList();
+  });
+}
+
+function deletePlayerItem(idx) {
+  if (!confirm('Delete this item?')) return;
+  playerItems.splice(idx, 1);
+  selectedItemIdx = -1;
+  postData('/api/admin/player-items', playerItems).then(() => {
+    toast('Item deleted.'); renderItemsList();
+    document.getElementById('items-edit').innerHTML = '<div class="empty-state">Select an item to edit</div>';
+  });
+}
+
+function newPlayerItem() {
+  const item = { id: 'pi' + (playerItems.length + 1), name: 'New Item', effect: '', type: 'player_roll_bonus', value: 1, usage: 'equip_to_player', rarity: 1, gpValue: 10, icon: '' };
+  playerItems.push(item);
+  selectedItemIdx = playerItems.length - 1;
+  renderItemsList();
+  editPlayerItem(item, selectedItemIdx);
+}
+
+// ===================== ICON PICKER =====================
+let iconPickTarget = null; // element ID of the url input to update
+
+function openIconModal(targetId, currentUrl) {
+  iconPickTarget = targetId;
+  iconPickCurrentUrl = currentUrl || '';
+  selectedFcIcon = null;
+  selectedMonsterIcon = null;
+  document.getElementById('icon-modal').classList.remove('hidden');
+  setIconTab('fc');
+}
+
+function closeIconModal() {
+  document.getElementById('icon-modal').classList.add('hidden');
+}
+
+function setIconTab(type) {
+  currentIconType = type;
+  document.querySelectorAll('#icon-type-tabs .region-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`[data-itype="${type}"]`).classList.add('active');
+  document.getElementById('fc-panel').style.display = type === 'fc' ? '' : 'none';
+  document.getElementById('monster-panel').style.display = type === 'monster' ? '' : 'none';
+  if (type === 'fc') { fcPage = 1; renderFcGrid(); }
+  if (type === 'monster') renderMonsterIconGrid();
+}
+
+// FC icons
+function renderFcGrid() {
+  const searchVal = document.getElementById('fc-search').value;
+  const grid = document.getElementById('fc-grid');
+  const totalPages = Math.ceil(FC_TOTAL / FC_PER_PAGE);
+  document.getElementById('fc-total-pages').textContent = totalPages;
+
+  if (searchVal) {
+    const n = parseInt(searchVal);
+    if (n >= 1 && n <= FC_TOTAL) {
+      fcPage = Math.ceil(n / FC_PER_PAGE);
+    }
+  }
+  document.getElementById('fc-page-num').value = fcPage;
+  document.getElementById('fc-prev').disabled = fcPage <= 1;
+  document.getElementById('fc-next').disabled = fcPage >= totalPages;
+  const start = (fcPage - 1) * FC_PER_PAGE + 1;
+  const end = Math.min(fcPage * FC_PER_PAGE, FC_TOTAL);
+  document.getElementById('fc-page-label').textContent = `Icons ${start}–${end}`;
+
+  grid.innerHTML = '';
+  for (let i = start; i <= end; i++) {
+    const url = `/tiles/New%20tiles/64x64/fc${i}.png`;
+    const tile = document.createElement('div');
+    tile.className = 'icon-tile' + (iconPickCurrentUrl === url ? ' selected' : '');
+    tile.innerHTML = `<img src="${url}" loading="lazy"><span>fc${i}</span>`;
+    tile.onclick = () => {
+      document.querySelectorAll('.fc-grid .icon-tile').forEach(t => t.classList.remove('selected'));
+      tile.classList.add('selected');
+      selectedFcIcon = url;
+    };
+    grid.appendChild(tile);
+  }
+}
+
+function goFcPage() {
+  const v = parseInt(document.getElementById('fc-page-num').value);
+  const totalPages = Math.ceil(FC_TOTAL / FC_PER_PAGE);
+  if (v >= 1 && v <= totalPages) { fcPage = v; renderFcGrid(); }
+}
+
+function fcPageStep(dir) {
+  const totalPages = Math.ceil(FC_TOTAL / FC_PER_PAGE);
+  fcPage = Math.max(1, Math.min(totalPages, fcPage + dir));
+  document.getElementById('fc-search').value = '';
+  renderFcGrid();
+}
+
+// Monster icons
+function renderMonsterIconGrid() {
+  const grid = document.getElementById('monster-icon-grid');
+  grid.innerHTML = '';
+  filteredMonsterIcons.forEach(icon => {
+    const tile = document.createElement('div');
+    tile.className = 'icon-tile' + (iconPickCurrentUrl === icon.url ? ' selected' : '');
+    tile.innerHTML = `<img src="${icon.url}" loading="lazy" onerror="this.src=''"><span>${icon.name}</span>`;
+    tile.onclick = () => {
+      document.querySelectorAll('#monster-icon-grid .icon-tile').forEach(t => t.classList.remove('selected'));
+      tile.classList.add('selected');
+      selectedMonsterIcon = icon.url;
+    };
+    grid.appendChild(tile);
+  });
+}
+
+function filterMonsterIcons() {
+  const q = document.getElementById('monster-search').value.toLowerCase();
+  filteredMonsterIcons = q ? monsterIconList.filter(i => i.name.toLowerCase().includes(q)) : [...monsterIconList];
+  renderMonsterIconGrid();
+}
+
+function confirmIconPick() {
+  const chosen = currentIconType === 'fc' ? selectedFcIcon : selectedMonsterIcon;
+  if (!chosen) { toast('No icon selected', true); return; }
+  if (iconPickTarget) {
+    const inp = document.getElementById(iconPickTarget + '-url');
+    if (inp) inp.value = chosen;
+    // Update preview img
+    const imgId = iconPickTarget + '-img';
+    const img = document.getElementById(imgId);
+    if (img) { img.src = chosen; img.style.display = ''; }
+  }
+  closeIconModal();
+}
+
+function updateIconPreview(imgId, urlId) {
+  const img = document.getElementById(imgId);
+  const url = document.getElementById(urlId)?.value;
+  if (img) { img.src = url || ''; }
+}
+
+// ===================== HELPERS =====================
+function v(id) { return (document.getElementById(id)?.value || '').trim(); }
+function num(id) { return parseFloat(document.getElementById(id)?.value) || 0; }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+async function postData(url, data) {
+  const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+  if (!r.ok) throw new Error('Save failed');
+  return r.json();
+}
+
+let toastTimer;
+function toast(msg, isError) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (isError ? ' error' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+init();
+</script>
+</body>
+</html>

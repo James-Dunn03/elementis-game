@@ -1,0 +1,156 @@
+[
+  {
+    "id": "pi1",
+    "name": "Emberglass Lantern Shard",
+    "effect": "Add 6 to a Player's attack roll.",
+    "type": "player_roll_bonus",
+    "value": 6,
+    "usage": "equip_to_player",
+    "icon": "/tiles/New%20tiles/64x64/fc86.png",
+    "rarity": 4,
+    "gpValue": 40
+  },
+  {
+    "id": "pi2",
+    "name": "Wayfinder's Compass",
+    "effect": "Add 5 to a Player's attack roll.",
+    "type": "player_roll_bonus",
+    "value": 5,
+    "usage": "equip_to_player",
+    "icon": "/tiles/New%20tiles/64x64/fc333.png",
+    "rarity": 4,
+    "gpValue": 40
+  },
+  {
+    "id": "pi3",
+    "name": "Whisperleaf Charm",
+    "effect": "Add 4 to a Player's attack roll.",
+    "type": "player_roll_bonus",
+    "value": 4,
+    "usage": "equip_to_player",
+    "icon": "/tiles/New%20tiles/64x64/fc22.png",
+    "rarity": 4,
+    "gpValue": 40
+  },
+  {
+    "id": "pi4",
+    "name": "Clockwork Cricket",
+    "effect": "Add 3 to a Player's attack roll.",
+    "type": "player_roll_bonus",
+    "value": 3,
+    "usage": "equip_to_player",
+    "icon": "/tiles/New%20tiles/64x64/fc87.png",
+    "rarity": 4,
+    "gpValue": 40
+  },
+  {
+    "id": "pi5",
+    "name": "Moonthread Spool",
+    "effect": "Add 2 to a Player's attack roll.",
+    "type": "player_roll_bonus",
+    "value": 2,
+    "usage": "equip_to_player",
+    "icon": "/tiles/New%20tiles/64x64/fc88.png",
+    "rarity": 4,
+    "gpValue": 40
+  },
+  {
+    "id": "pi6",
+    "name": "Echo Pebble",
+    "effect": "Add 1 to a Player's attack roll.",
+    "type": "player_roll_bonus",
+    "value": 1,
+    "usage": "equip_to_player",
+    "icon": "/tiles/New%20tiles/64x64/fc209.png",
+    "rarity": 4,
+    "gpValue": 40
+  },
+  {
+    "id": "pi7",
+    "name": "Starlight Pocketwatch",
+    "effect": "Increases Player's HP by 50.",
+    "type": "player_hp_boost",
+    "value": 50,
+    "usage": "equip_to_player",
+    "icon": "/tiles/New%20tiles/64x64/fc171.png",
+    "rarity": 5,
+    "gpValue": 70
+  },
+  {
+    "id": "pi8",
+    "name": "Mosskeeper's Brooch",
+    "effect": "Increases Player's HP by 40.",
+    "type": "player_hp_boost",
+    "value": 40,
+    "usage": "equip_to_player",
+    "icon": "/tiles/New%20tiles/64x64/fc1840.png",
+    "rarity": 4,
+    "gpValue": 60
+  },
+  {
+    "id": "pi9",
+    "name": "Veilweaver's Ribbon",
+    "effect": "Increases Player's HP by 30.",
+    "type": "player_hp_boost",
+    "value": 30,
+    "usage": "equip_to_player",
+    "icon": "/tiles/New%20tiles/64x64/fc1952.png",
+    "rarity": 3,
+    "gpValue": 50
+  },
+  {
+    "id": "pi10",
+    "name": "Frostglass Tear",
+    "effect": "Increases Player's HP by 20.",
+    "type": "player_hp_boost",
+    "value": 20,
+    "usage": "equip_to_player",
+    "icon": "/tiles/New%20tiles/64x64/fc170.png",
+    "rarity": 2,
+    "gpValue": 40
+  },
+  {
+    "id": "pi11",
+    "name": "Oracle's Monocle",
+    "effect": "Increases Player's HP by 10.",
+    "type": "player_hp_boost",
+    "value": 10,
+    "usage": "equip_to_player",
+    "icon": "/tiles/New%20tiles/64x64/fc1851.png",
+    "rarity": 1,
+    "gpValue": 30
+  },
+  {
+    "id": "pi12",
+    "name": "Ring of the First Dawn",
+    "effect": "Increases a Player's attack by +10.",
+    "type": "player_attack_bonus",
+    "value": 10,
+    "usage": "equip_to_player",
+    "icon": "/tiles/New%20tiles/64x64/fc1844.png",
+    "rarity": 3,
+    "gpValue": 40
+  },
+  {
+    "id": "pi13",
+    "name": "Serpent's Eye Pendant",
+    "effect": "Increases a Player's attack by +20.",
+    "type": "player_attack_bonus",
+    "value": 20,
+    "usage": "equip_to_player",
+    "icon": "/tiles/New%20tiles/64x64/fc1848.png",
+    "rarity": 4,
+    "gpValue": 50
+  },
+  {
+    "id": "pi14",
+    "name": "Bracelet of Whispering Stars",
+    "effect": "Increases a Player's attack by +30.",
+    "type": "player_attack_bonus",
+    "value": 30,
+    "usage": "equip_to_player",
+    "icon": "/tiles/New%20tiles/64x64/fc1836.png",
+    "rarity": 5,
+    "gpValue": 60
+  }
+]
