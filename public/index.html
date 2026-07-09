@@ -362,6 +362,13 @@
   .hex-overlay.misty  { fill: var(--misty);  fill-opacity: 0.45; }
   .hex-overlay.meadow { fill: var(--meadow); fill-opacity: 0.45; }
   .hex-overlay.forest { fill: var(--forest); fill-opacity: 0.45; }
+  .player-sprite-html {
+    width:104px;height:104px;display:inline-block;
+    background-image:url('/tiles/New%20tiles/Player.png');
+    background-size:624px 104px;background-repeat:no-repeat;background-position:0 0;
+    animation:playerSpriteAnim 3s steps(6) infinite;
+  }
+  @keyframes playerSpriteAnim { from{background-position-x:0} to{background-position-x:-624px} }
   .region-label { font-size: 27px; fill: rgba(220,190,120,0.18); text-anchor: middle; pointer-events: none; font-weight: 600; }
 
   /* ── LOG ── */
@@ -742,7 +749,8 @@
     font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px;
     color: var(--muted); margin-bottom: 0.25rem;
   }
-  .bm-icon { font-size: 1.7rem; margin-bottom: 0.15rem; }
+  .bm-icon { font-size: 1.7rem; margin-bottom: 0.15rem; height: 56px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .bm-icon .player-sprite-html { width: 56px; height: 56px; background-size: 336px 56px; }
   .bm-name { font-family: 'Cinzel', serif; font-size: 0.88rem; font-weight: 700; margin-bottom: 0.15rem; color: var(--gold-light); }
   .bm-element { font-family: 'Cinzel', serif; font-size: 0.7rem; margin-bottom: 0.35rem; letter-spacing: 1px; }
   .bm-hp-bar { background: rgba(0,0,0,0.5); border-radius: 2px; height: 7px; overflow: hidden; margin-bottom: 0.25rem; border: 1px solid rgba(255,255,255,0.05); }
@@ -1135,7 +1143,7 @@
 
   <!-- Center: Board -->
   <div id="board-area">
-    <svg id="hex-svg" viewBox="0 0 870 650" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+    <svg id="hex-svg" viewBox="0 0 800 780" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
       <defs>
         <filter id="glow"><feGaussianBlur stdDeviation="3" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
       </defs>
@@ -1164,28 +1172,28 @@
       <div id="deck-scenario-volcan" class="card-stack deck-volcan" title="Volcan Mountains Scenarios">
         <div class="card-stack-layer"></div><div class="card-stack-layer"></div><div class="card-stack-layer"></div>
         <div class="card-stack-face">
-          <img class="card-stack-icon" src="/tiles/Monster%20tokens/BOSS%20Volcan%20Mountains.png">
+          <img class="card-stack-icon" src="/tiles/New%20tiles/The%20Volcan%20Mountain%20Boss.png">
           <div class="card-stack-label">Volcan Mts</div>
         </div>
       </div>
       <div id="deck-scenario-misty" class="card-stack deck-misty" title="Misty Islands Scenarios">
         <div class="card-stack-layer"></div><div class="card-stack-layer"></div><div class="card-stack-layer"></div>
         <div class="card-stack-face">
-          <img class="card-stack-icon" src="/tiles/Monster%20tokens/BOSS%20Misty%20Islands.png">
+          <img class="card-stack-icon" src="/tiles/New%20tiles/The%20Misty%20Island%20Boss.png">
           <div class="card-stack-label">Misty Isles</div>
         </div>
       </div>
       <div id="deck-scenario-meadow" class="card-stack deck-meadow" title="Valley Meadows Scenarios">
         <div class="card-stack-layer"></div><div class="card-stack-layer"></div><div class="card-stack-layer"></div>
         <div class="card-stack-face">
-          <img class="card-stack-icon" src="/tiles/Monster%20tokens/BOSS%20Valley%20Meadow.png">
+          <img class="card-stack-icon" src="/tiles/New%20tiles/The%20Valley%20Meadow%20Boss.png">
           <div class="card-stack-label">Valley Mead</div>
         </div>
       </div>
       <div id="deck-scenario-forest" class="card-stack deck-forest" title="Mountain Forests Scenarios">
         <div class="card-stack-layer"></div><div class="card-stack-layer"></div><div class="card-stack-layer"></div>
         <div class="card-stack-face">
-          <img class="card-stack-icon" src="/tiles/Monster%20tokens/BOSS%20Mountain%20Forest.png">
+          <img class="card-stack-icon" src="/tiles/New%20tiles/The%20Mountain%20Forest%20Boss.png">
           <div class="card-stack-label">Mtn Forest</div>
         </div>
       </div>
@@ -1592,7 +1600,7 @@
       <div class="battle-arena">
         <div class="battle-monster-card player-side">
           <div class="bm-label">Thee</div>
-          <div class="bm-icon"><img src="/tiles/Monster%20tokens/Character.png" style="width:52px;height:52px;object-fit:contain"></div>
+          <div class="bm-icon" style="height:168px"><img src="/tiles/New%20tiles/Player%20battle%20scene.png" style="width:168px;height:168px;object-fit:contain;image-rendering:pixelated"></div>
           <div class="bm-name" id="pf-player-name"></div>
           <div class="bm-hp-bar"><div class="bm-hp-fill" id="pf-player-hpbar" style="background:linear-gradient(90deg,#1e6030,#2a9048)"></div></div>
           <div class="bm-hp-text" id="pf-player-hptext"></div>
@@ -1822,16 +1830,16 @@
 const HEX_SIZE = 28;
 const COLS = 17;
 const ROWS = 14;
-const HS = Math.sqrt(3) * HEX_SIZE;
-const VS = 1.5 * HEX_SIZE;
+const HS = 1.5 * HEX_SIZE;
+const VS = Math.sqrt(3) * HEX_SIZE;
 const MARGIN_X = 32;
 const MARGIN_Y = 32;
 
 const REGION_TILES = {
-  volcan: ['The Volcan Mountains 1.png','The Volcan Mountains 2.png','The Volcan Mountains 3.png','The Volcan Mountains 4.png','The Volcan Mountains 5.png','The Volcan Mountains 6.png'],
-  misty:  ['The Misty Islands 1.png','The Misty Islands 2.png','The Misty Islands 3.png','The Misty Islands 4.png'],
-  meadow: ['The Valley Meadows 1.png','The Valley Meadows 2.png','The Valley Meadows 3.png','The Valley Meadows 4.png'],
-  forest: ['The Mountain Forest 1.png','The Mountain Forest 2.png','The Mountain Forest 3.png','The Mountain Forest 4.png'],
+  volcan: ['New tiles/The Volcan Mountains -1.png','New tiles/The Volcan Mountains -2.png','New tiles/The Volcan Mountains -3.png','New tiles/The Volcan Mountains -4.png'],
+  misty:  ['New tiles/The Misty Islands -1.png','New tiles/The Misty Islands -2.png','New tiles/The Misty Islands -4.png','New tiles/The Misty Islands -5.png'],
+  meadow: ['New tiles/The Valley Meadows -1.png','New tiles/The Valley Meadows -2.png','New tiles/The Valley Meadows -3.png','New tiles/The Valley Meadows -4.png','New tiles/The Valley Meadows -5.png'],
+  forest: ['New tiles/Mountain Forest.png','New tiles/Mountain Forest -2.png','New tiles/Mountain Forest -3.png','New tiles/Mountain Forest -4.png','New tiles/Mounain Forest-5.png'],
 };
 
 const ELEMENT_EMOJI = { Pyro:'🔥', Aqua:'💧', Terra:'🪨', Aero:'💨', Fire:'🔥', Water:'💧', Earth:'🪨', Air:'💨' };
@@ -1856,44 +1864,57 @@ function elIcon(element, size=18) {
   const f = _EL_FILTER[element];
   return `<img src="${url}" style="width:${size}px;height:${size}px;object-fit:contain;vertical-align:middle${f?';filter:'+f:''}" alt="${element}">`;
 }
-const _CI = '/tiles/Monster%20tokens/creature.png/icons/ffffff/transparent/1x1/';
+const _NMT_TMD = '/tiles/Monster%20tokens/New%20Monster%20Tokens/Tiny%20Dungeon%20Monsters/Tiny%20Dungeon%20Monsters/';
+const _NMT_CCH = '/tiles/Monster%20tokens/New%20Monster%20Tokens/Free-Chaos-Monsters-32x32-Icon-Pack/PNG/Transperent/';
+const _NMT_TOP = '/tiles/Monster%20tokens/New%20Monster%20Tokens/Transperent/';
 const MONSTER_ICONS = {
-  emberling:   _CI+'lorc/spark-spirit.png',
-  tidecrawler: _CI+'skoll/sea-creature.png',
-  pebbrute:    _CI+'delapouite/rock-golem.png',
-  gustling:    _CI+'lorc/harpy.png',
-  guston_p:    _CI+'lorc/ifrit.png',
-  tidear_a:    _CI+'lorc/harpy.png',
-  stormor_t:   _CI+'delapouite/golem-head.png',
-  fangus_a:    _CI+'lorc/evil-bat.png',
-  clawon_p:    _CI+'delapouite/devil-mask.png',
-  gustan_t:    _CI+'delapouite/brute.png',
-  quakeus_a:   _CI+'delapouite/fairy.png',
-  wingar_aq:   _CI+'delapouite/mermaid.png',
-  clawak_p:    _CI+'delapouite/oni.png',
-  tidear_t:    _CI+'lorc/lizardman.png',
-  scaleon_t:   _CI+'delapouite/horned-reptile.png',
-  stormix_aq:  _CI+'delapouite/floating-tentacles.png',
-  mawar_p:     _CI+'lorc/gooey-daemon.png',
-  hidear_a:    _CI+'lorc/wyvern.png',
-  clawus_aq:   _CI+'lorc/sea-dragon.png',
-  hideak_p:    _CI+'delapouite/gargoyle.png',
-  stormor_aq:  _CI+'delapouite/fish-monster.png',
-  quakeix_a:   _CI+'lorc/ghost.png',
-  stormar_p:   _CI+'lorc/ifrit.png',
-  mawor_t:     _CI+'delapouite/ogre.png',
-  fangeth_aq:  _CI+'lorc/triton-head.png',
-  mawon_a:     _CI+'lorc/cyclops.png',
-  tideeth_aq:  _CI+'lorc/sea-dragon.png',
-  hideak_t:    _CI+'delapouite/rock-golem.png',
-  hideon_aq:   _CI+'delapouite/elysium-shade.png',
-  clawix_p:    _CI+'delapouite/oni.png',
-  tideak_p:    _CI+'delapouite/devil-mask.png',
-  wingus_aq:   _CI+'lorc/hydra.png',
-  behemoth:    _CI+'delapouite/giant.png',
-  wingdragon:  _CI+'faithtoken/dragon-head.png',
-  tidalserp:   _CI+'lorc/hydra.png',
-  flamdevil:   _CI+'caro-asercion/tarot-15-the-devil.png',
+  // Starters
+  emberling:   _NMT_TMD+'fire-imp.png',          // Pyro
+  tidecrawler: _NMT_TMD+'blue-slime.png',        // Aqua
+  pebbrute:    _NMT_TMD+'mini-golem.png',        // Terra
+  gustling:    _NMT_TMD+'small-ghost.png',       // Aero
+
+  // Meadow (weakest)
+  guston_p:    _NMT_TMD+'fire-bat.png',          // Pyro
+  tidear_a:    _NMT_TMD+'cave-bat.png',          // Aero
+  stormor_t:   _NMT_TMD+'cave-spider.png',       // Terra
+  fangus_a:    _NMT_TMD+'vampire-bat.png',       // Aero
+  clawon_p:    _NMT_TMD+'horned-imp.png',        // Pyro
+  gustan_t:    _NMT_TMD+'mushroom-creature.png', // Terra
+  quakeus_a:   _NMT_TMD+'floating-eye.png',      // Aero
+  wingar_aq:   _NMT_TMD+'ice-bat.png',           // Aqua
+
+  // Forest
+  clawak_p:    _NMT_TMD+'fire-spider.png',       // Pyro
+  tidear_t:    _NMT_TMD+'armored-rat.png',       // Terra
+  scaleon_t:   _NMT_TMD+'mud-golem.png',         // Terra
+  stormix_aq:  _NMT_TMD+'ice-spider.png',        // Aqua
+  mawar_p:     _NMT_TMD+'fire-eye.png',          // Pyro
+  hidear_a:    _NMT_TMD+'lantern-ghost.png',     // Aero
+  clawus_aq:   _NMT_TMD+'crystal-spider.png',    // Aqua
+  hideak_p:    _NMT_TMD+'red-slime.png',         // Pyro
+
+  // Misty
+  stormor_aq:  _NMT_TMD+'frost-eye.png',         // Aqua
+  quakeix_a:   _NMT_TMD+'shadow-ghost.png',      // Aero
+  stormar_p:   _NMT_TMD+'blood-eye.png',         // Pyro
+  mawor_t:     _NMT_TMD+'stone-golem.png',       // Terra
+  fangeth_aq:  _NMT_TMD+'ice-imp.png',           // Aqua
+  mawon_a:     _NMT_TMD+'lost-soul.png',         // Aero
+  tideeth_aq:  _NMT_TMD+'metal-slime.png',       // Aqua
+  hideak_t:    _NMT_TMD+'scrap-golem.png',       // Terra
+
+  // Volcan (strongest)
+  hideon_aq:   _NMT_TOP+'Icon5.png',             // Aqua (blue icon)
+  clawix_p:    _NMT_TMD+'lava-worm.png',         // Pyro
+  tideak_p:    _NMT_TMD+'tiny-demon.png',        // Pyro
+  wingus_aq:   _NMT_TOP+'Icon8.png',             // Aqua (blue icon)
+
+  // Bosses
+  behemoth:    '/tiles/New%20tiles/The%20Valley%20Meadow%20Boss.png',   // Terra boss
+  wingdragon:  '/tiles/New%20tiles/The%20Mountain%20Forest%20Boss.png', // Aero boss
+  tidalserp:   '/tiles/New%20tiles/The%20Misty%20Island%20Boss.png',    // Aqua boss
+  flamdevil:   '/tiles/New%20tiles/The%20Volcan%20Mountain%20Boss.png', // Pyro boss
 };
 function monsterIcon(monster) {
   const url = monster && MONSTER_ICONS[monster.id];
@@ -2119,7 +2140,7 @@ function renderMonsterSelect() {
     return `
       <div class="monster-option ${taken ? 'disabled' : ''} ${isMe ? 'selected' : ''}"
            onclick="selectMonster('${m.id}')">
-        <div class="monster-icon">${elIcon(m.element, 52)}</div>
+        <div class="monster-icon">${MONSTER_ICONS[m.id] ? `<img src="${MONSTER_ICONS[m.id]}" style="width:52px;height:52px;object-fit:contain">` : elIcon(m.element, 52)}</div>
         <div class="monster-option-name">${escapeHtml(m.name)}</div>
         <div class="monster-option-el el-${m.element}">${({'Fire':'Pyro','Water':'Aqua','Earth':'Terra','Air':'Aero','Wind':'Aero'}[m.element]||m.element)}</div>
         <div class="monster-option-stats">HP: ${m.maxHp}</div>
@@ -2145,10 +2166,17 @@ function selectMonster(id) {
 }
 
 // ── BOARD ZOOM & PAN ──
-const BOARD_BASE_W = 870, BOARD_BASE_H = 650;
+const BOARD_BASE_W = 800, BOARD_BASE_H = 780;
 const BOARD_MIN_ZOOM = 0.7, BOARD_MAX_ZOOM = 3.5;
 let boardZoom = 1.0, boardVX = 0, boardVY = 0;
 let _panActive = false, _panStartX = 0, _panStartY = 0, _panOriginVX = 0, _panOriginVY = 0;
+let _playerSpriteFrame = 0;
+setInterval(() => {
+  _playerSpriteFrame = (_playerSpriteFrame + 1) % 6;
+  document.querySelectorAll('.player-sprite-svg').forEach(el => {
+    el.setAttribute('viewBox', `${_playerSpriteFrame * 96} 0 96 96`);
+  });
+}, 250);
 
 function applyBoardView() {
   const w = BOARD_BASE_W / boardZoom;
@@ -2189,8 +2217,6 @@ function initBoardInteraction() {
   // Click-drag pan
   area.addEventListener('mousedown', e => {
     if (e.button !== 0) return;
-    // Only start pan if not clicking an interactive SVG element
-    if (e.target.closest('polygon,image,text,circle')) return;
     _panActive = true;
     _panStartX = e.clientX; _panStartY = e.clientY;
     _panOriginVX = boardVX; _panOriginVY = boardVY;
@@ -2259,15 +2285,15 @@ function initBoardInteraction() {
 // ── HEX GRID ──
 function hexCenter(col, row) {
   return {
-    x: col * HS + (row % 2 === 1 ? HS / 2 : 0) + MARGIN_X,
-    y: row * VS + MARGIN_Y
+    x: col * HS + MARGIN_X,
+    y: row * VS + (col % 2 === 1 ? VS / 2 : 0) + MARGIN_Y
   };
 }
 
 function hexPoints(col, row) {
   const { x: cx, y: cy } = hexCenter(col, row);
   return Array.from({length:6}, (_,i) => {
-    const a = Math.PI / 180 * (60 * i + 30);
+    const a = Math.PI / 180 * (60 * i);
     return `${(cx + HEX_SIZE * Math.cos(a)).toFixed(1)},${(cy + HEX_SIZE * Math.sin(a)).toFixed(1)}`;
   }).join(' ');
 }
@@ -2281,9 +2307,9 @@ function getRegion(col, row) {
 }
 
 function getNeighbors(col, row) {
-  const dirs = row % 2 === 0
-    ? [[-1,0],[1,0],[-1,-1],[0,-1],[-1,1],[0,1]]
-    : [[-1,0],[1,0],[0,-1],[1,-1],[0,1],[1,1]];
+  const dirs = col % 2 === 0
+    ? [[1,0],[1,-1],[-1,0],[-1,-1],[0,1],[0,-1]]
+    : [[1,0],[1,1],[-1,0],[-1,1],[0,-1],[0,1]];
   return dirs.map(([dc,dr]) => [col+dc, row+dr])
              .filter(([c,r]) => c>=0 && c<COLS && r>=0 && r<ROWS);
 }
@@ -2318,9 +2344,19 @@ function renderBoard() {
       svgDefs.appendChild(clipPath);
 
       // Pick a tile deterministically per hex (so it stays consistent on re-renders)
-      const tiles = REGION_TILES[region] || REGION_TILES.meadow;
-      const tileFile = tiles[(col * 7 + row * 13) % tiles.length];
-      const tileUrl = `/tiles/${encodeURIComponent(tileFile)}`;
+      const isVillageHex = (gameState?.villages || []).some(v => v.hex.col === col && v.hex.row === row);
+      const VILLAGE_TILES = {
+        forest: '/tiles/New%20tiles/Mountain%20Forest%20Town.png',
+        volcan: '/tiles/New%20tiles/The%20Volcan%20Mountains%20Town.png',
+      };
+      let tileUrl;
+      if (isVillageHex && VILLAGE_TILES[region]) {
+        tileUrl = VILLAGE_TILES[region];
+      } else {
+        const tiles = REGION_TILES[region] || REGION_TILES.meadow;
+        const tileFile = tiles[(col * 7 + row * 13) % tiles.length];
+        tileUrl = `/tiles/${encodeURIComponent(tileFile)}`;
+      }
 
       // Region colour base (underneath tile)
       const overlay = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
@@ -2400,10 +2436,10 @@ function updateBoardState() {
   }
 
   const BOSS_TOKEN = {
-    volcan: '/tiles/Monster%20tokens/BOSS%20Volcan%20Mountains.png',
-    misty:  '/tiles/Monster%20tokens/BOSS%20Misty%20Islands.png',
-    meadow: '/tiles/Monster%20tokens/BOSS%20Valley%20Meadow.png',
-    forest: '/tiles/Monster%20tokens/BOSS%20Mountain%20Forest.png',
+    volcan: '/tiles/New%20tiles/The%20Volcan%20Mountain%20Boss.png',
+    misty:  '/tiles/New%20tiles/The%20Misty%20Island%20Boss.png',
+    meadow: '/tiles/New%20tiles/The%20Valley%20Meadow%20Boss.png',
+    forest: '/tiles/New%20tiles/The%20Mountain%20Forest%20Boss.png',
   };
 
   // Render boss hex markers
@@ -2434,13 +2470,9 @@ function updateBoardState() {
     wandererLayer.appendChild(svgToken('/tiles/Monster%20tokens/djinn.png', x, y, 40));
   });
 
-  // Render village markers
+  // Village markers are rendered as terrain tiles in the hex grid loop (no overlay tokens)
   const villageLayer = document.getElementById('village-layer');
   villageLayer.innerHTML = '';
-  (gameState.villages || []).forEach(v => {
-    const { x, y } = hexCenter(v.hex.col, v.hex.row);
-    villageLayer.appendChild(svgToken('/tiles/Monster%20tokens/village.png', x, y, 38));
-  });
 
   // Render camp markers
   const campLayer = document.getElementById('camp-layer');
@@ -2459,23 +2491,18 @@ function updateBoardState() {
     const { x, y } = hexCenter(player.position.col, player.position.row);
     const isActive = player.id === currentPlayer?.id;
     const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    // Coloured backing circle so players are distinguishable
-    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    circle.setAttribute('cx', x); circle.setAttribute('cy', y); circle.setAttribute('r', '20');
-    circle.setAttribute('fill', player.color); circle.setAttribute('fill-opacity', '0.55');
-    circle.setAttribute('stroke', isActive ? '#FFD700' : 'rgba(255,255,255,0.35)');
-    circle.setAttribute('stroke-width', isActive ? '2.5' : '1.2');
-    if (isActive) circle.setAttribute('filter', 'url(#glow)');
-    g.appendChild(circle);
-    // Character icon — use Character 2 when player has a ship and is on Misty Islands
-    const onMisty = player.hasShip && getRegion(player.position.col, player.position.row) === 'misty';
-    const img = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-    img.setAttribute('href', onMisty ? '/tiles/Monster%20tokens/Character%202.png' : '/tiles/Monster%20tokens/Character.png');
-    img.setAttribute('x', x - 18); img.setAttribute('y', y - 18);
-    img.setAttribute('width', '36'); img.setAttribute('height', '36');
-    img.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-    img.setAttribute('pointer-events', 'none');
-    g.appendChild(img);
+    // Animated sprite — 6 frames × 96px wide in Player.png sprite sheet
+    const spriteSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    spriteSvg.setAttribute('x', x - 54); spriteSvg.setAttribute('y', y - 54);
+    spriteSvg.setAttribute('width', '108'); spriteSvg.setAttribute('height', '108');
+    spriteSvg.setAttribute('viewBox', `${_playerSpriteFrame * 96} 0 96 96`);
+    spriteSvg.setAttribute('class', 'player-sprite-svg');
+    spriteSvg.setAttribute('pointer-events', 'none');
+    const spriteImg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+    spriteImg.setAttribute('href', '/tiles/New%20tiles/Player.png');
+    spriteImg.setAttribute('width', '576'); spriteImg.setAttribute('height', '96');
+    spriteSvg.appendChild(spriteImg);
+    g.appendChild(spriteSvg);
     tokenLayer.appendChild(g);
   });
 }
@@ -2815,7 +2842,7 @@ function flyScenarioCard(region, onDone) {
   const key = (region || '').toLowerCase();
   const r = _deckRegionMap[key] || 'volcan';
   const bgMap = { volcan:'linear-gradient(160deg,#3a1208,#1e0a04)', misty:'linear-gradient(160deg,#0a1a2e,#060f1a)', meadow:'linear-gradient(160deg,#0e2010,#071408)', forest:'linear-gradient(160deg,#0a1c0c,#050e06)' };
-  const iconMap = { volcan:'/tiles/Monster%20tokens/BOSS%20Volcan%20Mountains.png', misty:'/tiles/Monster%20tokens/BOSS%20Misty%20Islands.png', meadow:'/tiles/Monster%20tokens/BOSS%20Valley%20Meadow.png', forest:'/tiles/Monster%20tokens/BOSS%20Mountain%20Forest.png' };
+  const iconMap = { volcan:'/tiles/New%20tiles/The%20Volcan%20Mountain%20Boss.png', misty:'/tiles/New%20tiles/The%20Misty%20Island%20Boss.png', meadow:'/tiles/New%20tiles/The%20Valley%20Meadow%20Boss.png', forest:'/tiles/New%20tiles/The%20Mountain%20Forest%20Boss.png' };
   _lastFlownDeck = `deck-scenario-${r}`;
   flyCardFromDeck(`deck-scenario-${r}`, bgMap[r], iconMap[r], onDone);
 }
@@ -2840,10 +2867,10 @@ function showScenarioModal(card) {
   const regionLabel = card.region || 'Fate Card';
   document.getElementById('sc-region').textContent = regionLabel;
   const regionIconMap = {
-    'volcan mountains': '/tiles/Monster%20tokens/BOSS%20Volcan%20Mountains.png',
-    'misty islands':    '/tiles/Monster%20tokens/BOSS%20Misty%20Islands.png',
-    'valley meadows':   '/tiles/Monster%20tokens/BOSS%20Valley%20Meadow.png',
-    'mountain forests': '/tiles/Monster%20tokens/BOSS%20Mountain%20Forest.png',
+    'volcan mountains': '/tiles/New%20tiles/The%20Volcan%20Mountain%20Boss.png',
+    'misty islands':    '/tiles/New%20tiles/The%20Misty%20Island%20Boss.png',
+    'valley meadows':   '/tiles/New%20tiles/The%20Valley%20Meadow%20Boss.png',
+    'mountain forests': '/tiles/New%20tiles/The%20Mountain%20Forest%20Boss.png',
   };
   const pipIcon = regionIconMap[(regionLabel).toLowerCase()] || '/tiles/Monster%20tokens/book.png';
   const pipLabel = regionLabel.split(' ').slice(-1)[0] || 'Fate';
@@ -3280,7 +3307,10 @@ function showBattleModal(battle, _p) {
 
   // Dice roll animation for new log entries; apply each HP bar after its own animation
   const newEntries = battle.log ? battle.log.slice(_lastBattleLogLen) : [];
+  const hasEnemyEntries = newEntries.some(e => e.type !== 'player' && e.type !== 'player_self');
   if (newEntries.length > 0) {
+    // Lock buttons while any dice are animating
+    if (hasEnemyEntries) _battleTurnLocked = true;
     triggerBattleEntries(newEntries, '', (entry) => {
       if (entry.playerMonsterHp !== undefined) {
         const pPct = Math.max(0, Math.round((entry.playerMonsterHp / _pMaxHp) * 100));
@@ -3292,7 +3322,14 @@ function showBattleModal(battle, _p) {
         document.getElementById('bm-e-hpbar').style.width = ePct + '%';
         document.getElementById('bm-e-hptext').textContent = `${entry.wildHp} / ${_eMaxHp} HP`;
       }
-    }, applyHpBars);
+    }, () => {
+      // Unlock attack buttons only after all animations complete
+      if (battle.phase === 'player_turn') {
+        _battleTurnLocked = false;
+        document.querySelectorAll('.battle-attack-btn').forEach(b => b.disabled = false);
+      }
+      applyHpBars();
+    });
     _lastBattleLogLen = battle.log.length;
   } else {
     applyHpBars();
@@ -3302,7 +3339,7 @@ function showBattleModal(battle, _p) {
   const attackSection = document.getElementById('attack-section');
   const waitingSection = document.getElementById('waiting-section');
   if (battle.phase === 'player_turn') {
-    _battleTurnLocked = false;
+    if (!hasEnemyEntries) _battleTurnLocked = false;
     attackSection.classList.remove('hidden');
     waitingSection.classList.add('hidden');
     const equipped = playerMonster.equipped || [];
@@ -3317,7 +3354,7 @@ function showBattleModal(battle, _p) {
       const rollsStr = `<img src="/tiles/Monster%20tokens/dice.png" style="width:14px;height:14px;object-fit:contain;vertical-align:middle;margin-right:3px"> ${a.roll1}, ${a.roll2}${bonusStr} to hit`;
       const dmgStr = attackBoost > 0 ? `${effDmg} dmg <span style="color:#A78BFA;font-size:0.72rem">(${a.damage}+${attackBoost})</span>` : `${effDmg} dmg`;
       const multBadge = effectiveMult > 1 ? ' <span class="multiplier-badge mult-super">×2 SUPER</span>' : effectiveMult < 1 ? ' <span class="multiplier-badge mult-resist">×0.5</span>' : '';
-      return `<button class="battle-attack-btn" onclick="if(_battleTurnLocked)return;_battleTurnLocked=true;document.querySelectorAll('.battle-attack-btn').forEach(b=>b.disabled=true);socket.emit('battle_attack',{attackIdx:${i}})">
+      return `<button class="battle-attack-btn" ${_battleTurnLocked ? 'disabled' : ''} onclick="if(_battleTurnLocked)return;_battleTurnLocked=true;document.querySelectorAll('.battle-attack-btn').forEach(b=>b.disabled=true);socket.emit('battle_attack',{attackIdx:${i}})">
         <div class="ba-name">${escapeHtml(a.name)}</div>
         <div class="ba-rolls">${rollsStr}</div>
         <div class="ba-dmg">${dmgStr}${multBadge}</div>

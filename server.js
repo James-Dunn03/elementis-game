@@ -12,53 +12,54 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const SCENARIO_CARDS = require('./scenario_cards_generated.js');
 
+const _I = n => `/tiles/New%20tiles/64x64/fc${n}.png`;
 const TREASURE_CARDS = [
-  { id:'t1',  name:"Elixir of Behemoth",     effect:"Heals a monster for 50 HP.",                           type:"heal_monster",    value:50, usage:"use_once", icon:"/tiles/bottle.png/icons/ffffff/transparent/1x1/lorc/standing-potion.png",      rarity:4, gpValue:40 },
-  { id:'t2',  name:"Draught of Vital Flame",  effect:"Heals a monster for 40 HP.",                           type:"heal_monster",    value:40, usage:"use_once", icon:"/tiles/bottle.png/icons/ffffff/transparent/1x1/lorc/fire-bottle.png",          rarity:3, gpValue:30 },
-  { id:'t3',  name:"Siren's Brew",            effect:"Heals a monster for 30 HP.",                           type:"heal_monster",    value:30, usage:"use_once", icon:"/tiles/bottle.png/icons/ffffff/transparent/1x1/delapouite/magic-potion.png",   rarity:3, gpValue:20 },
-  { id:'t4',  name:"Stonefruit Salve",        effect:"Heals a monster for 20 HP.",                           type:"heal_monster",    value:20, usage:"use_once", icon:"/tiles/bottle.png/icons/ffffff/transparent/1x1/delapouite/cloth-jar.png",      rarity:1, gpValue:10 },
-  { id:'t5',  name:"Breeze Balm",             effect:"Heals a monster for 10 HP.",                           type:"heal_monster",    value:10, usage:"use_once", icon:"/tiles/bottle.png/icons/ffffff/transparent/1x1/lorc/bottle-vapors.png",        rarity:1, gpValue:5  },
-  { id:'t6',  name:"Ambrosia Vial",           effect:"Heals the player for 50 HP.",                          type:"heal_player",     value:50, usage:"use_once", icon:"/tiles/bottle.png/icons/ffffff/transparent/1x1/caro-asercion/round-potion.png", rarity:4, gpValue:40 },
-  { id:'t7',  name:"Sanctified Bandage",      effect:"Heals the player for 40 HP.",                          type:"heal_player",     value:40, usage:"use_once", icon:"/tiles/bottle.png/icons/ffffff/transparent/1x1/delapouite/holy-water.png",     rarity:3, gpValue:30 },
-  { id:'t8',  name:"Golden Nectar",           effect:"Heals the player for 30 HP.",                          type:"heal_player",     value:30, usage:"use_once", icon:"/tiles/bottle.png/icons/ffffff/transparent/1x1/delapouite/honey-jar.png",      rarity:3, gpValue:20 },
-  { id:'t9',  name:"Phoenix Feather",         effect:"Heals the player for 20 HP.",                          type:"heal_player",     value:20, usage:"use_once", icon:"/tiles/bottle.png/icons/ffffff/transparent/1x1/lorc/heart-bottle.png",         rarity:1, gpValue:10 },
-  { id:'t10', name:"Healing Crystal",         effect:"Heals the player for 10 HP.",                          type:"heal_player",     value:10, usage:"use_once", icon:"/tiles/bottle.png/icons/ffffff/transparent/1x1/lorc/potion-ball.png",          rarity:1, gpValue:5  },
-  { id:'t11', name:"Infernal Charm",          effect:"Boosts a Pyro attack's damage by +20.",                type:"attack_boost",    element:"Pyro",  value:20, usage:"equip", icon:"/tiles/weapon.png/icons/ffffff/transparent/1x1/lorc/flaming-trident.png",    rarity:4, gpValue:40 },
-  { id:'t12', name:"Tidal Ring",              effect:"Boosts an Aqua attack's damage by +20.",               type:"attack_boost",    element:"Aqua",  value:20, usage:"equip", icon:"/tiles/weapon.png/icons/ffffff/transparent/1x1/lorc/trident.png",             rarity:4, gpValue:40 },
-  { id:'t13', name:"Earthen Gauntlet",        effect:"Boosts a Terra attack's damage by +20.",               type:"attack_boost",    element:"Terra", value:20, usage:"equip", icon:"/tiles/armor.png/icons/ffffff/transparent/1x1/delapouite/gauntlet.png",       rarity:4, gpValue:40 },
-  { id:'t14', name:"Sky Medallion",           effect:"Boosts an Aero attack's damage by +20.",               type:"attack_boost",    element:"Aero",  value:20, usage:"equip", icon:"/tiles/weapon.png/icons/ffffff/transparent/1x1/delapouite/winged-scepter.png", rarity:4, gpValue:40 },
-  { id:'t15', name:"Titan's Armor Plate",     effect:"Increases monster HP by 50.",                          type:"hp_boost",        value:50, usage:"equip", icon:"/tiles/armor.png/icons/ffffff/transparent/1x1/delapouite/chest-armor.png",      rarity:5, gpValue:40 },
-  { id:'t16', name:"Heart of the Mountain",   effect:"Increases monster HP by 40.",                          type:"hp_boost",        value:40, usage:"equip", icon:"/tiles/armor.png/icons/ffffff/transparent/1x1/delapouite/heart-armor.png",      rarity:5, gpValue:30 },
-  { id:'t17', name:"Blessed Chainmail",       effect:"Increases monster HP by 30.",                          type:"hp_boost",        value:30, usage:"equip", icon:"/tiles/armor.png/icons/ffffff/transparent/1x1/willdabeast/chain-mail.png",      rarity:4, gpValue:20 },
-  { id:'t18', name:"Ironhide Buckler",        effect:"Increases monster HP by 20.",                          type:"hp_boost",        value:20, usage:"equip", icon:"/tiles/armor.png/icons/ffffff/transparent/1x1/lorc/breastplate.png",            rarity:2, gpValue:10 },
-  { id:'t19', name:"Oakroot Tonic",           effect:"Increases monster HP by 10.",                          type:"hp_boost",        value:10, usage:"equip", icon:"/tiles/bottle.png/icons/ffffff/transparent/1x1/delapouite/waterskin.png",       rarity:1, gpValue:5  },
-  { id:'t20', name:"Blade of Fate",           effect:"Add 6 to a monster's attack roll.",                    type:"roll_bonus",      value:6, usage:"equip", icon:"/tiles/weapon.png/icons/ffffff/transparent/1x1/lorc/winged-sword.png",          rarity:3, gpValue:30 },
-  { id:'t21', name:"Rune-Etched Coin",        effect:"Add 5 to a monster's attack roll.",                    type:"roll_bonus",      value:5, usage:"equip", icon:"/tiles/weapon.png/icons/ffffff/transparent/1x1/lorc/crystal-wand.png",          rarity:3, gpValue:30 },
-  { id:'t22', name:"Guiding Amulet",          effect:"Add 4 to a monster's attack roll.",                    type:"roll_bonus",      value:4, usage:"equip", icon:"/tiles/weapon.png/icons/ffffff/transparent/1x1/delapouite/lunar-wand.png",       rarity:3, gpValue:30 },
-  { id:'t23', name:"Warrior's Whisper",       effect:"Add 3 to a monster's attack roll.",                    type:"roll_bonus",      value:3, usage:"equip", icon:"/tiles/weapon.png/icons/ffffff/transparent/1x1/delapouite/crescent-staff.png",   rarity:3, gpValue:30 },
-  { id:'t24', name:"Sharpened Rune",          effect:"Add 2 to a monster's attack roll.",                    type:"roll_bonus",      value:2, usage:"equip", icon:"/tiles/weapon.png/icons/ffffff/transparent/1x1/lorc/sacrificial-dagger.png",     rarity:3, gpValue:30 },
-  { id:'t25', name:"Strategist's Dice",       effect:"Add 1 to a monster's attack roll.",                    type:"roll_bonus",      value:1, usage:"equip", icon:"/tiles/weapon.png/icons/ffffff/transparent/1x1/lorc/fairy-wand.png",            rarity:3, gpValue:30 },
-  { id:'t26', name:"Orb of Balance",          effect:"Removes elemental weakness from a Pyro monster.",      type:"remove_weakness", element:"Pyro",  usage:"equip", icon:"/tiles/bottle.png/icons/ffffff/transparent/1x1/lorc/fizzing-flask.png",  rarity:5, gpValue:50 },
-  { id:'t27', name:"Aegis of Harmony",        effect:"Removes elemental weakness from an Aqua monster.",     type:"remove_weakness", element:"Aqua",  usage:"equip", icon:"/tiles/bottle.png/icons/ffffff/transparent/1x1/lorc/snow-bottle.png",    rarity:5, gpValue:50 },
-  { id:'t28', name:"Gaia's Ward",             effect:"Removes elemental weakness from a Terra monster.",     type:"remove_weakness", element:"Terra", usage:"equip", icon:"/tiles/bottle.png/icons/ffffff/transparent/1x1/delapouite/covered-jar.png", rarity:5, gpValue:50 },
-  { id:'t29', name:"Windshell Cloak",         effect:"Removes elemental weakness from an Aero monster.",     type:"remove_weakness", element:"Aero",  usage:"equip", icon:"/tiles/armor.png/icons/ffffff/transparent/1x1/delapouite/cape-armor.png",  rarity:5, gpValue:50 },
+  { id:'t1',  name:"Elixir of Behemoth",     effect:"Heals a monster for 50 HP.",                           type:"heal_monster",    value:50, usage:"use_once", icon:_I(271),  rarity:4, gpValue:40 },
+  { id:'t2',  name:"Draught of Vital Flame",  effect:"Heals a monster for 40 HP.",                           type:"heal_monster",    value:40, usage:"use_once", icon:_I(283),  rarity:3, gpValue:30 },
+  { id:'t3',  name:"Siren's Brew",            effect:"Heals a monster for 30 HP.",                           type:"heal_monster",    value:30, usage:"use_once", icon:_I(280),  rarity:3, gpValue:20 },
+  { id:'t4',  name:"Stonefruit Salve",        effect:"Heals a monster for 20 HP.",                           type:"heal_monster",    value:20, usage:"use_once", icon:_I(269),  rarity:1, gpValue:10 },
+  { id:'t5',  name:"Breeze Balm",             effect:"Heals a monster for 10 HP.",                           type:"heal_monster",    value:10, usage:"use_once", icon:_I(267),  rarity:1, gpValue:5  },
+  { id:'t6',  name:"Ambrosia Vial",           effect:"Heals the player for 50 HP.",                          type:"heal_player",     value:50, usage:"use_once", icon:_I(121),  rarity:4, gpValue:40 },
+  { id:'t7',  name:"Sanctified Bandage",      effect:"Heals the player for 40 HP.",                          type:"heal_player",     value:40, usage:"use_once", icon:_I(123),  rarity:3, gpValue:30 },
+  { id:'t8',  name:"Golden Nectar",           effect:"Heals the player for 30 HP.",                          type:"heal_player",     value:30, usage:"use_once", icon:_I(65),   rarity:3, gpValue:20 },
+  { id:'t9',  name:"Phoenix Feather",         effect:"Heals the player for 20 HP.",                          type:"heal_player",     value:20, usage:"use_once", icon:_I(183),  rarity:1, gpValue:10 },
+  { id:'t10', name:"Healing Crystal",         effect:"Heals the player for 10 HP.",                          type:"heal_player",     value:10, usage:"use_once", icon:_I(170),  rarity:1, gpValue:5  },
+  { id:'t11', name:"Infernal Charm",          effect:"Boosts a Pyro attack's damage by +20.",                type:"attack_boost",    element:"Pyro",  value:20, usage:"equip", icon:_I(163),  rarity:4, gpValue:40 },
+  { id:'t12', name:"Tidal Ring",              effect:"Boosts an Aqua attack's damage by +20.",               type:"attack_boost",    element:"Aqua",  value:20, usage:"equip", icon:_I(1847), rarity:4, gpValue:40 },
+  { id:'t13', name:"Earthen Gauntlet",        effect:"Boosts a Terra attack's damage by +20.",               type:"attack_boost",    element:"Terra", value:20, usage:"equip", icon:_I(707),  rarity:4, gpValue:40 },
+  { id:'t14', name:"Sky Medallion",           effect:"Boosts an Aero attack's damage by +20.",               type:"attack_boost",    element:"Aero",  value:20, usage:"equip", icon:_I(1841), rarity:4, gpValue:40 },
+  { id:'t15', name:"Titan's Armor Plate",     effect:"Increases monster HP by 50.",                          type:"hp_boost",        value:50, usage:"equip", icon:_I(1862), rarity:5, gpValue:40 },
+  { id:'t16', name:"Heart of the Mountain",   effect:"Increases monster HP by 40.",                          type:"hp_boost",        value:40, usage:"equip", icon:_I(1818), rarity:5, gpValue:30 },
+  { id:'t17', name:"Blessed Chainmail",       effect:"Increases monster HP by 30.",                          type:"hp_boost",        value:30, usage:"equip", icon:_I(1860), rarity:4, gpValue:20 },
+  { id:'t18', name:"Ironhide Buckler",        effect:"Increases monster HP by 20.",                          type:"hp_boost",        value:20, usage:"equip", icon:_I(851),  rarity:2, gpValue:10 },
+  { id:'t19', name:"Oakroot Tonic",           effect:"Increases monster HP by 10.",                          type:"hp_boost",        value:10, usage:"equip", icon:_I(62),   rarity:1, gpValue:5  },
+  { id:'t20', name:"Blade of Fate",           effect:"Add 6 to a monster's attack roll.",                    type:"roll_bonus",      value:6, usage:"equip", icon:_I(717),  rarity:3, gpValue:30 },
+  { id:'t21', name:"Rune-Etched Coin",        effect:"Add 5 to a monster's attack roll.",                    type:"roll_bonus",      value:5, usage:"equip", icon:_I(314),  rarity:3, gpValue:30 },
+  { id:'t22', name:"Guiding Amulet",          effect:"Add 4 to a monster's attack roll.",                    type:"roll_bonus",      value:4, usage:"equip", icon:_I(90),   rarity:3, gpValue:30 },
+  { id:'t23', name:"Warrior's Whisper",       effect:"Add 3 to a monster's attack roll.",                    type:"roll_bonus",      value:3, usage:"equip", icon:_I(716),  rarity:3, gpValue:30 },
+  { id:'t24', name:"Sharpened Rune",          effect:"Add 2 to a monster's attack roll.",                    type:"roll_bonus",      value:2, usage:"equip", icon:_I(316),  rarity:3, gpValue:30 },
+  { id:'t25', name:"Strategist's Dice",       effect:"Add 1 to a monster's attack roll.",                    type:"roll_bonus",      value:1, usage:"equip", icon:_I(200),  rarity:3, gpValue:30 },
+  { id:'t26', name:"Orb of Balance",          effect:"Removes elemental weakness from a Pyro monster.",      type:"remove_weakness", element:"Pyro",  usage:"equip", icon:_I(745),  rarity:5, gpValue:50 },
+  { id:'t27', name:"Aegis of Harmony",        effect:"Removes elemental weakness from an Aqua monster.",     type:"remove_weakness", element:"Aqua",  usage:"equip", icon:_I(783),  rarity:5, gpValue:50 },
+  { id:'t28', name:"Gaia's Ward",             effect:"Removes elemental weakness from a Terra monster.",     type:"remove_weakness", element:"Terra", usage:"equip", icon:_I(112),  rarity:5, gpValue:50 },
+  { id:'t29', name:"Windshell Cloak",         effect:"Removes elemental weakness from an Aero monster.",     type:"remove_weakness", element:"Aero",  usage:"equip", icon:_I(1953), rarity:5, gpValue:50 },
 ];
 
 const PLAYER_ITEMS = [
-  { id:'pi1',  name:"Emberglass Lantern Shard", effect:"Add 6 to a Player's attack roll.",     type:"player_roll_bonus",    value:6,  usage:"equip_to_player", icon:"/tiles/Monster tokens/dice.png",      rarity:4, gpValue:40 },
-  { id:'pi2',  name:"Wayfinder's Compass",      effect:"Add 5 to a Player's attack roll.",     type:"player_roll_bonus",    value:5,  usage:"equip_to_player", icon:"/tiles/Monster tokens/dice.png",      rarity:4, gpValue:40 },
-  { id:'pi3',  name:"Whisperleaf Charm",         effect:"Add 4 to a Player's attack roll.",     type:"player_roll_bonus",    value:4,  usage:"equip_to_player", icon:"/tiles/Monster tokens/dice.png",      rarity:4, gpValue:40 },
-  { id:'pi4',  name:"Clockwork Cricket",         effect:"Add 3 to a Player's attack roll.",     type:"player_roll_bonus",    value:3,  usage:"equip_to_player", icon:"/tiles/Monster tokens/dice.png",      rarity:4, gpValue:40 },
-  { id:'pi5',  name:"Moonthread Spool",          effect:"Add 2 to a Player's attack roll.",     type:"player_roll_bonus",    value:2,  usage:"equip_to_player", icon:"/tiles/Monster tokens/dice.png",      rarity:4, gpValue:40 },
-  { id:'pi6',  name:"Echo Pebble",               effect:"Add 1 to a Player's attack roll.",     type:"player_roll_bonus",    value:1,  usage:"equip_to_player", icon:"/tiles/Monster tokens/dice.png",      rarity:4, gpValue:40 },
-  { id:'pi7',  name:"Starlight Pocketwatch",     effect:"Increases Player's HP by 50.",         type:"player_hp_boost",      value:50, usage:"equip_to_player", icon:"/tiles/Monster tokens/monk-face.png", rarity:5, gpValue:70 },
-  { id:'pi8',  name:"Mosskeeper's Brooch",       effect:"Increases Player's HP by 40.",         type:"player_hp_boost",      value:40, usage:"equip_to_player", icon:"/tiles/Monster tokens/monk-face.png", rarity:4, gpValue:60 },
-  { id:'pi9',  name:"Veilweaver's Ribbon",       effect:"Increases Player's HP by 30.",         type:"player_hp_boost",      value:30, usage:"equip_to_player", icon:"/tiles/Monster tokens/monk-face.png", rarity:3, gpValue:50 },
-  { id:'pi10', name:"Frostglass Tear",           effect:"Increases Player's HP by 20.",         type:"player_hp_boost",      value:20, usage:"equip_to_player", icon:"/tiles/Monster tokens/monk-face.png", rarity:2, gpValue:40 },
-  { id:'pi11', name:"Oracle's Monocle",          effect:"Increases Player's HP by 10.",         type:"player_hp_boost",      value:10, usage:"equip_to_player", icon:"/tiles/Monster tokens/monk-face.png", rarity:1, gpValue:30 },
-  { id:'pi12', name:"Ring of the First Dawn",    effect:"Increases a Player's attack by +10.",  type:"player_attack_bonus",  value:10, usage:"equip_to_player", icon:"/tiles/Monster tokens/Captain.png",   rarity:3, gpValue:40 },
-  { id:'pi13', name:"Serpent's Eye Pendant",     effect:"Increases a Player's attack by +20.",  type:"player_attack_bonus",  value:20, usage:"equip_to_player", icon:"/tiles/Monster tokens/Captain.png",   rarity:4, gpValue:50 },
-  { id:'pi14', name:"Bracelet of Whispering Stars", effect:"Increases a Player's attack by +30.", type:"player_attack_bonus", value:30, usage:"equip_to_player", icon:"/tiles/Monster tokens/Captain.png",  rarity:5, gpValue:60 },
+  { id:'pi1',  name:"Emberglass Lantern Shard",    effect:"Add 6 to a Player's attack roll.",     type:"player_roll_bonus",    value:6,  usage:"equip_to_player", icon:_I(86),   rarity:4, gpValue:40 },
+  { id:'pi2',  name:"Wayfinder's Compass",         effect:"Add 5 to a Player's attack roll.",     type:"player_roll_bonus",    value:5,  usage:"equip_to_player", icon:_I(333),  rarity:4, gpValue:40 },
+  { id:'pi3',  name:"Whisperleaf Charm",            effect:"Add 4 to a Player's attack roll.",     type:"player_roll_bonus",    value:4,  usage:"equip_to_player", icon:_I(22),   rarity:4, gpValue:40 },
+  { id:'pi4',  name:"Clockwork Cricket",            effect:"Add 3 to a Player's attack roll.",     type:"player_roll_bonus",    value:3,  usage:"equip_to_player", icon:_I(87),   rarity:4, gpValue:40 },
+  { id:'pi5',  name:"Moonthread Spool",             effect:"Add 2 to a Player's attack roll.",     type:"player_roll_bonus",    value:2,  usage:"equip_to_player", icon:_I(88),   rarity:4, gpValue:40 },
+  { id:'pi6',  name:"Echo Pebble",                  effect:"Add 1 to a Player's attack roll.",     type:"player_roll_bonus",    value:1,  usage:"equip_to_player", icon:_I(209),  rarity:4, gpValue:40 },
+  { id:'pi7',  name:"Starlight Pocketwatch",        effect:"Increases Player's HP by 50.",         type:"player_hp_boost",      value:50, usage:"equip_to_player", icon:_I(171),  rarity:5, gpValue:70 },
+  { id:'pi8',  name:"Mosskeeper's Brooch",          effect:"Increases Player's HP by 40.",         type:"player_hp_boost",      value:40, usage:"equip_to_player", icon:_I(1840), rarity:4, gpValue:60 },
+  { id:'pi9',  name:"Veilweaver's Ribbon",          effect:"Increases Player's HP by 30.",         type:"player_hp_boost",      value:30, usage:"equip_to_player", icon:_I(1952), rarity:3, gpValue:50 },
+  { id:'pi10', name:"Frostglass Tear",              effect:"Increases Player's HP by 20.",         type:"player_hp_boost",      value:20, usage:"equip_to_player", icon:_I(170),  rarity:2, gpValue:40 },
+  { id:'pi11', name:"Oracle's Monocle",             effect:"Increases Player's HP by 10.",         type:"player_hp_boost",      value:10, usage:"equip_to_player", icon:_I(1851), rarity:1, gpValue:30 },
+  { id:'pi12', name:"Ring of the First Dawn",       effect:"Increases a Player's attack by +10.",  type:"player_attack_bonus",  value:10, usage:"equip_to_player", icon:_I(1844), rarity:3, gpValue:40 },
+  { id:'pi13', name:"Serpent's Eye Pendant",        effect:"Increases a Player's attack by +20.",  type:"player_attack_bonus",  value:20, usage:"equip_to_player", icon:_I(1848), rarity:4, gpValue:50 },
+  { id:'pi14', name:"Bracelet of Whispering Stars", effect:"Increases a Player's attack by +30.",  type:"player_attack_bonus",  value:30, usage:"equip_to_player", icon:_I(1836), rarity:5, gpValue:60 },
 ];
 
 const STARTER_MONSTERS = [
@@ -386,7 +387,7 @@ function getRegion(col, row, regionMap) {
 }
 
 function getNeighbors(col, row) {
-  const dirs = row%2===0 ? [[-1,0],[1,0],[-1,-1],[0,-1],[-1,1],[0,1]] : [[-1,0],[1,0],[0,-1],[1,-1],[0,1],[1,1]];
+  const dirs = col%2===0 ? [[1,0],[1,-1],[-1,0],[-1,-1],[0,1],[0,-1]] : [[1,0],[1,1],[-1,0],[-1,1],[0,-1],[0,1]];
   return dirs.map(([dc,dr])=>[col+dc,row+dr]).filter(([c,r])=>c>=0&&c<GRID_COLS&&r>=0&&r<GRID_ROWS);
 }
 
@@ -1118,7 +1119,7 @@ io.on('connection', (socket) => {
     const rollBonus = (cp.playerEquipped || []).filter(e => e.type === 'player_roll_bonus').reduce((s, e) => s + e.value, 0);
     const attackBonus = (cp.playerEquipped || []).filter(e => e.type === 'player_attack_bonus').reduce((s, e) => s + e.value, 0);
     const effectiveRoll = roll + rollBonus;
-    const hit = effectiveRoll >= 5;
+    const hit = roll === 1 || roll === 2 || bonusRolls.includes(roll);
     const damage = hit ? 30 + attackBonus : 0;
     if (hit) {
       battle.wildMonsterHp = Math.max(0, battle.wildMonsterHp - damage);
